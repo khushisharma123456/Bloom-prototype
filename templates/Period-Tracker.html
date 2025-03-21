@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/period-traker.css') }}">
+
+</head>
+
+<body>
+    <div class="app-container">
+
+        <div class="header">
+            <div>
+                <img src="static/Images/logo .png" alt="logo" class="logo">
+            </div>
+            <div class="left-header">
+                <p class="home">Home</p>
+                <img src="static/Images/profile.png" alt="prf" class="profile">
+            </div>
+
+        </div>
+
+        <div class="body">
+
+
+
+            <form action="{{ url_for('period_tracker') }}" method="POST">
+                <div class="body">
+                    <div class="rightbody">
+                        <div class="up">
+                            <p>Today is the second day of your cycle. Stay hydrated and take it easy! 💜
+                                Menstrual cramps? Try a warm drink or light stretching to ease discomfort. 🌿</p>
+                        </div>
+                        <div class="down">
+                            <div class="down-down">
+                                <div class="down-down-up">
+                                    <!-- Flow Section -->
+                                    <div class="section">
+                                        <h3>How is your flow today?</h3>
+                                        <div class="options">
+                                            <div class="option"><input type="radio" name="flow" value="Light">Light</div>
+                                            <div class="option"><input type="radio" name="flow" value="Medium">Medium</div>
+                                            <div class="option"><input type="radio" name="flow" value="Heavy">Heavy</div>
+                                            <div class="option"><input type="radio" name="flow" value="Very Heavy">Very Heavy</div>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Pain Section -->
+                                    <div class="section">
+                                        <h3>How much pain are you experiencing?</h3>
+                                        <div class="options">
+                                            <div class="option"><input type="radio" name="pain" value="No Pain">No Pain</div>
+                                            <div class="option"><input type="radio" name="pain" value="Mild">Mild</div>
+                                            <div class="option"><input type="radio" name="pain" value="Moderate">Moderate</div>
+                                            <div class="option"><input type="radio" name="pain" value="Severe">Severe</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="down-down-down">
+                                    <!-- Mood Section -->
+                                    <div class="section">
+                                        <h3>How’s your mood today?</h3>
+                                        <div class="options">
+                                            <div class="option"><input type="radio" name="mood" value="Happy">😊 Happy</div>
+                                            <div class="option"><input type="radio" name="mood" value="Calm">😌 Calm</div>
+                                            <div class="option"><input type="radio" name="mood" value="Irritable">😠 Irritable</div>
+                                            <div class="option"><input type="radio" name="mood" value="Emotional">😢 Emotional</div>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Additional Symptoms -->
+                                    <div class="pain-symptoms-container">
+                                        <h3>Do you have any additional symptoms?</h3>
+                                        <div class="options">
+                                            <div class="checkbox-option"><input type="checkbox" name="symptoms" value="Fatigue">Fatigue</div>
+                                            <div class="checkbox-option"><input type="checkbox" name="symptoms" value="Cramps">Cramps</div>
+                                            <div class="checkbox-option"><input type="checkbox" name="symptoms" value="Bloating">Bloating</div>
+                                            <div class="checkbox-option"><input type="checkbox" name="symptoms" value="Headache">Headache</div>
+                                            <div class="checkbox-option"><input type="checkbox" name="symptoms" value="Nausea">Nausea</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="submitBtn" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="calendar">
+                <p class="cycle-calendar">Cycle Calendar</p>
+                <iframe src="https://calendar.google.com/calendar/embed?src=YOUR_CALENDAR_ID" style="border: 0"
+                    background-color="white" width="800" height="600" frameborder="0" scrolling="no" class="google-cal">
+                </iframe>
+            </div>
+
+        </div>
+
+        <div class="graph-body">
+            <div class="info">
+                <p>1.<i>Your cycle has a lot of variations – </i>If your cycle length fluctuates significantly, tracking
+                    it can help identify patterns.</p>
+                <p>2.<i>Your cycles are getting longer –</i> This might be due to stress, hormonal shifts, or lifestyle
+                    changes. Try relaxation techniques like yoga.</p>
+                <p>3.<i>Your cycle peaked at its longest –</i> A sudden increase in cycle length could indicate hormonal
+                    imbalances. Keep an eye on it.</p>
+                <p>4.<i>Your cycles are now getting shorter – </i>If your cycle length is reducing after a peak, it
+                    might
+                    be returning to a normal pattern.</p>
+                <p>5.<i>Stress may be affecting your cycle –</i> Consider mindfulness, meditation, or light exercise to
+                    maintain balance.</p>
+                <p>6.<i>Diet matters! – </i>Nutritional deficiencies can impact your cycle. Ensure you’re eating a
+                    balanced diet.</p>
+                <p>7.<i>Hormonal changes could be the reason – </i>Birth control, PCOS, or perimenopause might
+                    contribute
+                    to cycle changes.</p>
+                <p>8.<i>Listen to your body –</i> If you feel unusual symptoms like extreme cramps, fatigue, or heavy
+                    bleeding, seek medical advice.
+                </p>
+
+            </div>
+
+          <!-- Chart Container (Only One Canvas) -->
+<div class="chart-container">
+    <canvas id="myChart"></canvas>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Data passed from Flask
+    var chartData = {{ data | tojson }};
+
+    if (chartData && chartData.dates) {
+        var dates = chartData.dates;
+        var painLevels = chartData.pain_levels;
+        var flowLevels = chartData.flow_levels;
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'Pain Level',
+                        data: painLevels,
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Flow Level',
+                        data: flowLevels,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: 'Date' } },
+                    y: { title: { display: true, text: 'Level' }, min: 0, max: 10 }
+                }
+            }
+        });
+    } else {
+        console.error("Chart data is missing or invalid.");
+    }
+</script>
+
+
+
+
+        </div>
+        <div class="next">
+            <p id="ptag1">Your next cycle is</p>
+            <p id="ptag2"><bpsk>expected on <b>28 JULY</b></bpsk></p>
+        </div>
+        
+        
+
+    </div>
+
+
+</body>
+
+</html>
