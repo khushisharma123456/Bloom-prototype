@@ -31,6 +31,10 @@ class PainEntry(db.Model):  # Stores pain, flow, mood, symptoms in one table
     
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+with app.app_context():
+    db.create_all()  # Ensures tables are created
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
