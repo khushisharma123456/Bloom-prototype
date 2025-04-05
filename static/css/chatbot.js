@@ -13,14 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isAnswerLoading = false;
     let answerSectionId = 0;
 
-    // Add event listeners
-    if (sendButton) {
-        sendButton.addEventListener('click', function() {
-            sendMessage();
-        });
-    } else {
-        console.warn('Send button not found. Check your HTML structure and class names.');
-    }
+   
 
     userInput.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
@@ -107,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         upDiv.style.width = '100%';
         
         const aiImg = document.createElement('img');
-        aiImg.src = 'Images/logo1.png'; // Make sure this file exists
+        aiImg.src = 'static/Images/logo1.png'; // Make sure this file exists
         aiImg.alt = 'ai-logo';
         aiImg.className = 'ai-logo';
         aiImg.style.marginRight = '10px';
