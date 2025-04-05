@@ -1,4 +1,4 @@
-const API_KEY = 'HPmr7lg35Fd754QTw1UVyZ3f7dDsRvOA'
+const API_KEY = '7yTvSRxPZGjj4KtgYKS4ypeh0Y73rJtO'
 
 // Initialize content area and input fields
 document.addEventListener('DOMContentLoaded', function() {
