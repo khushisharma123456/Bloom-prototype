@@ -121,7 +121,7 @@ def period_tracker():
         db.session.commit()
 
         flash('Your period tracking data has been saved!', 'success')
-        return redirect(url_for('period_tracker'))  # Refresh page after submission
+        return redirect(url_for('Period-Tracker'))  # Refresh page after submission
 
     entries = PainEntry.query.filter_by(user_id=user_id).order_by(PainEntry.date).all()
 
@@ -133,7 +133,7 @@ def period_tracker():
         "moods": [entry.mood for entry in entries]  # Mood remains unchanged
     }
 
-    return render_template('period-tracker.html', user_name=session['user_name'], data=data)
+    return render_template('Period-Tracker.html', user_name=session['user_name'], data=data)
 
 @app.route('/nutrition')
 def nutrition():
