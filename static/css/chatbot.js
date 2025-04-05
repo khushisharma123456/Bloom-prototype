@@ -1,4 +1,4 @@
-const API_KEY = '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'
+const API_KEY = 'HPmr7lg35Fd754QTw1UVyZ3f7dDsRvOA'
 
 // Initialize content area and input fields
 document.addEventListener('DOMContentLoaded', function() {
