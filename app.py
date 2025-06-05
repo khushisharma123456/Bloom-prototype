@@ -8,13 +8,6 @@ import json
 import requests
 from urllib.parse import urlencode
 
-# Spotify configuration
-SPOTIFY_CLIENT_ID = '6b770d2f043948dc9515d3a5f65a5113'
-SPOTIFY_CLIENT_SECRET = 'bbf02678958948eda30ff6bc0e616058'
-SPOTIFY_REDIRECT_URI = 'http://localhost:5000/callback'
-SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize'
-SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token'
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -22,8 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-with app.app_context():
-    db.create_all()
+
 
 # User Model
 class User(db.Model):
@@ -68,6 +60,15 @@ class SurveyResponse(db.Model):
     q12_fertility = db.Column(db.String(30))
     q13_mood_swings = db.Column(db.String(30))
 
+with app.app_context():
+    db.create_all()
+
+# Spotify configuration
+SPOTIFY_CLIENT_ID = '6b770d2f043948dc9515d3a5f65a5113'
+SPOTIFY_CLIENT_SECRET = 'bbf02678958948eda30ff6bc0e616058'
+SPOTIFY_REDIRECT_URI = 'http://localhost:5000/callback'
+SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize'
+SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token'
     
 @app.route('/')
 def home():
