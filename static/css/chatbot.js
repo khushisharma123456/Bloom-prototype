@@ -620,20 +620,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         return 'chat-' + Math.random().toString(36).substr(2, 9);
     }
 
-    // Function to load API key from .env file
+    // Function to load API key from backend
     async function loadApiKey() {
         try {
-            const response = await fetch('../../../.env');
+            const response = await fetch('/get_api_key');
             if (!response.ok) {
-                throw new Error(`Failed to load .env file: ${response.status}`);
+                throw new Error(`Failed to load API key: ${response.status}`);
             }
-            const text = await response.text();
-            const match = text.match(/GEMINI_API_KEY=(.+)/);
-            if (match && match[1]) {
-                GEMINI_API_KEY = match[1].trim();
+            const data = await response.json();
+            if (data.api_key) {
+                GEMINI_API_KEY = data.api_key;
                 console.log('API key loaded successfully');
             } else {
-                throw new Error('API key not found in .env file');
+                throw new Error('API key not found in response');
             }
         } catch (error) {
             console.error('Error loading API key:', error);
