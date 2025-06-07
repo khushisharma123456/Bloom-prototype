@@ -643,15 +643,15 @@ async function loadApiKey() {
     }
 }
 
-    async function callGeminiAPI(prompt) {
+    // Modify the callGeminiAPI function in chatbot.js to use the correct endpoint
+async function callGeminiAPI(prompt) {
     try {
         if (!GEMINI_API_KEY) {
             throw new Error('API key not loaded');
         }
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-
-
+        // Updated API URL - note the model name change
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
         
         const response = await fetch(apiUrl, {
             method: 'POST',
