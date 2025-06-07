@@ -377,6 +377,26 @@ def chatbot():
         return redirect(url_for('login'))
     return render_template('chatbot.html')
 
+@app.route('/api/get-api-key')
+def get_api_key():
+    print("GEMINI KEY:", os.getenv("GEMINI_API_KEY"))
+    api_key = os.getenv('GEMINI_API_KEY')
+    print("DEBUG: Loaded API Key =", api_key)  # Add this for verification
+    if not api_key:
+        abort(500, description="API key not configured on server")
+    return jsonify({'apiKey': api_key})
+
+    
+@app.route('/api/get-prompt-template')
+def get_prompt_template():
+    try:
+        with open('templates/prompt_template.txt', 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        abort(404, description="Prompt template not found")
+    except Exception as e:
+        abort(500, description=str(e))
+
 @app.route('/logout')
 def logout():
     session.clear()
