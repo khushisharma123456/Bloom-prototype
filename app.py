@@ -487,11 +487,6 @@ def refresh_token():
     else:
         return jsonify({"error": "Failed to refresh token"})
             
-@app.route('/get_api_key')
-def get_api_key():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-    return jsonify({'api_key': os.environ.get('GEMINI_API_KEY')})
 
 if __name__ == '__main__':
     with app.app_context():
