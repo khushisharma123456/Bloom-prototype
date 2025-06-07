@@ -160,16 +160,6 @@
     margin-top: 30px;
 }
 
-.graph-gradient-area {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
-    bottom: 40px;
-    background: linear-gradient(to bottom, rgba(255,214,224,0.3), rgba(232,224,255,0.3));
-    border-radius: 0 0 8px 8px;
-}
-
 .graph-line {
     position: absolute;
     top: 50px;
@@ -401,7 +391,7 @@
             font-weight: 500;
         }
 
-        .add-symptom {
+        .symptom-chip.add-symptom {
             background-color: transparent;
             border: 1px dashed var(--text-light);
             color: var(--text-light);
@@ -409,8 +399,52 @@
             align-items: center;
         }
 
-        .add-symptom i {
-            margin-right: 5px;
+        .symptom-chip.add-symptom:hover {
+            background-color: var(--accent-lavender);
+        }
+
+        .custom-input-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .custom-input-container textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--text-light);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .custom-input-container button {
+            background-color: var(--primary-purple);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .custom-input-container button:hover {
+            background-color: var(--graph-lavender);
+        }
+
+        .custom-input-container button.cancel {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--text-light);
+        }
+
+        .custom-input-container button.cancel:hover {
+            background-color: var(--accent-lavender);
         }
 
         /* Cards Section */
@@ -767,6 +801,42 @@
         .open-spotify-btn:hover {
             background: #1ed760;
         }
+
+        .yoga-recommendations {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: var(--accent-lavender);
+            border-radius: 8px;
+        }
+
+        .yoga-recommendations h3 {
+            color: var(--primary-purple);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .yoga-recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .yoga-recommendations li {
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: white;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .yoga-recommendations .yoga-name {
+            font-weight: 600;
+            color: var(--primary-purple);
+        }
+
+        .yoga-recommendations .yoga-steps {
+            margin-top: 5px;
+            color: var(--text-light);
+        }
     </style>
 </head>
 <body>
@@ -860,15 +930,12 @@
         </div>
         
         <div class="graph">
-            <!-- Gradient area below the line -->
-            <div class="graph-gradient-area"></div>
-            
             <!-- Main line -->
             <div class="graph-line"></div>
             
             <!-- Current day indicator -->
             {% set cycle_percent = (current_day / cycle_length * 100) if current_day > 0 else 0 %}
-            <div class="graph-dot" style="left: {{ cycle_percent }}%;">
+            <div class="graph-dot" style="left: {{ cycle_percent|string }}%;">
                 <div class="dot"></div>
                 <div class="dot-label">Today</div>
             </div>
@@ -916,7 +983,9 @@
         <div class="cards-container">
             <div class="card">
                 <div class="card-title">Waiting for your next Yoga Session</div>
-                <div class="card-content">Gentle yoga can help relieve menstrual discomfort. Join our live session in 15 minutes!</div>
+                <div class="card-content">
+                    <p>Gentle yoga can help relieve menstrual discomfort. Join our live session in 15 minutes!</p>
+                </div>
                 <button class="card-button">Join Now</button>
             </div>
             
@@ -956,11 +1025,103 @@
 
     <script>
         // Symptom Chip Selection
-        const symptomChips = document.querySelectorAll('.symptom-chip:not(.add-symptom)');
-        symptomChips.forEach(chip => {
+        const symptomsContainer = document.querySelector('.symptom-chips');
+        const addSymptomChip = document.querySelector('.symptom-chip.add-symptom');
+
+        function createSymptomChip(name) {
+            const chip = document.createElement('div');
+            chip.classList.add('symptom-chip');
+            chip.textContent = name;
             chip.addEventListener('click', () => {
                 chip.classList.toggle('selected');
+                const symptom = chip.textContent.trim();
+                if (chip.classList.contains('selected')) {
+                    selectedSymptoms.push(symptom);
+                } else {
+                    const index = selectedSymptoms.indexOf(symptom);
+                    if (index > -1) selectedSymptoms.splice(index, 1);
+                }
+                fetchYogaAdvice();
             });
+            return chip;
+        }
+
+        // Handle click on "+ Custom"
+        addSymptomChip.addEventListener('click', () => {
+            showCustomInput(addSymptomChip);
+        });
+
+        function showCustomInput(customChip) {
+            // Replace +Custom chip with textarea + buttons
+            const inputArea = document.createElement('textarea');
+            inputArea.placeholder = 'Type custom symptoms separated by commas or new lines...';
+            inputArea.rows = 3;
+            inputArea.style.width = '100%';
+
+            const addButton = document.createElement('button');
+            addButton.textContent = 'Add Symptoms';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.classList.add('cancel');
+
+            // Container for input and buttons
+            const inputContainer = document.createElement('div');
+            inputContainer.classList.add('custom-input-container');
+            inputContainer.appendChild(inputArea);
+            inputContainer.appendChild(addButton);
+            inputContainer.appendChild(cancelButton);
+
+            symptomsContainer.replaceChild(inputContainer, customChip);
+
+            addButton.onclick = () => {
+                const rawText = inputArea.value.trim();
+                if (!rawText) return;
+
+                // Split by comma or new lines
+                const newSymptoms = rawText.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+
+                // Add new symptom chips before the inputContainer
+                newSymptoms.forEach(symptom => {
+                    const newChip = createSymptomChip(symptom);
+                    symptomsContainer.insertBefore(newChip, inputContainer);
+                });
+
+                // Restore the +Custom chip
+                symptomsContainer.replaceChild(customChip, inputContainer);
+            };
+
+            cancelButton.onclick = () => {
+                // Just restore +Custom chip without adding anything
+                symptomsContainer.replaceChild(customChip, inputContainer);
+            };
+        }
+
+        // Add click handlers to existing symptom chips
+        document.querySelectorAll('.symptom-chip:not(.add-symptom)').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.classList.toggle('selected');
+                const symptom = chip.textContent.trim();
+                if (chip.classList.contains('selected')) {
+                    selectedSymptoms.push(symptom);
+                } else {
+                    const index = selectedSymptoms.indexOf(symptom);
+                    if (index > -1) selectedSymptoms.splice(index, 1);
+                }
+                fetchYogaAdvice();
+            });
+        });
+        
+        // Join Now button event listener
+        document.querySelector('.card-button').addEventListener('click', () => {
+            // Redirect to yoga session page
+            window.location.href = '/yoga';
+        });
+
+        // Explore Now button event listener
+        document.querySelector('.card-button.teal').addEventListener('click', () => {
+            // Redirect to tips page
+            window.location.href = '/tips';
         });
         
         // Mood selection
@@ -1000,15 +1161,81 @@
         // Check screen size and adjust sidebar accordingly
         function checkScreenSize() {
             const sidebar = document.querySelector('.sidebar');
-            if (window.innerWidth <= 480px) {
+            if (window.innerWidth <= 480) {
                 sidebar.style.display = 'none';
             } else {
                 sidebar.style.display = 'flex';
             }
-        };
+        }
         
         window.addEventListener('resize', checkScreenSize);
         window.addEventListener('load', checkScreenSize);
+    </script>
+
+    <script type="module">
+        import GeminiWrapper from './geminiWrapper.js'; // adjust path if needed
+
+        const gemini = new GeminiWrapper();
+        const selectedSymptoms = []; // dynamically filled below
+        const container = document.getElementById('yoga-recommendations');
+
+        // Allow multiple symptom selections
+        document.querySelectorAll('.symptom-chip:not(.add-symptom)').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.classList.toggle('selected');
+                const symptom = chip.textContent.trim();
+                if (chip.classList.contains('selected')) {
+                    selectedSymptoms.push(symptom);
+                } else {
+                    const index = selectedSymptoms.indexOf(symptom);
+                    if (index > -1) selectedSymptoms.splice(index, 1);
+                }
+                fetchYogaAdvice();
+            });
+        });
+
+        async function fetchYogaAdvice() {
+            if (selectedSymptoms.length === 0) {
+                container.innerHTML = '<p>Select symptoms to get recommendations.</p>';
+                return;
+            }
+
+            try {
+                const { yogaAsanas } = await gemini.getRecommendations(selectedSymptoms);
+
+                if (!yogaAsanas.length) {
+                    container.innerHTML = '<p>No matching yoga asanas found.</p>';
+                    return;
+                }
+
+                // Display yoga asana names
+                container.innerHTML = '<h3>Recommended Yoga Asanas</h3><ul class="asana-list"></ul>';
+                const ul = container.querySelector('.asana-list');
+
+                yogaAsanas.forEach(asana => {
+                    const li = document.createElement('li');
+                    li.classList.add('asana-item');
+                    li.innerHTML = `
+                        <strong class="asana-name" style="cursor:pointer;">${asana.name}</strong>
+                        <div class="asana-details" style="display:none; margin-top:5px;">
+                            <p><strong>Steps:</strong> ${asana.steps.join(' ➤ ')}</p>
+                            <p><strong>Duration:</strong> ${asana.duration}</p>
+                            <p><strong>Precautions:</strong> ${asana.precautions}</p>
+                        </div>
+                    `;
+
+                    li.querySelector('.asana-name').addEventListener('click', () => {
+                        const details = li.querySelector('.asana-details');
+                        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                    });
+
+                    ul.appendChild(li);
+                });
+            } catch (error) {
+                container.innerHTML = `<p>Error fetching yoga recommendations.</p>`;
+                console.error(error);
+            }
+        }
     </script>
 </body>
 </html>
