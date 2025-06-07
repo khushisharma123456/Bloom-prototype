@@ -620,110 +620,124 @@ document.addEventListener('DOMContentLoaded', async function() {
         return 'chat-' + Math.random().toString(36).substr(2, 9);
     }
 
-    // Function to load API key from backend
-    async function loadApiKey() {
-        try {
-            const response = await fetch('/get_api_key');
-            if (!response.ok) {
-                throw new Error(`Failed to load API key: ${response.status}`);
-            }
-            const data = await response.json();
-            if (data.api_key) {
-                GEMINI_API_KEY = data.api_key;
-                console.log('API key loaded successfully');
-            } else {
-                throw new Error('API key not found in response');
-            }
-        } catch (error) {
-            console.error('Error loading API key:', error);
-            throw new Error('Failed to load API key: ' + error.message);
+    // Function to load API key from .env file
+
+// Replace the loadApiKey function with this:
+async function loadApiKey() {
+    try {
+        const response = await fetch('/api/get-api-key');
+        if (!response.ok) {
+            throw new Error('Failed to load API key from server');
         }
-    }
-
-    // Function to load prompt template
-    async function loadPromptTemplate() {
-        try {
-            const response = await fetch(PROMPT_TEMPLATE_PATH);
-            return await response.text();
-        } catch (error) {
-            console.error('Error loading prompt template:', error);
-            return null;
+        const data = await response.json();
+        if (!data.apiKey) {
+            throw new Error('No API key received from server');
         }
+        GEMINI_API_KEY = data.apiKey;
+        console.log('API key loaded successfully');
+    } catch (error) {
+        console.error('Error loading API key:', error);
+        // Show error to user
+        addMessageToChat('assistant', "I'm having trouble connecting to the AI service. Please try again later.");
+        throw error;
     }
+}
 
-    // Function to format prompt with user query
-    function formatPrompt(template, userQuery) {
-        return template.replace('{USER_QUERY}', userQuery);
-    }
+    // Modify the callGeminiAPI function in chatbot.js to use the correct endpoint
+async function callGeminiAPI(prompt) {
+    try {
+        if (!GEMINI_API_KEY) {
+            throw new Error('API key not loaded');
+        }
 
-    // Function to call Gemini API
-    async function callGeminiAPI(prompt) {
-        try {
-            if (!GEMINI_API_KEY) {
-                throw new Error('API key not loaded');
-            }
-
-            console.log('Calling Gemini API...');
-            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': GEMINI_API_KEY
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: prompt
-                        }]
+        // Updated API URL - note the model name change
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: prompt
                     }]
-                })
-            });
+                }]
+            })
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`API request failed: ${response.status} - ${JSON.stringify(errorData)}`);
-            }
-
-            const data = await response.json();
-            console.log('API Response:', data);
-            
-            if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                throw new Error('Invalid API response format');
-            }
-
-            return data.candidates[0].content.parts[0].text;
-        } catch (error) {
-            console.error('Error calling Gemini API:', error);
-            throw new Error('Failed to get response from AI: ' + error.message);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`API request failed: ${response.status} - ${JSON.stringify(errorData)}`);
         }
+
+        const data = await response.json();
+        
+        if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            throw new Error('Invalid API response format');
+        }
+
+        return data.candidates[0].content.parts[0].text;
+    } catch (error) {
+        console.error('Error calling Gemini API:', error);
+        throw error;
     }
+}
+
+async function loadPromptTemplate() {
+    try {
+        const response = await fetch('/api/get-prompt-template');
+        if (!response.ok) {
+            throw new Error('Failed to load prompt template');
+        }
+        return await response.text();
+    } catch (error) {
+        console.error('Error loading prompt template:', error);
+        // Fallback template if the request fails
+        return `You are Bloom, a helpful AI assistant focused on women's health and wellness. 
+Respond to the user's query in a friendly, professional tone.
+
+User Query: {USER_QUERY}
+
+Response:`;
+    }
+}
+
+// Function to format prompt with user query
+function formatPrompt(template, userQuery) {
+    if (!template) {
+        // Fallback if no template is available
+        return `User Query: ${userQuery}\n\nResponse:`;
+    }
+    return template.replace('{USER_QUERY}', userQuery);
+}
 
     // Modify the existing generateAIResponse function
     async function generateAIResponse(userMessage) {
-        try {
-            // Load prompt template
-            const template = await loadPromptTemplate();
-            if (!template) {
-                throw new Error('Failed to load prompt template');
-            }
+    try {
+        // Load prompt template
+        const template = await loadPromptTemplate();
+        
+        // Format prompt with user message
+        const formattedPrompt = formatPrompt(template, userMessage);
+        console.log('Formatted prompt:', formattedPrompt);
 
-            // Format prompt with user message
-            const formattedPrompt = formatPrompt(template, userMessage);
-            console.log('Formatted prompt:', formattedPrompt);
+        // Call Gemini API
+        const aiResponse = await callGeminiAPI(formattedPrompt);
 
-            // Call Gemini API
-            const aiResponse = await callGeminiAPI(formattedPrompt);
-
-            // Add AI response to chat
-            addMessageToChat('assistant', aiResponse);
-            
-            // Save chat
-            saveChats();
-        } catch (error) {
-            console.error('Error generating AI response:', error);
-            addMessageToChat('assistant', `I apologize, but I encountered an error: ${error.message}. Please try again.`);
-        }
+        // Add AI response to chat
+        addMessageToChat('assistant', aiResponse);
+        
+        // Save chat
+        saveChats();
+    } catch (error) {
+        console.error('Error generating AI response:', error);
+        addMessageToChat('assistant', `I apologize, but I encountered an error: ${error.message}. Please try again.`);
     }
+}
+
+
 
     // Handle attachment selection
     function handleAttachment(type) {
@@ -904,4 +918,22 @@ document.addEventListener('DOMContentLoaded', async function() {
             userInput.focus();
         }
     };
+
+    // Test API connection
+async function testApiConnection() {
+    try {
+        await loadApiKey();
+        console.log('API key loaded:', GEMINI_API_KEY ? 'Yes' : 'No');
+        
+        if (GEMINI_API_KEY) {
+            const testResponse = await callGeminiAPI("Hello, who are you?");
+            console.log('Test API response:', testResponse);
+        }
+    } catch (error) {
+        console.error('API connection test failed:', error);
+    }
+}
+
+// Call it after initialization
+testApiConnection();
 });

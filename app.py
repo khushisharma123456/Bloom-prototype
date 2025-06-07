@@ -141,11 +141,28 @@ def survey():
 
     if request.method == 'POST':
         try:
+            # Get the date string from the form (format: "d MMM yyyy" like "15 Jun 2023")
+            last_period_str = request.form.get('q2')
+            
+            # Parse the date string into a date object
+            try:
+                last_period = datetime.strptime(last_period_str, '%d %b %Y').date()
+            except ValueError:
+                # Try alternative format if the first one fails
+                try:
+                    last_period = datetime.strptime(last_period_str, '%Y-%m-%d').date()
+                except ValueError as e:
+                    flash(f'Invalid date format: {last_period_str}. Please use the calendar picker.', 'danger')
+                    return redirect(url_for('survey'))
+
+            # Debug print all form data
+            print("Form data received:", request.form)
+            
             new_response = SurveyResponse(
                 user_id=session['user_id'],
                 q1_age=request.form.get('q1', type=int),
-                q2_last_period=datetime.strptime(request.form.get('q2'), '%Y-%m-%d').date(),
-                q3_period_duration=request.form.get('q3'),  # Period duration select has same `name="q2"` — needs correction!
+                q2_last_period=last_period,
+                q3_period_duration=request.form.get('q3'),
                 q4_cycle_length=request.form.get('q4'),
                 q5_period_regularity=request.form.get('q5'),
                 q6_hair_growth=request.form.get('q6'),
@@ -167,13 +184,11 @@ def survey():
 
         except Exception as e:
             db.session.rollback()
-            flash('Error saving survey responses. Please try again.', 'danger')
-
-    if user.survey_completed:
-        flash('You have already completed the survey!', 'info')
-        return redirect(url_for('dashboard'))
-
-    return render_template('survey.html', user_name=session['user_name'])
+            flash(f'Error saving survey responses: {str(e)}. Please check all fields and try again.', 'danger')
+            print("Error details:", str(e))
+            return redirect(url_for('survey'))
+    
+    return render_template('survey.html')
 
 
 @app.route('/dashboard')
@@ -362,6 +377,26 @@ def chatbot():
         return redirect(url_for('login'))
     return render_template('chatbot.html')
 
+@app.route('/api/get-api-key')
+def get_api_key():
+    print("GEMINI KEY:", os.getenv("GEMINI_API_KEY"))
+    api_key = os.getenv('GEMINI_API_KEY')
+    print("DEBUG: Loaded API Key =", api_key)  # Add this for verification
+    if not api_key:
+        abort(500, description="API key not configured on server")
+    return jsonify({'apiKey': api_key})
+
+    
+@app.route('/api/get-prompt-template')
+def get_prompt_template():
+    try:
+        with open('templates/prompt_template.txt', 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        abort(404, description="Prompt template not found")
+    except Exception as e:
+        abort(500, description=str(e))
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -452,11 +487,6 @@ def refresh_token():
     else:
         return jsonify({"error": "Failed to refresh token"})
             
-@app.route('/get_api_key')
-def get_api_key():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-    return jsonify({'api_key': os.environ.get('GEMINI_API_KEY')})
 
 if __name__ == '__main__':
     with app.app_context():
