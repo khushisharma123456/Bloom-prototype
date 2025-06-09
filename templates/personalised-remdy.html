@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Ayurvedic Remedies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+        }
+        .benefit-badge {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .section-title {
+            color: #2c7873;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        .precaution-item {
+            color: #dc3545;
+        }
+        .time-badge {
+            background-color: #6c757d;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .symptoms-container {
+            margin-bottom: 30px;
+        }
+        .selected-symptoms {
+            margin-top: 15px;
+        }
+        .symptom-chip {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px;
+            background-color: #e9ecef;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .symptom-chip.selected {
+            background-color: #2c7873;
+            color: white;
+        }
+        .ingredients-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .ingredients-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .steps-list {
+            counter-reset: step-counter;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .steps-list li {
+            position: relative;
+            padding: 10px 0 10px 40px;
+            border-bottom: 1px solid #eee;
+        }
+        .steps-list li:before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: #2c7873;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-5">Personalized Ayurvedic Remedies</h1>
+        
+        <!-- Symptoms Selection Section -->
+        <div class="symptoms-container">
+            <h3 class="mb-4">Select Your Symptoms</h3>
+            <div class="selected-symptoms" id="selectedSymptoms">
+                <!-- Selected symptoms will be displayed here -->
+            </div>
+            <div class="symptom-chips" id="symptomChips">
+                <!-- Symptom chips will be populated here -->
+            </div>
+            <button class="btn btn-primary mt-3" id="getRecommendations">Get Ayurvedic Recommendations</button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Getting your personalized ayurvedic recommendations...</p>
+        </div>
+
+        <!-- Results Container -->
+        <div class="row" id="remediesContainer">
+            <!-- Remedy cards will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedSymptoms = new Set();
+            const symptomChips = document.getElementById('symptomChips');
+            const selectedSymptomsContainer = document.getElementById('selectedSymptoms');
+            const getRecommendationsBtn = document.getElementById('getRecommendations');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const remediesContainer = document.getElementById('remediesContainer');
+
+            // Common symptoms for women's health
+            const commonSymptoms = [
+                "Menstrual cramps",
+                "Bloating",
+                "Irritability",
+                "Stress",
+                "Back pain",
+                "Fatigue",
+                "Anxiety",
+                "Insomnia",
+                "Headache",
+                "Mood swings",
+                "Hormonal imbalance",
+                "Digestive issues",
+                "Skin problems",
+                "Low energy",
+                "Sleep disturbances"
+            ];
+
+            // Populate symptom chips
+            commonSymptoms.forEach(symptom => {
+                const chip = document.createElement('span');
+                chip.className = 'symptom-chip';
+                chip.textContent = symptom;
+                chip.onclick = () => toggleSymptom(symptom, chip);
+                symptomChips.appendChild(chip);
+            });
+
+            function toggleSymptom(symptom, chip) {
+                if (selectedSymptoms.has(symptom)) {
+                    selectedSymptoms.delete(symptom);
+                    chip.classList.remove('selected');
+                } else {
+                    selectedSymptoms.add(symptom);
+                    chip.classList.add('selected');
+                }
+                updateSelectedSymptomsDisplay();
+            }
+
+            function updateSelectedSymptomsDisplay() {
+                selectedSymptomsContainer.innerHTML = '';
+                selectedSymptoms.forEach(symptom => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-primary m-1';
+                    badge.textContent = symptom;
+                    selectedSymptomsContainer.appendChild(badge);
+                });
+            }
+
+            getRecommendationsBtn.addEventListener('click', async () => {
+                if (selectedSymptoms.size === 0) {
+                    alert('Please select at least one symptom');
+                    return;
+                }
+
+                try {
+                    loadingSpinner.style.display = 'block';
+                    remediesContainer.innerHTML = '';
+
+                    const response = await fetch('/api/get-recommendations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            symptoms: Array.from(selectedSymptoms)
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to get recommendations');
+                    }
+
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to get recommendations');
+                    }
+
+                    displayRemedies(data.recommendations.ayurvedicRemedies);
+                } catch (error) {
+                    console.error('Error:', error);
+                    remediesContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            Failed to load ayurvedic recommendations: ${error.message}
+                        </div>
+                    `;
+                } finally {
+                    loadingSpinner.style.display = 'none';
+                }
+            });
+
+            function displayRemedies(remedies) {
+                if (!remedies || remedies.length === 0) {
+                    remediesContainer.innerHTML = '<div class="alert alert-info">No ayurvedic remedies found for your symptoms.</div>';
+                    return;
+                }
+                
+                let html = '';
+                
+                remedies.forEach(remedy => {
+                    html += `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card">
+                                <img src="${remedy.image || 'static/Images/default-remedy.jpg'}" class="card-img-top" alt="${remedy.title}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${remedy.title}</h5>
+                                    <span class="badge time-badge mb-3">${remedy.time}</span>
+                                    
+                                    <p class="card-text">${remedy.description}</p>
+                                    
+                                    <h6 class="section-title">Ingredients:</h6>
+                                    <ul class="ingredients-list">
+                                        ${remedy.ingredients.map(ingredient => `
+                                            <li>${ingredient}</li>
+                                        `).join('')}
+                                    </ul>
+                                    
+                                    <h6 class="section-title">Preparation Steps:</h6>
+                                    <ol class="steps-list">
+                                        ${remedy.steps.map(step => `
+                                            <li>${step}</li>
+                                        `).join('')}
+                                    </ol>
+                                    
+                                    <h6 class="section-title">Benefits:</h6>
+                                    <div class="mb-3">
+                                        ${remedy.benefits.split(',').map(benefit => `
+                                            <span class="badge bg-success benefit-badge">${benefit.trim()}</span>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    <h6 class="section-title">Best Time to Consume:</h6>
+                                    <p>${remedy.bestTimeToConsume}</p>
+                                    
+                                    <h6 class="section-title">Precautions:</h6>
+                                    <ul>
+                                        ${remedy.precautions.map(precaution => `
+                                            <li class="precaution-item">${precaution}</li>
+                                        `).join('')}
+                                    </ul>
+                                    
+                                    <h6 class="section-title">Storage Instructions:</h6>
+                                    <p>${remedy.storageInstructions}</p>
+                                    
+                                    <h6 class="section-title">Shelf Life:</h6>
+                                    <p>${remedy.shelfLife}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                remediesContainer.innerHTML = html;
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
