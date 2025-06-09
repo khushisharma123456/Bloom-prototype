@@ -809,7 +809,7 @@ def load_recipes():
         
         with open(json_path) as f:
             data = json.load(f)
-            return {recipe['title'].lower(): recipe for recipe in data['recipes']}
+            return {recipe['name'].lower(): recipe for recipe in data['remedies']}
     except Exception as e:
         print(f"Error loading recipes: {str(e)}")
         return {}
@@ -830,8 +830,14 @@ def remedy_details(remedy_name):
         print("Recipe not found!")
         abort(404)
     
-    print(f"Found recipe: {recipe['title']}")  # Verify match
+    
     return render_template('remedy.html', remedy=recipe)
+
+@app.route('/remedies')
+def all_remedies():
+    # recipes is a dict: {title.lower(): recipe_dict}
+    all_recipes = list(recipes.values())
+    return render_template('remedy.html', remedies=all_recipes)
 
 
             
