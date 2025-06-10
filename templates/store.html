@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <title>Bloom - Organic & Ayurvedic Store</title>
-    
     <style>
         :root {
             --primary-purple: #6E5B9A;
@@ -263,21 +261,41 @@
         }
         
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 20px 10px;
-                align-items: center;
+            .container {
+                flex-direction: column;
             }
-            .sidebar h1, .sidebar h3, .sidebar ul li {
-                font-size: 0;
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                padding: 10px 10px;
+                box-shadow: none;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                overflow-x: auto;
+            }
+            .sidebar ul {
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+                margin: 0;
+            }
+            .sidebar li {
+                font-size: 14px;
+                padding: 8px 10px;
+                margin-bottom: 0;
+                margin-right: 8px;
             }
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 20px;
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 10px;
             }
             .products-section {
                 grid-template-columns: 1fr;
+                overflow-x: auto;
             }
         }
         
@@ -288,547 +306,29 @@
             .main-content {
                 margin-left: 0;
                 width: 100%;
-                padding: 15px;
+                padding: 10px 2vw;
             }
-        }
-    </style>
-</head>
-<body class="sidebar-layout">
-    <!-- Common Sidebar -->
-    {% include 'includes/sidebar.html' %}
-        
-        <div class="main-content">
-            <div class="welcome-banner">
-                <h2>Welcome, KHUSHI SHARMA!</h2>
-                <p>Discover organic, sustainable menstrual care & Ayurvedic wellness</p>
-            </div>
-            
-            <div class="category-filter">
-                <button class="category-btn active" data-category="all">All Products</button>
-                <button class="category-btn" data-category="menstrual">Menstrual Care</button>
-                <button class="category-btn" data-category="ayurvedic">Ayurvedic</button>
-                <button class="category-btn" data-category="eco">Eco-Friendly</button>
-                <button class="category-btn" data-category="artisan">Artisan Made</button>
-            </div>
-            
-            
-            <div class="products-section" id="productsSection">
-                <!-- Products will be rendered here by JS -->
-            </div>
-            
-            <hr>
-            
-            
-            <div class="products-section" id="ayurvedicSection">
-                <!-- Ayurvedic products will be rendered here by JS -->
-            </div>
-            
-            
-            <div class="products-section" id="ecoSection">
-                <!-- Eco products will be rendered here by JS -->
-            </div>
-            
-            <div class="artisan-spotlight">
-                <h3 class="section-title">Artisan Spotlight</h3>
-                <p class="artisan-name">Meet Radha Devi from Varanasi</p>
-                <p>Radha and her collective of women artisans handcraft organic cotton pads using traditional techniques passed down through generations. Each purchase supports their livelihood and keeps ancient Indian textile traditions alive.</p>
-                <p>Shop their collection: <a href="https://www.ecoexist.org.in/" target="_blank">EcoExist Handmade Products</a></p>
-            </div>
-            
-            <div style="margin-top: 40px; text-align: center; color: var(--light-text); font-size: 14px;">
-                <p>Bloom supports sustainable menstrual hygiene and celebrates Indian artisanship</p>
-                <p>All products are cruelty-free, eco-friendly, and support local communities</p>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        // Product data (add more as needed)
-        const products = [
-            {
-                title: 'Saathi Organic Pads',
-                maker: 'By Saathi, Gujarat',
-                price: '₹249 (pack of 10)',
-                image: 'https://m.media-amazon.com/images/I/71gGPRjqY5L._AC_UF1000,1000_QL80_.jpg',
-                link: 'https://www.saathipads.com/',
-                categories: ['all', 'menstrual', 'eco', 'artisan']
-            },
-            {
-                title: "Boomerang Menstrual Cup",
-                maker: "By Boomerang, India",
-                price: "₹599",
-                image: "https://m.media-amazon.com/images/I/61Q+5Z+ZzGL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://boomerangcup.com/",
-                categories: ['all', 'menstrual', 'eco']
-            },
-            {
-                title: "The Woman's Company Cloth Pads",
-                maker: "By The Woman's Company",
-                price: "₹399 (pack of 3)",
-                image: "https://m.media-amazon.com/images/I/61Q+5Z+ZzGL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://www.thewomanscompany.com/collections/cloth-pads",
-                categories: ['all', 'menstrual', 'eco', 'artisan']
-            },
-            {
-                title: "Bamboo Razor with Blades",
-                maker: "By EcoRoots, Karnataka",
-                price: "₹349",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://ecoroots.in/products/bamboo-razor",
-                categories: ['all', 'eco']
-            },
-            // Ayurvedic
-            {
-                title: "Himalaya Menstrual Comfort Tea",
-                maker: "By Himalaya Herbals",
-                price: "₹199 (25 tea bags)",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://himalayawellness.in/products/menstrual-comfort-tea",
-                categories: ['all', 'ayurvedic']
-            },
-            {
-                title: "Kottakkal M2 Tone Syrup",
-                maker: "By Arya Vaidya Sala",
-                price: "₹275 (200ml)",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://www.1mg.com/otc/kottakkal-arya-vaidya-sala-m2-tone-syrup-otc328073",
-                categories: ['all', 'ayurvedic']
-            },
-            {
-                title: "Organic India Shatavari",
-                maker: "By Organic India",
-                price: "₹399 (60 capsules)",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://organicindia.com/product/shatavari/",
-                categories: ['all', 'ayurvedic']
-            },
-            {
-                title: "Kama Ayurveda Kumkumadi Oil",
-                maker: "By Kama Ayurveda",
-                price: "₹1,250 (30ml)",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://www.kamaayurveda.com/products/kumkumadi-oil",
-                categories: ['all', 'ayurvedic']
-            },
-            // Eco
-            {
-                title: "EcoFemme Reusable Pads",
-                maker: "By EcoFemme, Tamil Nadu",
-                price: "₹1,200 (pack of 5)",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://ecofemme.org/shop/",
-                categories: ['all', 'eco', 'artisan']
-            },
-            {
-                title: "Ahimsa Silk Underwear",
-                maker: "By No Nasties",
-                price: "₹899 each",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://www.nonasties.in/products/ahimsa-silk-underwear",
-                categories: ['all', 'eco', 'artisan']
-            },
-            {
-                title: "Organic Cotton Tampons",
-                maker: "By Carmesi",
-                price: "₹299 (pack of 16)",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://www.mycarmesi.com/products/organic-cotton-tampons",
-                categories: ['all', 'eco']
-            },
-            {
-                title: "Neem Wood Comb",
-                maker: "By Forest Essentials",
-                price: "₹450",
-                image: "https://m.media-amazon.com/images/I/71Vr5y9q4AL._AC_UF1000,1000_QL80_.jpg",
-                link: "https://www.forestessentialsindia.com/products/neem-wood-comb.html",
-                categories: ['all', 'eco']
+            .products-section {
+                grid-template-columns: 1fr;
+                gap: 12px;
             }
-        ];
-
-        function renderProducts(category, sectionId) {
-            const section = document.getElementById(sectionId);
-            if (!section) return;
-            section.innerHTML = '';
-            const filtered = products.filter(p => {
-                if (category === 'all') return true;
-                return p.categories.includes(category);
-            });
-            filtered.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <div class="product-image" style="background-image: url('${product.image}');"></div>
-                    <div class="product-details">
-                        <h4 class="product-title">${product.title}</h4>
-                        <p class="product-maker">${product.maker}</p>
-                        <p class="product-price">${product.price}</p>
-                        <div style="display:flex; justify-content:center;">
-                          <a href="${product.link}" target="_blank" class="add-to-cart">Buy Now</a>
-                        </div>
-                    </div>
-                `;
-                section.appendChild(card);
-            });
-        }
-
-        // Initial render
-        renderProducts('all', 'productsSection');
-        renderProducts('ayurvedic', 'ayurvedicSection');
-        renderProducts('eco', 'ecoSection');
-
-        // Filter logic
-        const categoryBtns = document.querySelectorAll('.category-btn');
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const cat = btn.dataset.category;
-                // Show/hide sections based on filter
-                if (cat === 'all') {
-                    document.getElementById('productsSection').style.display = '';
-                    document.getElementById('ayurvedicSection').style.display = '';
-                    document.getElementById('ecoSection').style.display = '';
-                    renderProducts('all', 'productsSection');
-                    renderProducts('ayurvedic', 'ayurvedicSection');
-                    renderProducts('eco', 'ecoSection');
-                } else if (cat === 'menstrual') {
-                    document.getElementById('productsSection').style.display = '';
-                    document.getElementById('ayurvedicSection').style.display = 'none';
-                    document.getElementById('ecoSection').style.display = 'none';
-                    renderProducts('menstrual', 'productsSection');
-                    document.getElementById('ayurvedicSection').innerHTML = '';
-                    document.getElementById('ecoSection').innerHTML = '';
-                } else if (cat === 'ayurvedic') {
-                    document.getElementById('productsSection').style.display = 'none';
-                    document.getElementById('ayurvedicSection').style.display = '';
-                    document.getElementById('ecoSection').style.display = 'none';
-                    document.getElementById('productsSection').innerHTML = '';
-                    renderProducts('ayurvedic', 'ayurvedicSection');
-                    document.getElementById('ecoSection').innerHTML = '';
-                } else if (cat === 'eco') {
-                    document.getElementById('productsSection').style.display = 'none';
-                    document.getElementById('ayurvedicSection').style.display = 'none';
-                    document.getElementById('ecoSection').style.display = '';
-                    document.getElementById('productsSection').innerHTML = '';
-                    document.getElementById('ayurvedicSection').innerHTML = '';
-                    renderProducts('eco', 'ecoSection');
-                } else if (cat === 'artisan') {
-                    document.getElementById('productsSection').style.display = 'none';
-                    document.getElementById('ayurvedicSection').style.display = 'none';
-                    document.getElementById('ecoSection').style.display = '';
-                    document.getElementById('productsSection').innerHTML = '';
-                    document.getElementById('ayurvedicSection').innerHTML = '';
-                    renderProducts('artisan', 'ecoSection');
-                }
-            });
-        });
-    </script>
-    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
-    <title>Bloom - Organic & Ayurvedic Store</title>
-    
-    <style>
-        :root {
-            --primary-purple: #6E5B9A;
-            --accent-pink: #FFD6E0;
-            --accent-peach: #FFE8D6;
-            --accent-teal: #C1EDE6;
-            --accent-lavender: #E8E0FF;
-            --sidebar-color: #F9F5FF;
-            --bg-color: #FFF9F9;
-            --text-dark: #4A4A4A;
-            --text-light: #8A7FAA;
-            --white: #fff;
-        }
-        
-        body {
-            font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: var(--text-dark);
-            background-color: var(--bg-color);
-        }
-        
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        .sidebar {
-            width: 240px;
-            background: linear-gradient(to bottom, var(--sidebar-color), white);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: fixed;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .sidebar h1 {
-            color: var(--primary-purple);
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            font-family: 'Nunito', sans-serif;
-        }
-        
-        .sidebar h3 {
-            color: var(--text-light);
-            font-size: 16px;
-            margin-bottom: 10px;
-            font-family: 'Nunito', sans-serif;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar li {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-size: 16px;
-            color: var(--text-dark);
-            transition: all 0.3s;
-        }
-        
-        .sidebar li:hover {
-            background-color: var(--accent-lavender);
-            color: var(--primary-purple);
         }
         
         .main-content {
-            margin-left: 240px;
-            padding: 30px 40px;
-            width: calc(100% - 240px);
-            background: var(--bg-color);
+            min-width: 0;
         }
-        
-        .welcome-banner {
-            background: var(--white);
-            padding: 24px 30px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        }
-        
-        .welcome-banner h2 {
-            color: var(--primary-purple);
-            font-family: 'Nunito', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .welcome-banner p {
-            color: var(--text-light);
-            font-size: 16px;
-        }
-        
-        .category-filter {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .category-btn {
-            padding: 8px 18px;
-            border-radius: 20px;
-            background-color: var(--white);
-            border: 1.5px solid var(--primary-purple);
-            color: var(--primary-purple);
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        
-        .category-btn.active, .category-btn:hover {
-            background-color: var(--accent-pink);
-            color: var(--primary-purple);
-            border-color: var(--accent-pink);
-        }
-        
-        .section-title {
-            color: var(--primary-purple);
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-        }
-        
-        hr {
-            border: none;
-            height: 1px;
-            background-color: #eee;
-            margin: 30px 0;
-        }
-        
         .products-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .product-card {
-            background: linear-gradient(135deg, #fff9fa 60%, #f9f5ff 100%);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(186, 222, 255, 0.13), 0 1.5px 6px rgba(255, 194, 209, 0.10);
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 32px rgba(186, 222, 255, 0.22), 0 2px 8px rgba(255, 194, 209, 0.18);
-        }
-        
-        .product-image {
-            height: 180px;
-            background-color: var(--accent-lavender);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-purple);
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .product-details {
-            padding: 18px 15px 20px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .product-title {
-            font-weight: 700;
-            margin: 0 0 5px;
-            color: var(--primary-purple);
-            font-family: 'Nunito', sans-serif;
-            font-size: 17px;
-            text-align: center;
-        }
-        
-        .product-maker {
-            color: var(--text-light);
-            font-size: 14px;
-            margin: 0 0 10px;
-            text-align: center;
-        }
-        
-        .product-price {
-            font-weight: bold;
-            color: var(--primary-purple);
-            margin: 10px 0 18px 0;
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .add-to-cart {
-            background: linear-gradient(90deg, var(--accent-pink) 60%, var(--accent-lavender) 100%);
-            color: var(--primary-purple);
-            border: none;
-            padding: 10px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            font-size: 15px;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(255, 194, 209, 0.10);
-            transition: background 0.2s, color 0.2s;
-        }
-        
-        .add-to-cart:hover {
-            background: linear-gradient(90deg, var(--accent-lavender) 60%, var(--accent-pink) 100%);
-            color: var(--primary-purple);
-        }
-        
-        .artisan-spotlight {
-            background: var(--accent-peach);
-            padding: 24px;
-            border-radius: 16px;
-            margin-top: 30px;
-            box-shadow: 0 2px 8px rgba(255, 194, 209, 0.10);
-        }
-        
-        .artisan-name {
-            color: var(--primary-purple);
-            font-weight: 700;
-            margin-bottom: 10px;
-            font-family: 'Nunito', sans-serif;
-        }
-        
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 200px;
-                padding: 20px 15px;
-            }
-            .main-content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
-                padding: 25px 30px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 20px 10px;
-                align-items: center;
-            }
-            .sidebar h1, .sidebar h3, .sidebar ul li {
-                font-size: 0;
-            }
-            .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 20px;
-            }
-            .products-section {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .sidebar {
-                display: none;
-            }
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 15px;
-            }
+            min-width: 0;
         }
     </style>
 </head>
-<body class="sidebar-layout">
-    <!-- Common Sidebar -->
-    {% include 'includes/sidebar.html' %}
+<body>
+    <div class="container">
+        {% include 'sidebar.html' %}
         
         <div class="main-content">
             <div class="welcome-banner">
-                <h2>Welcome, KHUSHI SHARMA!</h2>
+                <h2>Welcome, {{user_name}}!</h2>
                 <p>Discover organic, sustainable menstrual care & Ayurvedic wellness</p>
             </div>
             
@@ -1052,6 +552,5 @@
             });
         });
     </script>
-    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
