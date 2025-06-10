@@ -4,9 +4,8 @@ class GeminiWrapper {
         this.baseUrl = '/api/get-recommendations';
     }
 
-    async getRecommendations(symptoms) {
-        try {
-            // Fetch the JSON files
+    async getRecommendations(symptoms) {        try {
+            // Fetch the JSON files using the new routes
             const yogaResponse = await fetch('/data/yoga.json');
             const recipesResponse = await fetch('/data/recipes.json');
             

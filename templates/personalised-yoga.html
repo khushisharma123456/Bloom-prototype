@@ -65,12 +65,20 @@ const wrapper = new YogaWrapper();
 const container = document.getElementById('yogaAsanasContainer');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
+console.log('Selected symptoms:', symptoms);
+
 // Show loading spinner and automatically get recommendations
 loadingSpinner.style.display = 'block';
 
-wrapper.getYogaRecommendations(symptoms).then(result => {
+// Use default symptoms if none selected for testing
+const symptomsToUse = symptoms.length > 0 ? symptoms : ['cramps', 'bloating'];
+console.log('Using symptoms:', symptomsToUse);
+
+wrapper.getYogaRecommendations(symptomsToUse).then(result => {
     // Hide loading spinner
     loadingSpinner.style.display = 'none';
+    
+    console.log('Yoga API Response:', result);
     
     const yogaData = result.yogaAsanas;
     if (!yogaData || yogaData.length === 0) {

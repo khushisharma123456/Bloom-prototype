@@ -771,7 +771,7 @@ def logout():
 def load_recipes():
     try:
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(base_dir, 'data', 'recipes.json')
+        json_path = os.path.join(base_dir, 'static', 'data', 'recipes.json')
         
         with open(json_path) as f:
             data = json.load(f)
@@ -806,53 +806,210 @@ def all_remedies():
 
 @app.route('/api/get-yoga-recommendations', methods=['POST'])
 def get_yoga_recommendations():
-    data = request.get_json()
-    symptoms = data.get('symptoms', [])
-    yoga_data = data.get('yogaData', [])
-    # Normalize symptoms for robust matching
-    normalized_symptoms = [s.strip().lower() for s in symptoms]
-    recommendations = []
-    for asana in yoga_data:
-        relieves = asana.get('relievesSymptoms', [])
-        normalized_relieves = [r.strip().lower() for r in relieves]
-        # Debug print for troubleshooting
-        print(f"User symptoms: {normalized_symptoms} | Asana relieves: {normalized_relieves}")
-        if any(symptom in normalized_relieves for symptom in normalized_symptoms):
-            recommendations.append(asana)
-    return jsonify({
-        'success': True,
-        'recommendations': {
-            'yogaAsanas': recommendations
-        }
-    })
+    try:
+        data = request.get_json()
+        symptoms = data.get('symptoms', [])
+        yoga_data = data.get('yogaData', [])
+        
+        # yoga_data should be an array directly
+        asanas = yoga_data if isinstance(yoga_data, list) else []
+        
+        # Normalize symptoms for robust matching
+        normalized_symptoms = [s.strip().lower() for s in symptoms]
+        recommendations = []
+        
+        print(f"Yoga symptoms: {symptoms}")
+        print(f"Normalized symptoms: {normalized_symptoms}")
+        
+        for asana in asanas:
+            relieves = asana.get('relievesSymptoms', [])
+            normalized_relieves = [r.strip().lower() for r in relieves]
+            
+            print(f"Asana: {asana.get('name', 'Unknown')} | Relieves: {normalized_relieves}")
+            
+            if any(symptom in normalized_relieves for symptom in normalized_symptoms):
+                recommendations.append(asana)
+                print(f"MATCHED: {asana.get('name', 'Unknown')}")
+        
+        print(f"Total yoga recommendations: {len(recommendations)}")
+        
+        return jsonify({
+            'success': True,
+            'recommendations': {
+                'yogaAsanas': recommendations
+            }
+        })
+    except Exception as e:
+        print(f"Error in get_yoga_recommendations: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 @app.route('/api/get-ayurvedic-recommendations', methods=['POST'])
 def get_ayurvedic_recommendations():
-    data = request.get_json()
-    symptoms = data.get('symptoms', [])
-    recipes_data = data.get('recipesData', [])
-    # Normalize symptoms for robust matching
-    normalized_symptoms = [s.strip().lower() for s in symptoms]
-    recommendations = []
-    for recipe in recipes_data:
-        # Check both 'category' (list or string) and 'badge' (string)
-        categories = recipe.get('category', [])
-        badge = recipe.get('badge', '')
-        # Normalize
-        if isinstance(categories, str):
-            categories = [categories]
-        normalized_categories = [c.strip().lower() for c in categories]
-        normalized_badge = badge.strip().lower()
-        # Match if any symptom matches category or badge
-        if any(symptom in normalized_categories for symptom in normalized_symptoms) or \
-           any(symptom == normalized_badge for symptom in normalized_symptoms):
-            recommendations.append(recipe)
-    return jsonify({
-        'success': True,
-        'recommendations': {
-            'ayurvedicRemedies': recommendations
+    try:
+        data = request.get_json()
+        symptoms = data.get('symptoms', [])
+        recipes_data = data.get('recipesData', {})
+        
+        # Extract the remedies array from the data structure
+        remedies = recipes_data.get('remedies', []) if isinstance(recipes_data, dict) else recipes_data
+        
+        # Normalize symptoms for robust matching
+        normalized_symptoms = [s.strip().lower() for s in symptoms]
+        recommendations = []
+        
+        print(f"Symptoms: {symptoms}")
+        print(f"Normalized symptoms: {normalized_symptoms}")
+        
+        for remedy in remedies:
+            # Check both 'category' (list or string) and 'badge' (string)
+            categories = remedy.get('category', [])
+            badge = remedy.get('badge', '')
+            
+            # Normalize
+            if isinstance(categories, str):
+                categories = [categories]
+            normalized_categories = [c.strip().lower() for c in categories]
+            normalized_badge = badge.strip().lower()
+            
+            print(f"Remedy: {remedy.get('name', 'Unknown')} | Badge: {normalized_badge} | Categories: {normalized_categories}")
+            
+            # Match if any symptom matches category or badge
+            if any(symptom in normalized_categories for symptom in normalized_symptoms) or \
+               any(symptom == normalized_badge for symptom in normalized_symptoms):
+                recommendations.append(remedy)
+                print(f"MATCHED: {remedy.get('name', 'Unknown')}")
+        
+        print(f"Total recommendations: {len(recommendations)}")
+          return jsonify({
+            'success': True,
+            'recommendations': {
+                'ayurvedicRemedies': recommendations
+            }
+        })
+    except Exception as e:
+        print(f"Error in get_ayurvedic_recommendations: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
+
+@app.route('/api/get-recommendations', methods=['POST'])
+def get_gemini_recommendations():
+    try:
+        import requests
+        
+        # Debug: Check if API key exists
+        api_key = os.getenv('GEMINI_API_KEY')
+        print(f"API Key exists: {'Yes' if api_key else 'No'}")
+        
+        if not api_key:
+            print("ERROR: GEMINI_API_KEY environment variable not found")
+            return jsonify({
+                'success': False,
+                'message': 'API key not configured. Please check your GEMINI_API_KEY environment variable in Render.'
+            }), 500
+            
+        data = request.get_json()
+        prompt = data.get('prompt', '')
+        symptoms = data.get('symptoms', [])
+        
+        if not prompt:
+            return jsonify({
+                'success': False,
+                'message': 'No prompt provided'
+            }), 400
+            
+        # Gemini API URL
+        url = f'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key={api_key}'
+        
+        # Request payload
+        payload = {
+            'contents': [{'parts': [{'text': prompt}]}],
+            'generationConfig': {
+                'temperature': 0.7,
+                'topK': 40,
+                'topP': 0.95,
+                'maxOutputTokens': 2048,
+            }
         }
-    })
+        
+        # Make request to Gemini API
+        response = requests.post(url, json=payload, timeout=30)
+        
+        if response.status_code != 200:
+            return jsonify({
+                'success': False,
+                'message': f'Gemini API error: {response.status_code} - {response.text}'
+            }), 500
+            
+        result = response.json()
+        
+        if not result.get('candidates') or not result['candidates'][0].get('content'):
+            return jsonify({
+                'success': False,
+                'message': 'Invalid response from Gemini API'
+            }), 500
+            
+        gemini_response = result['candidates'][0]['content']['parts'][0]['text']
+        
+        # Try to parse as JSON
+        try:
+            parsed_response = json.loads(gemini_response)
+            return jsonify({
+                'success': True,
+                'recommendations': parsed_response
+            })
+        except json.JSONDecodeError:
+            # If not valid JSON, return as text
+            return jsonify({
+                'success': True,
+                'recommendations': {
+                    'text': gemini_response
+                }
+            })
+            
+    except requests.exceptions.Timeout:
+        return jsonify({
+            'success': False,
+            'message': 'API request timed out. Please try again.'
+        }), 500
+    except requests.exceptions.RequestException as e:        return jsonify({
+            'success': False,
+            'message': f'Network error: {str(e)}'
+        }), 500
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+# Static file routes for JSON data
+@app.route('/data/yoga.json')
+def serve_yoga_data():
+    try:
+        yoga_file_path = os.path.join(app.static_folder, 'data', 'yoga.json')
+        with open(yoga_file_path, 'r') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except FileNotFoundError:
+        return jsonify({'error': 'Yoga data not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/data/recipes.json')
+def serve_recipes_data():
+    try:
+        recipes_file_path = os.path.join(app.static_folder, 'data', 'recipes.json')
+        with open(recipes_file_path, 'r') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except FileNotFoundError:
+        return jsonify({'error': 'Recipes data not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
             
 if __name__ == '__main__':
     with app.app_context():

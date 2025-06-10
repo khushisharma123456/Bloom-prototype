@@ -2,38 +2,16 @@
 class YogaWrapper {
     constructor() {
         this.baseUrl = '/api/get-yoga-recommendations';
-    }
-
-    async getYogaRecommendations(symptoms) {
+    }    async getYogaRecommendations(symptoms) {
         try {
-            // Fetch the yoga data
-            const yogaResponse = await fetch('/static/data/yoga.json');
+            // Fetch the yoga data using the new route
+            const yogaResponse = await fetch('/data/yoga.json');
             
             if (!yogaResponse.ok) {
-                throw new Error('Failed to fetch yoga data');
+                throw new Error(`Failed to fetch yoga data: ${yogaResponse.status} ${yogaResponse.statusText}`);
             }
 
             const yogaData = await yogaResponse.json();
-
-            // Format the prompt for Gemini
-            const prompt = `I have the following symptoms: ${symptoms.join(', ')}.
-
-            Here are all the available yoga asanas from yoga.json:
-            ${JSON.stringify(yogaData, null, 2)}
-
-            Based on my symptoms, please:
-            1. Look through the yoga asanas and recommend the ones that have matching symptoms in their 'relievesSymptoms' array
-            2. For each recommendation, include:
-               - name
-               - steps
-               - duration
-               - precautions
-               - benefits
-               - contraindications
-               - difficulty level
-               - best time to practice
-
-            IMPORTANT: Only recommend items that are in these lists. Do not suggest any other asanas.`;
 
             const response = await fetch(this.baseUrl, {
                 method: 'POST',
@@ -42,7 +20,6 @@ class YogaWrapper {
                 },
                 body: JSON.stringify({
                     symptoms: symptoms,
-                    prompt: prompt,
                     yogaData: yogaData
                 })
             });
@@ -57,13 +34,9 @@ class YogaWrapper {
                 throw new Error(data.message || 'Failed to get yoga recommendations');
             }
 
-            // Extract recommended names from Gemini response
-            const recommendedNames = (data.recommendations.yogaAsanas || []).map(a => a.name && a.name.trim()).filter(Boolean);
-            // Filter original yogaData for these names
-            const filteredAsanas = yogaData.filter(asana => recommendedNames.includes(asana.name));
-
+            // Return the recommendations directly from the API
             return {
-                yogaAsanas: filteredAsanas
+                yogaAsanas: data.recommendations.yogaAsanas || []
             };
         } catch (error) {
             console.error('Error getting yoga recommendations:', error);

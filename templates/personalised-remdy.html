@@ -116,12 +116,20 @@
         const selectedSymptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
         const wrapper = new AyurvedicRemedyWrapper();
 
+        console.log('Selected symptoms:', selectedSymptoms);
+
         // Show loading spinner and automatically get recommendations
         loadingSpinner.style.display = 'block';
 
-        wrapper.getAyurvedicRecommendations(selectedSymptoms).then(result => {
+        // Use default symptoms if none selected for testing
+        const symptomsToUse = selectedSymptoms.length > 0 ? selectedSymptoms : ['cramps', 'bloating'];
+        console.log('Using symptoms:', symptomsToUse);
+
+        wrapper.getAyurvedicRecommendations(symptomsToUse).then(result => {
             // Hide loading spinner
             loadingSpinner.style.display = 'none';
+            
+            console.log('API Response:', result);
             
             const remedies = result.ayurvedicRemedies;
             if (!remedies || remedies.length === 0) {
