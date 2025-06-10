@@ -1,24 +1,36 @@
 // Nutrition.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Navigation functionality
-    const navItems = document.querySelectorAll('.nav-item');
+    // Navigation functionality - now handled by sidebar dropdown
     const contentSections = document.querySelectorAll('.content-section');
     
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
-            // Remove active class from all nav items and sections
-            navItems.forEach(navItem => navItem.classList.remove('active'));
+    // Create global nutrition app object for sidebar interaction
+    window.nutritionApp = {
+        showSection: function(sectionId) {
+            // Remove active class from all sections
             contentSections.forEach(section => section.classList.remove('active'));
             
-            // Add active class to clicked nav item
-            this.classList.add('active');
-            
             // Show corresponding section
-            const sectionId = this.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update dropdown item active state
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            dropdownItems.forEach(item => item.classList.remove('active'));
+            
+            const activeDropdownItem = document.querySelector(`[data-section="${sectionId}"]`);
+            if (activeDropdownItem) {
+                activeDropdownItem.classList.add('active');
+            }
+        }
+    };
+    
+    // Initialize with default section (water-tracker) or from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialSection = urlParams.get('section') || 'water-tracker';
+    window.nutritionApp.showSection(initialSection);
 
     // Water Tracker Functionality
     const waterButtons = document.querySelectorAll('.water-btn');

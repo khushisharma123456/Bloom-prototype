@@ -119,6 +119,75 @@
     color: var(--primary-purple);
 }
 
+/* Dropdown Styles for Sidebar */
+.menu-item-with-dropdown {
+    position: relative;
+}
+
+.dropdown-arrow {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    width: auto !important;
+}
+
+.menu-item-with-dropdown.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    margin-top: 5px;
+    margin-left: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.menu-item-with-dropdown.open .dropdown-content {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.dropdown-item i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background-color: var(--accent-lavender);
+    color: var(--primary-purple);
+}
+
+.dropdown-item:hover i {
+    color: var(--primary-purple);
+}
+
+.dropdown-item.active {
+    background-color: var(--accent-pink);
+    color: var(--primary-purple);
+    font-weight: 600;
+}
+
+.dropdown-item.active i {
+    color: var(--primary-purple);
+}
+
 .profile {
     margin-top: auto;
     display: flex;
@@ -186,6 +255,31 @@ body.sidebar-layout {
     
     .nav-item span, .logo span, .profile-name {
         display: none;
+    }
+    
+    .dropdown-item span {
+        display: none;
+    }
+    
+    .dropdown-arrow {
+        display: none;
+    }
+    
+    .dropdown-content {
+        position: absolute;
+        left: 70px;
+        top: 0;
+        width: 200px;
+        margin-left: 0;
+        z-index: 1001;
+    }
+    
+    .dropdown-item {
+        padding: 10px 15px;
+    }
+    
+    .dropdown-item span {
+        display: inline;
     }
     
     .nav-item {

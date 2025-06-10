@@ -71,12 +71,6 @@ a {
 /* ======================== */
 /* Layout Structure */
 /* ======================== */
-.app-container {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: 100vh;
-}
-
 .main-content {
   display: flex;
   flex-direction: column;
@@ -164,65 +158,6 @@ a {
 
 .sidebar-text {
   font-size: 0.95rem;
-}
-
-/* ======================== */
-/* Top Navigation */
-/* ======================== */
-.top-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
-  box-shadow: var(--shadow-sm);
-  position: relative;
-  z-index: 5;
-}
-
-.top-nav-items {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
-  color: var(--bloom-white);
-}
-
-.nav-item:hover {
-  background-color: color-mix(in srgb, var(--bloom-white) 15%, transparent);
-}
-
-.nav-item.active {
-  background-color: color-mix(in srgb, var(--bloom-white) 10%, transparent);
-  font-weight: 500;
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.user-profile img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--bloom-white);
-  box-shadow: var(--shadow-sm);
-}
-
-.user-name {
-  font-weight: 500;
 }
 
 /* ======================== */
@@ -710,12 +645,6 @@ a {
 /* ======================== */
 /* Responsive Design */
 /* ======================== */
-@media (max-width: 1200px) {
-  .app-container {
-    grid-template-columns: 200px 1fr;
-  }
-}
-
 @media (max-width: 992px) {
   .water-container {
     flex-direction: column;
@@ -728,16 +657,13 @@ a {
 }
 
 @media (max-width: 768px) {
-  .app-container {
-    grid-template-columns: 1fr;
+  .water-container {
+    flex-direction: column;
+    gap: 2rem;
   }
   
-  .main-sidebar {
-    display: none;
-  }
-  
-  .top-nav-items {
-    gap: 1rem;
+  .remedy-grid, .tips-container {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
   
   .content-sections {
@@ -746,10 +672,6 @@ a {
 }
 
 @media (max-width: 576px) {
-  .top-navbar {
-    padding: 1rem;
-  }
-  
   .recipe-carousel, .remedy-grid, .tips-container {
     grid-template-columns: 1fr;
   }
