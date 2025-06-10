@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <title>Bloom - Organic & Ayurvedic Store</title>
     <style>
         :root {
@@ -291,22 +292,9 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <h1>Bloom</h1>
-            
-            <h3>Dashboard</h3>
-            <ul>
-                <li>Shop</li>
-                <li>Yoga</li>
-                <li>Nutrition</li>
-                <li>Mood Tracker</li>
-                <li>Consultation</li>
-                <li>Chatbot</li>
-                <li>Settings</li>
-            </ul>
-        </div>
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
         
         <div class="main-content">
             <div class="welcome-banner">
@@ -534,5 +522,6 @@
             });
         });
     </script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
