@@ -814,6 +814,26 @@ def all_remedies():
     return render_template('remedy.html', remedies=all_recipes)
 
 
+            'message': f'Routine "{routine_name}" deleted successfully!'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/exercises', methods=['GET'])
+def get_exercises():
+    """Get all available exercises from exercise.json"""
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        exercises_path = os.path.join(base_dir, 'exercise.json')
+        
+        if os.path.exists(exercises_path):
+            with open(exercises_path, 'r') as f:
+                exercises = json.load(f)
+            return jsonify(exercises)
+        else:
+            return jsonify({'error': 'Exercises file not found'}), 404
             
 if __name__ == '__main__':
     with app.app_context():
