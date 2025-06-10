@@ -93,22 +93,9 @@
         }
     </style>
 </head>
-<body>
-    <div class="container py-5">
+<body>    <div class="container py-5">
         <h1 class="text-center mb-5">Personalized Ayurvedic Remedies</h1>
         
-        <!-- Symptoms Selection Section -->
-        <div class="symptoms-container">
-            <h3 class="mb-4">Select Your Symptoms</h3>
-            <div class="selected-symptoms" id="selectedSymptoms">
-                <!-- Selected symptoms will be displayed here -->
-            </div>
-            <div class="symptom-chips" id="symptomChips">
-                <!-- Symptom chips will be populated here -->
-            </div>
-            <button class="btn btn-primary mt-3" id="getRecommendations">Get Ayurvedic Recommendations</button>
-        </div>
-
         <!-- Loading Spinner -->
         <div class="loading-spinner" id="loadingSpinner">
             <div class="spinner-border text-primary" role="status">
@@ -121,16 +108,21 @@
         <div class="row" id="remediesContainer">
             <!-- Remedy cards will be inserted here by JavaScript -->
         </div>
-    </div>
-
-    <script type="module">
+    </div>    <script type="module">
         import AyurvedicRemedyWrapper from '../static/css/ayurvedic-wrapper.js';
 
         const remediesContainer = document.getElementById('remediesContainer');
+        const loadingSpinner = document.getElementById('loadingSpinner');
         const selectedSymptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
         const wrapper = new AyurvedicRemedyWrapper();
 
+        // Show loading spinner and automatically get recommendations
+        loadingSpinner.style.display = 'block';
+
         wrapper.getAyurvedicRecommendations(selectedSymptoms).then(result => {
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
+            
             const remedies = result.ayurvedicRemedies;
             if (!remedies || remedies.length === 0) {
                 remediesContainer.innerHTML = '<div class="alert alert-info">No ayurvedic remedies found for your symptoms.</div>';
@@ -175,10 +167,11 @@
                             </div>
                         </div>
                     </div>
-                `;
-            });
+                `;            });
             remediesContainer.innerHTML = html;
         }).catch(error => {
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
             remediesContainer.innerHTML = `<div class="alert alert-danger">Failed to load ayurvedic recommendations: ${error.message}</div>`;
         });
     </script>
