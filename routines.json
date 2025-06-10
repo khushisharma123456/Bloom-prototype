@@ -1,0 +1,33 @@
+[
+  {
+    "name": "Gentle Meditative",
+    "description": "A calming sequence for relaxation.",
+    "poses": [
+      "Sukhasana",
+      "Supta Baddha Konasana",
+      "Viparita Karani",
+      "Savasana"
+    ]
+  },
+  {
+    "name": "Relief Routine",
+    "description": "A routine for tension relief.",
+    "poses": [
+      "Balasana",
+      "Marjaryasana",
+      "Bitilasana",
+      "Bhujangasana",
+      "Savasana"
+    ]
+  },
+  {
+    "name": "Balanced Flow",
+    "description": "A mixed routine for balance and energy.",
+    "poses": [
+      "Vrikshasana",
+      "Adho Mukha Svanasana",
+      "Bhujangasana",
+      "Savasana"
+    ]
+  }
+]

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Pose Popup Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #ffb6c1, #e6e6fa);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: #5a4a6a;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .popup-demo {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .popup-content {
+            background-color: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 12px;
+            overflow-y: auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .popup-header {
+            background: linear-gradient(135deg, #e6e6fa 0%, #ffb6c1 100%);
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #5a4a6a;
+        }
+        
+        .popup-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #5a4a6a;
+            margin: 0;
+            padding-right: 40px;
+        }
+        
+        .popup-type {
+            background-color: rgba(255,255,255,0.8);
+            color: #5a4a6a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        
+        .popup-body {
+            padding: 25px;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #5a4a6a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .benefits-list, .precautions-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .benefits-list li, .precautions-list li {
+            padding: 8px 0;
+            color: #666;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .benefits-list li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+        
+        .precautions-list li:before {
+            content: "⚠";
+            color: #ffc107;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+        
+        .ideal-time {
+            background: linear-gradient(135deg, #e6e6fa 0%, rgba(230,230,250,0.5) 100%);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #5a4a6a;
+        }
+        
+        .instructions {
+            color: #666;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yoga Pose Popup Demo</h1>
+    <p>Click on any pose button below to see the popup with detailed information:</p>
+    
+    <button class="test-button" onclick="showDemo('sukhasana')">Sukhasana (Easy Pose)</button>
+    <button class="test-button" onclick="showDemo('balasana')">Balasana (Child's Pose)</button>
+    <button class="test-button" onclick="showDemo('vrikshasana')">Vrikshasana (Tree Pose)</button>
+    
+    <!-- Popup Demo -->
+    <div class="popup-demo" id="popup-demo">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title" id="demo-title">Pose Name</h2>
+                <span class="popup-type" id="demo-type">Type</span>
+                <span class="popup-close" onclick="hideDemo()">&times;</span>
+            </div>
+            <div class="popup-body">
+                <div class="section">
+                    <div class="section-title">
+                        Instructions
+                    </div>
+                    <div class="instructions" id="demo-instructions">
+                        Instructions will appear here
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        Benefits
+                    </div>
+                    <ul class="benefits-list" id="demo-benefits">
+                        <!-- Benefits will be populated here -->
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        Ideal Time to Hold
+                    </div>
+                    <div class="ideal-time">
+                        <span>⏱️</span>
+                        <span id="demo-ideal-time">Duration</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        Precautions
+                    </div>
+                    <ul class="precautions-list" id="demo-precautions">
+                        <!-- Precautions will be populated here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const poseData = {
+            sukhasana: {
+                name: "Sukhasana",
+                type: "meditative",
+                instructions: "Sit cross-legged with your spine straight and hands resting on your knees. Close your eyes and focus on your breath, allowing your body to relax.",
+                benefits: [
+                    "Calms the mind and nervous system",
+                    "Improves posture and spinal alignment",
+                    "Reduces stress and anxiety",
+                    "Enhances meditation practice"
+                ],
+                idealTime: "2-10 minutes",
+                precautions: [
+                    "Use cushion or block if hips are tight",
+                    "Avoid if knee or hip injury"
+                ]
+            },
+            balasana: {
+                name: "Balasana",
+                type: "relief",
+                instructions: "Kneel on the mat, sit back on your heels, and fold forward, resting your forehead on the mat with arms extended or by your sides. Breathe deeply and relax.",
+                benefits: [
+                    "Releases tension in back, shoulders, and neck",
+                    "Calms the nervous system",
+                    "Relieves menstrual cramps",
+                    "Promotes deep relaxation"
+                ],
+                idealTime: "1-5 minutes",
+                precautions: [
+                    "Avoid if pregnant",
+                    "Use pillow under forehead if uncomfortable"
+                ]
+            },
+            vrikshasana: {
+                name: "Vrikshasana",
+                type: "mixed",
+                instructions: "Stand tall, shift your weight onto one foot, and place the sole of your other foot on your inner thigh or calf. Bring your palms together at your chest and focus on a point ahead.",
+                benefits: [
+                    "Improves balance and stability",
+                    "Strengthens legs and core",
+                    "Enhances focus and concentration",
+                    "Improves posture"
+                ],
+                idealTime: "30 seconds to 1 minute each side",
+                precautions: [
+                    "Never place foot on side of knee",
+                    "Use wall support if needed"
+                ]
+            }
+        };
+
+        function showDemo(poseName) {
+            const pose = poseData[poseName];
+            if (!pose) return;
+
+            document.getElementById('demo-title').textContent = pose.name;
+            document.getElementById('demo-type').textContent = pose.type.charAt(0).toUpperCase() + pose.type.slice(1);
+            document.getElementById('demo-instructions').textContent = pose.instructions;
+            document.getElementById('demo-ideal-time').textContent = pose.idealTime;
+
+            // Populate benefits
+            const benefitsList = document.getElementById('demo-benefits');
+            benefitsList.innerHTML = '';
+            pose.benefits.forEach(benefit => {
+                const li = document.createElement('li');
+                li.textContent = benefit;
+                benefitsList.appendChild(li);
+            });
+
+            // Populate precautions
+            const precautionsList = document.getElementById('demo-precautions');
+            precautionsList.innerHTML = '';
+            pose.precautions.forEach(precaution => {
+                const li = document.createElement('li');
+                li.textContent = precaution;
+                precautionsList.appendChild(li);
+            });
+
+            document.getElementById('popup-demo').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideDemo() {
+            document.getElementById('popup-demo').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close popup when clicking outside
+        document.getElementById('popup-demo').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDemo();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('popup-demo').style.display === 'flex') {
+                hideDemo();
+            }
+        });
+    </script>
+</body>
+</html>

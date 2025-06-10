@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, session, flash, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -37,6 +37,7 @@ class User(db.Model):
 
     # Relationship to track history
     entries = db.relationship('PainEntry', backref='user', lazy=True)
+    routines = db.relationship('CustomRoutine', backref='user', lazy=True)
 
 class PainEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,6 +47,14 @@ class PainEntry(db.Model):
     mood = db.Column(db.String(20))
     symptoms = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class CustomRoutine(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(200))
+    poses = db.Column(db.Text, nullable=False)  # JSON string of pose names
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
@@ -195,7 +204,7 @@ def survey():
             flash(f'Error saving survey responses: {str(e)}. Please check all fields and try again.', 'danger')
             print("Error details:", str(e))
             return redirect(url_for('survey'))
-    
+
     return render_template('survey.html')
 
 @app.route('/dashboard')
@@ -838,6 +847,141 @@ def all_remedies():
     # recipes is a dict: {title.lower(): recipe_dict}
     all_recipes = list(recipes.values())
     return render_template('remedy.html', remedies=all_recipes)
+
+
+# ======================= YOGA ROUTINES API ROUTES =======================
+
+@app.route('/api/routines', methods=['GET'])
+def get_routines():
+    """Get all routines (from routines.json + user's custom routines)"""
+    try:
+        # Load routines from routines.json
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        routines_path = os.path.join(base_dir, 'routines.json')
+        
+        featured_routines = []
+        if os.path.exists(routines_path):
+            with open(routines_path, 'r') as f:
+                featured_routines = json.load(f)
+          # Load user's custom routines (use default user if not logged in for testing)
+        custom_routines = []
+        user_id = session.get('user_id', 1)  # Default to user_id=1 for testing
+        if user_id:
+            user_custom_routines = CustomRoutine.query.filter_by(user_id=user_id).all()
+            custom_routines = [
+                {
+                    'name': routine.name,
+                    'description': routine.description or 'Custom routine',
+                    'poses': json.loads(routine.poses),
+                    'custom': True,
+                    'created_at': routine.created_at.isoformat()
+                }
+                for routine in user_custom_routines
+            ]
+        
+        # Combine featured and custom routines
+        all_routines = featured_routines + custom_routines
+        return jsonify(all_routines)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/routines', methods=['POST'])
+def create_custom_routine():
+    """Create a new custom routine"""
+    # For testing: use a default user if not logged in
+    user_id = session.get('user_id', 1)  # Default to user_id=1 for testing
+    
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Validate required fields
+        if not data.get('name'):
+            return jsonify({'error': 'Routine name is required'}), 400
+        if not data.get('poses') or len(data['poses']) == 0:
+            return jsonify({'error': 'At least one pose is required'}), 400
+        
+        # Create new custom routine
+        new_routine = CustomRoutine(
+            name=data['name'],
+            description=data.get('description', 'Custom routine'),
+            poses=json.dumps(data['poses']),  # Store poses as JSON string
+            user_id=user_id
+        )
+        
+        db.session.add(new_routine)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Routine "{data["name"]}" created successfully!',
+            'routine': {
+                'name': new_routine.name,
+                'description': new_routine.description,
+                'poses': json.loads(new_routine.poses),
+                'custom': True,
+                'created_at': new_routine.created_at.isoformat()
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/routines/<routine_name>', methods=['DELETE'])
+def delete_custom_routine(routine_name):
+    """Delete a custom routine"""
+    # For testing: use a default user if not logged in
+    user_id = session.get('user_id', 1)  # Default to user_id=1 for testing
+    
+    try:
+        # Find the custom routine by name and user_id
+        routine = CustomRoutine.query.filter_by(name=routine_name, user_id=user_id).first()
+        
+        if not routine:
+            return jsonify({'error': 'Routine not found or you do not have permission to delete it'}), 404
+        
+        # Delete the routine
+        db.session.delete(routine)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Routine "{routine_name}" deleted successfully!'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/exercises', methods=['GET'])
+def get_exercises():
+    """Get all available exercises from exercise.json"""
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        exercises_path = os.path.join(base_dir, 'exercise.json')
+        
+        if os.path.exists(exercises_path):
+            with open(exercises_path, 'r') as f:
+                exercises = json.load(f)
+            return jsonify(exercises)
+        else:
+            return jsonify({'error': 'Exercises file not found'}), 404
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/exercise')
+def exercise():
+    """Render the exercise page"""
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('exercise.html', user_name=session['user_name'])
+
+# ======================= END YOGA ROUTINES API ROUTES =======================
 
 
             

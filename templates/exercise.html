@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloom - Meditative Exercises</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="/static/exercise.js" defer></script>
     <style>
         :root {
             --lavender: #e6e6fa;
@@ -264,23 +265,42 @@
             font-size: 32px;
             color: #5a4a6a;
             margin-bottom: 20px;
-        }
-
-        .restart-btn {
+        }        .restart-btn, .return-yoga-btn {
             padding: 12px 24px;
             border: none;
             border-radius: var(--rounded);
-            background-color: var(--soft-pink);
             color: white;
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
             transition: var(--transition);
+            margin: 0 10px;
+        }
+
+        .restart-btn {
+            background-color: var(--soft-pink);
         }
 
         .restart-btn:hover {
             background-color: #ff9aae;
             transform: scale(1.05);
+        }
+
+        .return-yoga-btn {
+            background-color: var(--lavender);
+            color: #5a4a6a;
+        }
+
+        .return-yoga-btn:hover {
+            background-color: #d8bfd8;
+            transform: scale(1.05);
+        }
+
+        .completion-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
         }
 
         /* Responsive Design */
@@ -361,12 +381,13 @@
             <div class="instructions" id="instructions">
                 Instructions will appear here
             </div>
-        </div>
-
-        <div class="completion-message" id="completion-message">
+        </div>        <div class="completion-message" id="completion-message">
             <h2>Routine Complete!</h2>
             <p>Great job completing your meditation session.</p>
-            <button class="restart-btn" id="restart-btn">Start Again</button>
+            <div class="completion-buttons">
+                <button class="restart-btn" id="restart-btn">Start Again</button>
+                <button class="return-yoga-btn" id="return-yoga-btn">Return to Yoga</button>
+            </div>
         </div>
     </div>
 
@@ -385,277 +406,263 @@
     </audio>
 
     <script>
-        // Sample exercise data
-        const exercises = [
-            {
-                name: "Deep Breathing",
-                duration: 60, // in seconds
-                animation: "🧘‍♀️",
-                instructions: "Sit comfortably with your back straight. Inhale deeply through your nose for 4 seconds, hold for 4 seconds, then exhale slowly through your mouth for 6 seconds. Focus on the rhythm of your breath."
-            },
-            {
-                name: "Body Scan",
-                duration: 90,
-                animation: "👐",
-                instructions: "Starting from your toes, gradually bring awareness to each part of your body. Notice any tension and consciously relax each area as you move up to your head."
-            },
-            {
-                name: "Loving-Kindness Meditation",
-                duration: 120,
-                animation: "💖",
-                instructions: "Silently repeat positive phrases like 'May I be happy, may I be healthy.' Then extend these wishes to loved ones, acquaintances, and eventually all beings."
-            },
-            {
-                name: "Mindful Observation",
-                duration: 60,
-                animation: "👀",
-                instructions: "Choose a natural object nearby and focus on watching it. Observe every detail as if seeing it for the first time, without labeling or judging."
-            },
-            {
-                name: "Gratitude Reflection",
-                duration: 90,
-                animation: "🙏",
-                instructions: "Bring to mind three things you're grateful for. Sit with each one, noticing the positive feelings they evoke in your body and mind."
+        // This function will be called by exercise.js after loading data
+        window.renderRoutine = function(exercises) {
+            // All DOM element queries
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const endRoutineBtn = document.getElementById('end-routine-btn');
+            const timerDisplay = document.getElementById('timer');
+            const exerciseList = document.getElementById('exercise-list');
+            const animationPlaceholder = document.getElementById('animation-placeholder');
+            const exerciseTitle = document.getElementById('exercise-title');
+            const instructions = document.getElementById('instructions');
+            const instructionsContainer = document.getElementById('instructions-container');            const completionMessage = document.getElementById('completion-message');
+            const restartBtn = document.getElementById('restart-btn');
+            const returnYogaBtn = document.getElementById('return-yoga-btn');
+            const musicButtons = document.querySelectorAll('.music-btn');
+            const volumeSlider = document.getElementById('volume-slider');
+            
+            // Audio elements
+            const rainAudio = document.getElementById('rain-audio');
+            const forestAudio = document.getElementById('forest-audio');
+            const singingBowlAudio = document.getElementById('singing-bowl-audio');
+            const oceanAudio = document.getElementById('ocean-audio');
+            const audioElements = {
+                'rain': rainAudio,
+                'forest': forestAudio,
+                'singing-bowl': singingBowlAudio,
+                'ocean': oceanAudio
+            };
+
+            // State variables
+            let currentExerciseIndex = 0;
+            let timeRemaining = exercises[0]?.duration || 0;
+            let timerInterval;
+            let isPlaying = false;
+            let currentMusic = 'rain';
+            let currentVolume = 0.5;
+
+            // Initialize the page
+            function init() {
+                renderExerciseList();
+                updateExerciseDisplay();
+                updateTimerDisplay();
+                setVolume(currentVolume);
+                playAudio('rain');
             }
-        ];
 
-        // DOM Elements
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const endRoutineBtn = document.getElementById('end-routine-btn');
-        const timerDisplay = document.getElementById('timer');
-        const exerciseList = document.getElementById('exercise-list');
-        const animationPlaceholder = document.getElementById('animation-placeholder');
-        const exerciseTitle = document.getElementById('exercise-title');
-        const instructions = document.getElementById('instructions');
-        const instructionsContainer = document.getElementById('instructions-container');
-        const completionMessage = document.getElementById('completion-message');
-        const restartBtn = document.getElementById('restart-btn');
-        const musicButtons = document.querySelectorAll('.music-btn');
-        const volumeSlider = document.getElementById('volume-slider');
-        
-        // Audio elements
-        const rainAudio = document.getElementById('rain-audio');
-        const forestAudio = document.getElementById('forest-audio');
-        const singingBowlAudio = document.getElementById('singing-bowl-audio');
-        const oceanAudio = document.getElementById('ocean-audio');
-        const audioElements = {
-            'rain': rainAudio,
-            'forest': forestAudio,
-            'singing-bowl': singingBowlAudio,
-            'ocean': oceanAudio
-        };
-
-        // State variables
-        let currentExerciseIndex = 0;
-        let timeRemaining = exercises[0].duration;
-        let timerInterval;
-        let isPlaying = false;
-        let currentMusic = 'rain';
-        let currentVolume = 0.5;
-
-        // Initialize the page
-        function init() {
-            renderExerciseList();
-            updateExerciseDisplay();
-            updateTimerDisplay();
-            setVolume(currentVolume);
-            playAudio('rain');
-        }
-
-        // Render the exercise list
-        function renderExerciseList() {
-            exerciseList.innerHTML = '';
-            exercises.forEach((exercise, index) => {
-                const exerciseItem = document.createElement('div');
-                exerciseItem.className = 'exercise-item';
-                if (index === currentExerciseIndex) {
-                    exerciseItem.classList.add('current');
-                } else if (index < currentExerciseIndex) {
-                    exerciseItem.classList.add('completed');
-                } else {
-                    exerciseItem.classList.add('upcoming');
-                }
-
-                exerciseItem.innerHTML = `
-                    <span class="exercise-name">${exercise.name}</span>
-                    <span class="exercise-duration">${formatTime(exercise.duration)}</span>
-                `;
-
-                exerciseItem.addEventListener('click', () => {
-                    if (isPlaying) {
-                        pauseTimer();
+            // Render the exercise list
+            function renderExerciseList() {
+                exerciseList.innerHTML = '';
+                exercises.forEach((exercise, index) => {
+                    const exerciseItem = document.createElement('div');
+                    exerciseItem.className = 'exercise-item';
+                    if (index === currentExerciseIndex) {
+                        exerciseItem.classList.add('current');
+                    } else if (index < currentExerciseIndex) {
+                        exerciseItem.classList.add('completed');
+                    } else {
+                        exerciseItem.classList.add('upcoming');
                     }
-                    currentExerciseIndex = index;
-                    timeRemaining = exercises[index].duration;
+
+                    exerciseItem.innerHTML = `
+                        <span class="exercise-name">${exercise.name}</span>
+                        <span class="exercise-duration">${formatTime(exercise.duration)}</span>
+                    `;
+
+                    exerciseItem.addEventListener('click', () => {
+                        if (isPlaying) {
+                            pauseTimer();
+                        }
+                        currentExerciseIndex = index;
+                        timeRemaining = exercises[index].duration;
+                        updateExerciseDisplay();
+                        updateTimerDisplay();
+                        renderExerciseList();
+                    });
+
+                    exerciseList.appendChild(exerciseItem);
+                });
+            }
+
+            // Update the exercise display (right panel)
+            function updateExerciseDisplay() {
+                if (currentExerciseIndex < exercises.length) {
+                    const currentExercise = exercises[currentExerciseIndex];
+                    exerciseTitle.textContent = currentExercise.name;
+                    instructions.textContent = currentExercise.instructions;
+                    animationPlaceholder.textContent = currentExercise.name;
+                    
+                    instructionsContainer.style.display = 'block';
+                    completionMessage.style.display = 'none';
+                } else {
+                    // Routine complete
+                    instructionsContainer.style.display = 'none';
+                    completionMessage.style.display = 'flex';
+                }
+            }
+
+            // Format time as MM:SS
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            // Update the timer display
+            function updateTimerDisplay() {
+                timerDisplay.textContent = formatTime(timeRemaining);
+            }
+
+            // Start the timer
+            function startTimer() {
+                if (timerInterval) clearInterval(timerInterval);
+                
+                timerInterval = setInterval(() => {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                    
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        nextExercise();
+                    }
+                }, 1000);
+            }
+
+            // Pause the timer
+            function pauseTimer() {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            // Move to next exercise
+            function nextExercise() {
+                currentExerciseIndex++;
+                
+                if (currentExerciseIndex < exercises.length) {
+                    timeRemaining = exercises[currentExerciseIndex].duration;
                     updateExerciseDisplay();
                     updateTimerDisplay();
                     renderExerciseList();
-                });
-
-                exerciseList.appendChild(exerciseItem);
-            });
-        }
-
-        // Update the exercise display (right panel)
-        function updateExerciseDisplay() {
-            if (currentExerciseIndex < exercises.length) {
-                const currentExercise = exercises[currentExerciseIndex];
-                exerciseTitle.textContent = currentExercise.name;
-                instructions.textContent = currentExercise.instructions;
-                animationPlaceholder.textContent = currentExercise.animation;
-                
-                instructionsContainer.style.display = 'block';
-                completionMessage.style.display = 'none';
-            } else {
-                // Routine complete
-                instructionsContainer.style.display = 'none';
-                completionMessage.style.display = 'flex';
-            }
-        }
-
-        // Format time as MM:SS
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // Update the timer display
-        function updateTimerDisplay() {
-            timerDisplay.textContent = formatTime(timeRemaining);
-        }
-
-        // Start the timer
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            
-            timerInterval = setInterval(() => {
-                timeRemaining--;
-                updateTimerDisplay();
-                
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    nextExercise();
+                    
+                    if (isPlaying) {
+                        startTimer();
+                    }
+                } else {
+                    // Routine complete
+                    updateExerciseDisplay();
+                    playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                    isPlaying = false;
                 }
-            }, 1000);
-        }
+            }
 
-        // Pause the timer
-        function pauseTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
+            // Play selected audio
+            function playAudio(type) {
+                // Stop all audio first
+                Object.values(audioElements).forEach(audio => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+                
+                if (type !== 'none') {
+                    audioElements[type].volume = currentVolume;
+                    audioElements[type].play();
+                }
+                
+                currentMusic = type;
+            }
 
-        // Move to next exercise
-        function nextExercise() {
-            currentExerciseIndex++;
-            
-            if (currentExerciseIndex < exercises.length) {
-                timeRemaining = exercises[currentExerciseIndex].duration;
+            // Set volume for all audio
+            function setVolume(volume) {
+                currentVolume = volume;
+                Object.values(audioElements).forEach(audio => {
+                    audio.volume = volume;
+                });
+            }            // End the current routine and return to yoga page
+            function endRoutine() {
+                currentExerciseIndex = exercises.length;
+                timeRemaining = 0;
+                isPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 updateExerciseDisplay();
                 updateTimerDisplay();
                 renderExerciseList();
+                pauseTimer();
+                
+                // Stop all audio
+                Object.values(audioElements).forEach(audio => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+                
+                // Navigate back to yoga page
+                window.location.href = '/yoga';
+            }
+
+            // Play/Pause button click handler
+            playPauseBtn.addEventListener('click', () => {
+                if (currentExerciseIndex >= exercises.length) {
+                    // Restart routine if completed
+                    currentExerciseIndex = 0;
+                    timeRemaining = exercises[0].duration;
+                    updateExerciseDisplay();
+                    updateTimerDisplay();
+                    renderExerciseList();
+                }
+                
+                isPlaying = !isPlaying;
                 
                 if (isPlaying) {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     startTimer();
+                } else {
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    pauseTimer();
                 }
-            } else {
-                // Routine complete
-                updateExerciseDisplay();
-                playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
-                isPlaying = false;
-            }
-        }
-
-        // Play selected audio
-        function playAudio(type) {
-            // Stop all audio first
-            Object.values(audioElements).forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
             });
-            
-            if (type !== 'none') {
-                audioElements[type].volume = currentVolume;
-                audioElements[type].play();
-            }
-            
-            currentMusic = type;
-        }
 
-        // Set volume for all audio
-        function setVolume(volume) {
-            currentVolume = volume;
-            Object.values(audioElements).forEach(audio => {
-                audio.volume = volume;
-            });
-        }
-
-        // End the current routine
-        function endRoutine() {
-            currentExerciseIndex = exercises.length;
-            timeRemaining = 0;
-            isPlaying = false;
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            updateExerciseDisplay();
-            updateTimerDisplay();
-            renderExerciseList();
-            pauseTimer();
-        }
-
-        // Play/Pause button click handler
-        playPauseBtn.addEventListener('click', () => {
-            if (currentExerciseIndex >= exercises.length) {
-                // Restart routine if completed
+            // End Routine button click handler
+            endRoutineBtn.addEventListener('click', endRoutine);            // Restart button click handler
+            restartBtn.addEventListener('click', () => {
                 currentExerciseIndex = 0;
                 timeRemaining = exercises[0].duration;
+                isPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 updateExerciseDisplay();
                 updateTimerDisplay();
                 renderExerciseList();
-            }
-            
-            isPlaying = !isPlaying;
-            
-            if (isPlaying) {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                startTimer();
-            } else {
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 pauseTimer();
-            }
-        });
-
-        // End Routine button click handler
-        endRoutineBtn.addEventListener('click', endRoutine);
-
-        // Restart button click handler
-        restartBtn.addEventListener('click', () => {
-            currentExerciseIndex = 0;
-            timeRemaining = exercises[0].duration;
-            isPlaying = false;
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            updateExerciseDisplay();
-            updateTimerDisplay();
-            renderExerciseList();
-            pauseTimer();
-        });
-
-        // Music selection buttons
-        musicButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                musicButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                playAudio(button.dataset.music);
             });
-        });
 
-        // Volume control
-        volumeSlider.addEventListener('input', (e) => {
-            setVolume(parseFloat(e.target.value));
-        });
+            // Return to Yoga button click handler
+            returnYogaBtn.addEventListener('click', () => {
+                // Stop all audio before navigating
+                Object.values(audioElements).forEach(audio => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+                
+                // Navigate back to yoga page
+                window.location.href = '/yoga';
+            });
 
-        // Initialize the app
-        init();
+            // Music selection buttons
+            musicButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    musicButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    playAudio(button.dataset.music);
+                });
+            });
+
+            // Volume control
+            volumeSlider.addEventListener('input', (e) => {
+                setVolume(parseFloat(e.target.value));
+            });
+
+            // Initialize the app
+            init();
+        };
     </script>
 </body>
 </html>
