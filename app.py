@@ -395,6 +395,12 @@ def consultation():
         return redirect(url_for('login'))
     return render_template('consultation.html', user_name=session['user_name'])
 
+@app.route('/store')
+def store():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('store.html', user_name=session['user_name'])
 #===========================================================================================================
 
 
