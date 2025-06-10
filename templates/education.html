@@ -79,13 +79,11 @@
             overflow-x: auto;
             padding-bottom: 20px;
         }
-
         .timeline {
             display: flex;
             gap: 15px;
             min-width: 700px;
         }
-
         .phase {
             background-color: var(--pink-light);
             border-radius: 12px;
@@ -93,20 +91,70 @@
             width: 160px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(255, 140, 199, 0.08);
+            border: 2px solid transparent;
+            position: relative;
+            z-index: 1;
         }
-
         .phase:hover {
             background-color: var(--pink-medium);
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.06);
+            border: 2px solid var(--pink-dark);
+            box-shadow: 0 10px 28px 0 rgba(255, 140, 199, 0.22), 0 2px 8px rgba(255, 140, 199, 0.08);
+            z-index: 10;
         }
-
         .phase.active {
             background-color: var(--pink-dark);
             color: white;
+            border: 2px solid var(--pink-dark);
+            box-shadow: 0 12px 32px 0 rgba(255, 140, 199, 0.28), 0 2px 8px rgba(255, 140, 199, 0.08);
+            z-index: 20;
         }
-
+        /* Popup Modal Styles */
+        .modal-phase-bg {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(80, 30, 80, 0.18);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-phase-bg.active {
+            display: flex;
+        }
+        .modal-phase {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(178, 140, 255, 0.18);
+            padding: 36px 32px 28px 32px;
+            min-width: 320px;
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+        .modal-phase .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: var(--pink-light);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.3rem;
+            color: var(--pink-dark);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-phase .close-btn:hover {
+            background: var(--pink-medium);
+        }
         .phase-icon {
             font-size: 2rem;
             margin-bottom: 10px;
@@ -134,6 +182,7 @@
             margin-top: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--pink-medium);
+            animation: fadeIn 0.4s;
         }
 
         .phase-details.active {
@@ -155,6 +204,11 @@
             margin-left: 20px;
             color: var(--text-light);
             font-size: 0.95rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: none; }
         }
 
         /* Accordion Styles */
@@ -266,22 +320,28 @@
             right: 15px;
         }
 
-        /* Symptom Tracker Styles */
+        /* Symptom Tracker Styles - Enhanced */
         .tracker-form {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 24px 32px;
+            background: var(--purple-light);
+            border-radius: 16px;
+            padding: 32px 24px 16px 24px;
+            box-shadow: 0 2px 12px rgba(178, 140, 255, 0.08);
+            margin-bottom: 0;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-dark);
+            font-size: 1.08rem;
         }
 
         .radio-group {
@@ -293,26 +353,39 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            background: var(--pink-light);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 1.01rem;
+            transition: background 0.2s;
+        }
+
+        .radio-option input:checked + span {
+            color: var(--pink-dark);
+            font-weight: 700;
         }
 
         .radio-option input {
             accent-color: var(--pink-dark);
         }
 
-        select {
+        select, textarea {
             width: 100%;
             padding: 10px;
             border-radius: 8px;
-            border: 1px solid var(--purple-medium);
-            background-color: white;
+            border: 1.5px solid var(--purple-medium);
+            background-color: #fff;
             color: var(--text-dark);
+            font-size: 1.01rem;
         }
 
         .slider-container {
             display: flex;
             align-items: center;
             gap: 15px;
-        }        .slider {
+        }
+
+        .slider {
             flex-grow: 1;
             -webkit-appearance: none;
             appearance: none;
@@ -325,40 +398,49 @@
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: var(--pink-dark);
             cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(255, 140, 199, 0.15);
         }
 
         .slider-value {
-            width: 30px;
+            width: 36px;
             text-align: center;
+            font-weight: 600;
+            color: var(--pink-dark);
+            font-size: 1.1rem;
         }
 
         .tracker-button {
-            background-color: var(--pink-dark);
+            background: linear-gradient(90deg, var(--pink-dark), var(--purple-medium));
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 14px 0;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background 0.3s;
             grid-column: span 2;
+            box-shadow: 0 2px 8px rgba(178, 140, 255, 0.10);
         }
 
         .tracker-button:hover {
-            background-color: var(--purple-dark);
+            background: linear-gradient(90deg, var(--purple-dark), var(--pink-dark));
         }
 
         .tracker-summary {
             margin-top: 20px;
-            padding: 15px;
-            background-color: var(--purple-light);
-            border-radius: 12px;
+            padding: 18px 24px;
+            background: var(--purple-light);
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(178, 140, 255, 0.08);
             display: none;
+            font-size: 1.08rem;
         }
 
         .tracker-summary h3 {
@@ -373,13 +455,30 @@
         }
 
         .summary-label {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-dark);
         }
 
         .summary-value {
             color: var(--text-light);
-        }        @media (max-width: 768px) {
+        }
+
+        .emoji-large {
+            font-size: 2.1rem;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .tracker-form {
+                grid-template-columns: 1fr;
+                padding: 18px 8px 8px 8px;
+            }
+            .tracker-button {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
             .tracker-form {
                 grid-template-columns: 1fr;
             }
@@ -418,22 +517,22 @@
         <h2 class="section-title">🌸 Your Cycle Timeline</h2>
         <div class="timeline-container">
             <div class="timeline">
-                <div class="phase" onclick="showPhaseDetails(0)">
+                <div class="phase" onclick="openPhaseModal(0)">
                     <div class="phase-icon">🩸</div>
                     <div class="phase-name">Menstrual</div>
                     <div class="phase-days">Days 1–5</div>
                 </div>
-                <div class="phase" onclick="showPhaseDetails(1)">
+                <div class="phase" onclick="openPhaseModal(1)">
                     <div class="phase-icon">🌱</div>
                     <div class="phase-name">Follicular</div>
                     <div class="phase-days">Days 6–13</div>
                 </div>
-                <div class="phase" onclick="showPhaseDetails(2)">
+                <div class="phase" onclick="openPhaseModal(2)">
                     <div class="phase-icon">🥚</div>
                     <div class="phase-name">Ovulation</div>
                     <div class="phase-days">Day 14</div>
                 </div>
-                <div class="phase" onclick="showPhaseDetails(3)">
+                <div class="phase" onclick="openPhaseModal(3)">
                     <div class="phase-icon">🌕</div>
                     <div class="phase-name">Luteal</div>
                     <div class="phase-days">Days 15–28</div>
@@ -441,84 +540,21 @@
             </div>
         </div>
 
-        <div class="phase-details" id="menstrual-details">
-            <h3>Menstrual Phase</h3>
-            <p><strong>What's happening:</strong> Your uterus sheds its lining, resulting in menstrual bleeding.</p>
-            <p><strong>Hormones:</strong> Estrogen and progesterone are at their lowest levels.</p>
-            <p><strong>Common symptoms:</strong></p>
-            <ul>
-                <li>Cramps in the lower abdomen</li>
-                <li>Lower back pain</li>
-                <li>Bloating</li>
-                <li>Fatigue</li>
-            </ul>
-            <p><strong>Hygiene & diet tips:</strong></p>
-            <ul>
-                <li>Change your pad/tampon every 4-6 hours</li>
-                <li>Use heat pads for cramps</li>
-                <li>Stay hydrated and eat iron-rich foods</li>
-                <li>Gentle exercise can help with cramps</li>
-            </ul>
+        <!-- Modal for Phase Details -->
+        <div class="modal-phase-bg" id="phase-modal-bg">
+            <div class="modal-phase" id="phase-modal-content">
+                <button class="close-btn" onclick="closePhaseModal()">&times;</button>
+                <div id="phase-modal-body"></div>
+            </div>
         </div>
 
-        <div class="phase-details" id="follicular-details">
-            <h3>Follicular Phase</h3>
-            <p><strong>What's happening:</strong> Your body prepares for ovulation by developing follicles in the ovaries.</p>
-            <p><strong>Hormones:</strong> Estrogen begins to rise, stimulating the uterine lining to thicken.</p>
-            <p><strong>Common symptoms:</strong></p>
-            <ul>
-                <li>Increased energy</li>
-                <li>Improved mood</li>
-                <li>Higher pain tolerance</li>
-            </ul>
-            <p><strong>Hygiene & diet tips:</strong></p>
-            <ul>
-                <li>Great time for more intense workouts</li>
-                <li>Focus on protein and healthy fats</li>
-                <li>Stay hydrated to support cervical mucus production</li>
-            </ul>
-        </div>
-
-        <div class="phase-details" id="ovulation-details">
-            <h3>Ovulation Phase</h3>
-            <p><strong>What's happening:</strong> An egg is released from the ovary and travels down the fallopian tube.</p>
-            <p><strong>Hormones:</strong> Estrogen peaks, triggering a surge in luteinizing hormone (LH).</p>
-            <p><strong>Common symptoms:</strong></p>
-            <ul>
-                <li>Increased cervical mucus (egg-white consistency)</li>
-                <li>Mild pain on one side of the abdomen (mittelschmerz)</li>
-                <li>Increased libido</li>
-                <li>Breast tenderness</li>
-            </ul>
-            <p><strong>Hygiene & diet tips:</strong></p>
-            <ul>
-                <li>Wear breathable cotton underwear</li>
-                <li>Monitor discharge for health indicators</li>
-                <li>Stay hydrated to maintain cervical mucus</li>
-                <li>Include anti-inflammatory foods</li>
-            </ul>
-        </div>
-
-        <div class="phase-details" id="luteal-details">
-            <h3>Luteal Phase</h3>
-            <p><strong>What's happening:</strong> The empty follicle produces progesterone to prepare the uterus for possible pregnancy.</p>
-            <p><strong>Hormones:</strong> Progesterone rises, then falls if pregnancy doesn't occur.</p>
-            <p><strong>Common symptoms:</strong></p>
-            <ul>
-                <li>Bloating</li>
-                <li>Breast tenderness</li>
-                <li>Mood swings (PMS)</li>
-                <li>Food cravings</li>
-                <li>Fatigue</li>
-            </ul>
-            <p><strong>Hygiene & diet tips:</strong></p>
-            <ul>
-                <li>Reduce salt intake to minimize bloating</li>
-                <li>Increase magnesium-rich foods for mood</li>
-                <li>Practice stress-reduction techniques</li>
-                <li>Gentle exercise can help with PMS symptoms</li>
-            </ul>
-        </div>
+        <!-- Remove old inline phase-details -->
+        <!--
+        <div class="phase-details" id="menstrual-details">...</div>
+        <div class="phase-details" id="follicular-details">...</div>
+        <div class="phase-details" id="ovulation-details">...</div>
+        <div class="phase-details" id="luteal-details">...</div>
+        -->
     </div>
 
     <div class="section">
@@ -531,13 +567,16 @@
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-content-inner">
-                        <p>1. Wash your hands before handling the pad.</p>
-                        <p>2. Remove the pad from its packaging and unfold it.</p>
-                        <p>3. Peel off the adhesive backing (usually a long strip).</p>
-                        <p>4. Center the pad in your underwear with the adhesive side down.</p>
-                        <p>5. Press firmly along the length of the pad to secure it to your underwear.</p>
-                        <p>6. Make sure the wider part of the pad is at the back.</p>
-                        <p>7. Some pads have wings - peel off the backing from these and wrap them around the sides of your underwear for extra security.</p>
+                        <ol style="padding-left: 18px;">
+                            <li><span class="emoji-large">🧼</span> Wash your hands before handling the pad.</li>
+                            <li><span class="emoji-large">📦</span> Remove the pad from its packaging and unfold it.</li>
+                            <li><span class="emoji-large">🔖</span> Peel off the adhesive backing (usually a long strip).</li>
+                            <li><span class="emoji-large">🩲</span> Center the pad in your underwear with the adhesive side down.</li>
+                            <li><span class="emoji-large">🤲</span> Press firmly along the length of the pad to secure it to your underwear.</li>
+                            <li><span class="emoji-large">⬅️➡️</span> Make sure the wider part of the pad is at the back.</li>
+                            <li><span class="emoji-large">🦋</span> If your pad has wings, peel off the backing and wrap them around the sides of your underwear for extra security.</li>
+                        </ol>
+                        <p style="color:var(--pink-dark);font-weight:600;">Tip: Change your pad every 4-6 hours for comfort and hygiene.</p>
                     </div>
                 </div>
             </div>
@@ -549,13 +588,15 @@
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-content-inner">
-                        <p>1. Wrap the used pad in its original wrapper or toilet paper.</p>
-                        <p>2. If available, use the special disposal bags some brands provide.</p>
-                        <p>3. Place it in a designated sanitary disposal bin (found in most public restrooms).</p>
-                        <p>4. If no disposal bin is available, wrap it securely and place it in a trash can.</p>
-                        <p><strong>Never flush pads down the toilet</strong> - they can cause serious plumbing blockages.</p>
-                        <p>At home, consider using a small trash can with a lid in your bathroom.</p>
-                        <p>Empty the bathroom trash regularly to prevent odor.</p>
+                        <ol style="padding-left: 18px;">
+                            <li><span class="emoji-large">🧻</span> Wrap the used pad in its original wrapper or toilet paper.</li>
+                            <li><span class="emoji-large">🛍️</span> Use a disposal bag if available for extra discretion.</li>
+                            <li><span class="emoji-large">🗑️</span> Place it in a designated sanitary disposal bin (found in most public restrooms).</li>
+                            <li><span class="emoji-large">🏠</span> If no disposal bin is available, wrap securely and place in a trash can at home.</li>
+                            <li><span class="emoji-large">🚫</span> <b>Never flush pads down the toilet!</b> They can cause plumbing blockages.</li>
+                            <li><span class="emoji-large">🧴</span> Wash your hands after disposal.</li>
+                        </ol>
+                        <p style="color:var(--pink-dark);font-weight:600;">Tip: Use a small trash can with a lid in your bathroom to control odor.</p>
                     </div>
                 </div>
             </div>
@@ -567,36 +608,18 @@
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-content-inner">
-                        <p><strong>Yeast Infection:</strong></p>
-                        <ul>
-                            <li>Thick, white discharge (like cottage cheese)</li>
-                            <li>Itching and irritation</li>
-                            <li>Burning during urination</li>
-                            <li>Redness and swelling</li>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">🍞</span> <b>Yeast Infection:</b> Thick, white discharge, itching, burning, redness.</li>
+                            <li><span class="emoji-large">🐟</span> <b>Bacterial Vaginosis:</b> Thin, grayish-white discharge, fishy odor, mild irritation.</li>
+                            <li><span class="emoji-large">💧</span> <b>UTI:</b> Burning when urinating, frequent urge, cloudy urine, pelvic pain.</li>
                         </ul>
-                        
-                        <p><strong>Bacterial Vaginosis (BV):</strong></p>
-                        <ul>
-                            <li>Thin, grayish-white discharge</li>
-                            <li>Fishy odor (especially after sex)</li>
-                            <li>Itching or burning (less common)</li>
-                        </ul>
-                        
-                        <p><strong>Urinary Tract Infection (UTI):</strong></p>
-                        <ul>
-                            <li>Burning sensation when urinating</li>
-                            <li>Frequent urge to urinate</li>
-                            <li>Cloudy or strong-smelling urine</li>
-                            <li>Pelvic pain</li>
-                        </ul>
-                        
-                        <p><strong>Prevention Tips:</strong></p>
-                        <ul>
-                            <li>Wear cotton underwear</li>
-                            <li>Avoid douching</li>
-                            <li>Wipe front to back</li>
-                            <li>Change out of wet clothes promptly</li>
-                            <li>Practice safe sex</li>
+                        <p style="margin-top:10px;"><b>Prevention Tips:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">🩲</span> Wear cotton underwear</li>
+                            <li><span class="emoji-large">🚫</span> Avoid douching</li>
+                            <li><span class="emoji-large">➡️</span> Wipe front to back</li>
+                            <li><span class="emoji-large">👖</span> Change out of wet clothes promptly</li>
+                            <li><span class="emoji-large">🛡️</span> Practice safe sex</li>
                         </ul>
                     </div>
                 </div>
@@ -609,30 +632,27 @@
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-content-inner">
-                        <p><strong>Consent Basics:</strong></p>
-                        <ul>
-                            <li>Consent must be <strong>freely given</strong> without pressure</li>
-                            <li>It must be <strong>informed</strong> (all parties understand what they're agreeing to)</li>
-                            <li>It must be <strong>enthusiastic</strong> - look for a "yes!" not just the absence of a "no"</li>
-                            <li>Consent can be <strong>withdrawn</strong> at any time</li>
-                            <li>Consent is <strong>specific</strong> - agreeing to one activity doesn't mean agreeing to others</li>
+                        <ol style="padding-left: 18px;">
+                            <li><span class="emoji-large">🤝</span> <b>Consent must be freely given</b> – no pressure or manipulation.</li>
+                            <li><span class="emoji-large">💡</span> <b>Be informed</b> – everyone understands what they're agreeing to.</li>
+                            <li><span class="emoji-large">🎉</span> <b>Look for enthusiasm</b> – a clear, happy "yes!"</li>
+                            <li><span class="emoji-large">⏪</span> <b>Consent can be withdrawn</b> at any time.</li>
+                            <li><span class="emoji-large">🔄</span> <b>Consent is specific</b> – agreeing to one thing doesn't mean agreeing to everything.</li>
+                        </ol>
+                        <p style="margin-top:10px;"><b>Safe Sex Practices:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">🧑‍⚕️</span> Use condoms to prevent STIs and pregnancy</li>
+                            <li><span class="emoji-large">🩺</span> Get regular STI testing if sexually active</li>
+                            <li><span class="emoji-large">💬</span> Discuss sexual health with partners</li>
+                            <li><span class="emoji-large">💊</span> Consider additional birth control if needed</li>
+                            <li><span class="emoji-large">👄</span> Some STIs can spread through oral sex</li>
                         </ul>
-                        
-                        <p><strong>Safe Sex Practices:</strong></p>
-                        <ul>
-                            <li>Use condoms to prevent STIs and pregnancy</li>
-                            <li>Get regular STI testing if sexually active</li>
-                            <li>Discuss sexual health with partners before becoming intimate</li>
-                            <li>Consider additional birth control methods if pregnancy prevention is desired</li>
-                            <li>Be aware that some STIs can spread through oral sex</li>
-                        </ul>
-                        
-                        <p><strong>Period Sex:</strong></p>
-                        <ul>
-                            <li>It's perfectly healthy if all parties are comfortable</li>
-                            <li>Use protection (STI risk still exists)</li>
-                            <li>Put down a towel for easier cleanup</li>
-                            <li>Shower before/after if desired</li>
+                        <p style="margin-top:10px;"><b>Period Sex:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">✅</span> It's healthy if all are comfortable</li>
+                            <li><span class="emoji-large">🛡️</span> Use protection (STI risk still exists)</li>
+                            <li><span class="emoji-large">🧻</span> Put down a towel for easier cleanup</li>
+                            <li><span class="emoji-large">🚿</span> Shower before/after if desired</li>
                         </ul>
                     </div>
                 </div>
@@ -645,37 +665,72 @@
                 </div>
                 <div class="accordion-content">
                     <div class="accordion-content-inner">
-                        <p><strong>General Hygiene:</strong></p>
-                        <ul>
-                            <li>Wash your hands before and after changing period products</li>
-                            <li>Change your pad/tampon every 4-6 hours (more often if heavy flow)</li>
-                            <li>Clean the genital area with warm water (avoid harsh soaps inside the vagina)</li>
-                            <li>Shower regularly during your period</li>
-                            <li>Wear clean, breathable cotton underwear</li>
+                        <ol style="padding-left: 18px;">
+                            <li><span class="emoji-large">🧼</span> Wash your hands before and after changing period products.</li>
+                            <li><span class="emoji-large">⏰</span> Change your pad/tampon every 4-6 hours (more often if heavy flow).</li>
+                            <li><span class="emoji-large">🚿</span> Clean the genital area with warm water (avoid harsh soaps inside the vagina).</li>
+                            <li><span class="emoji-large">🩲</span> Wear clean, breathable cotton underwear.</li>
+                            <li><span class="emoji-large">🛁</span> Shower regularly during your period.</li>
+                        </ol>
+                        <p style="margin-top:10px;"><b>Tampon Safety:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">⏳</span> Never wear a tampon for more than 8 hours</li>
+                            <li><span class="emoji-large">💧</span> Use the lowest absorbency needed for your flow</li>
+                            <li><span class="emoji-large">🔄</span> Alternate between tampons and pads if possible</li>
+                            <li><span class="emoji-large">⚠️</span> Be aware of Toxic Shock Syndrome (TSS) symptoms</li>
                         </ul>
-                        
-                        <p><strong>Tampon Safety:</strong></p>
-                        <ul>
-                            <li>Never wear a tampon for more than 8 hours</li>
-                            <li>Use the lowest absorbency needed for your flow</li>
-                            <li>Alternate between tampons and pads if possible</li>
-                            <li>Be aware of Toxic Shock Syndrome (TSS) symptoms</li>
+                        <p style="margin-top:10px;"><b>Menstrual Cup Care:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">🫧</span> Sterilize your cup before first use and after each period</li>
+                            <li><span class="emoji-large">🧼</span> Wash hands before insertion/removal</li>
+                            <li><span class="emoji-large">⏰</span> Empty every 8-12 hours</li>
+                            <li><span class="emoji-large">🧴</span> Clean with mild, unscented soap between uses</li>
                         </ul>
-                        
-                        <p><strong>Menstrual Cup Care:</strong></p>
-                        <ul>
-                            <li>Sterilize your cup before first use and after each period</li>
-                            <li>Wash hands before insertion/removal</li>
-                            <li>Empty every 8-12 hours</li>
-                            <li>Clean with mild, unscented soap between uses</li>
+                        <p style="margin-top:10px;"><b>Odor Control:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">🔄</span> Change products regularly to prevent odor</li>
+                            <li><span class="emoji-large">🚫</span> Avoid scented products which can cause irritation</li>
+                            <li><span class="emoji-large">💧</span> Stay hydrated to help flush out bacteria</li>
                         </ul>
-                        
-                        <p><strong>Odor Control:</strong></p>
-                        <ul>
-                            <li>Change products regularly to prevent odor</li>
-                            <li>Avoid scented products which can cause irritation</li>
-                            <li>Stay hydrated to help flush out bacteria</li>
-                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>🩸 How to Use a Tampon</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <ol style="padding-left: 18px;">
+                            <li><span class="emoji-large">🧼</span> Wash your hands and unwrap the tampon.</li>
+                            <li><span class="emoji-large">🧍‍♀️</span> Find a comfortable position (standing, sitting, or squatting).</li>
+                            <li><span class="emoji-large">👉</span> Hold the tampon applicator (or tampon) and gently insert it into your vagina, aiming towards your lower back.</li>
+                            <li><span class="emoji-large">➡️</span> Push the inner tube of the applicator to insert the tampon fully, then remove the applicator.</li>
+                            <li><span class="emoji-large">🧵</span> The string should hang outside for easy removal.</li>
+                            <li><span class="emoji-large">⏰</span> Change every 4-8 hours. Never leave a tampon in for more than 8 hours.</li>
+                        </ol>
+                        <p style="color:var(--pink-dark);font-weight:600;">Tip: If it feels uncomfortable, it may not be in far enough. Remove and try again gently.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>🥣 How to Use a Menstrual Cup</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <ol style="padding-left: 18px;">
+                            <li><span class="emoji-large">🧼</span> Wash your hands and sterilize the cup before use.</li>
+                            <li><span class="emoji-large">🫳</span> Fold the cup (C-fold or punch-down fold).</li>
+                            <li><span class="emoji-large">🧍‍♀️</span> Find a comfortable position and gently insert the folded cup into your vagina.</li>
+                            <li><span class="emoji-large">🔄</span> Let it open fully and rotate slightly to ensure a seal.</li>
+                            <li><span class="emoji-large">⏰</span> Empty every 8-12 hours, rinse, and reinsert.</li>
+                            <li><span class="emoji-large">🫧</span> Sterilize after each period.</li>
+                        </ol>
+                        <p style="color:var(--purple-dark);font-weight:600;">Tip: Practice makes perfect! It may take a few cycles to get comfortable.</p>
                     </div>
                 </div>
             </div>
@@ -688,22 +743,27 @@
             <button class="carousel-control prev" onclick="prevSlide()">❮</button>
             <div class="carousel-inner" id="carousel-inner">
                 <div class="carousel-item">
+                    <img src="https://img.icons8.com/color/96/000000/water-bottle.png" alt="Hydration" style="height:60px;margin-bottom:10px;">
                     <h3>Hydration is Key</h3>
                     <p>Drink plenty of water during your period to help reduce bloating and fatigue.</p>
                 </div>
                 <div class="carousel-item">
+                    <img src="https://img.icons8.com/color/96/000000/sanitary-pad.png" alt="Pad" style="height:60px;margin-bottom:10px;">
                     <h3>Regular Changes</h3>
                     <p>Change your pad or tampon every 4-6 hours to maintain hygiene and prevent infections.</p>
                 </div>
                 <div class="carousel-item">
+                    <img src="https://img.icons8.com/color/96/000000/leggings.png" alt="Clothing" style="height:60px;margin-bottom:10px;">
                     <h3>Comfortable Clothing</h3>
                     <p>Wear loose, comfortable clothing during your period to reduce discomfort and irritation.</p>
                 </div>
                 <div class="carousel-item">
+                    <img src="https://img.icons8.com/color/96/000000/spinach.png" alt="Healthy Snacks" style="height:60px;margin-bottom:10px;">
                     <h3>Healthy Snacks</h3>
                     <p>Choose iron-rich foods like spinach and nuts to replenish what you lose during menstruation.</p>
                 </div>
                 <div class="carousel-item">
+                    <img src="https://img.icons8.com/color/96/000000/yoga.png" alt="Exercise" style="height:60px;margin-bottom:10px;">
                     <h3>Gentle Exercise</h3>
                     <p>Light exercise like walking or yoga can help alleviate cramps and boost your mood.</p>
                 </div>
@@ -779,33 +839,51 @@
     </div>
 
     <script>
-        // Phase Details Toggle
-        const phaseDetails = [
-            document.getElementById('menstrual-details'),
-            document.getElementById('follicular-details'),
-            document.getElementById('ovulation-details'),
-            document.getElementById('luteal-details')
+        // Phase Details as HTML for modal
+        const phaseModalData = [
+            `<h3><span class='emoji-large'>🩸</span>Menstrual Phase</h3>
+            <p><strong>What's happening:</strong> Your uterus sheds its lining, resulting in menstrual bleeding.</p>
+            <ul>
+                <li><span class='emoji-large'>💧</span> <b>Stay hydrated</b> to help reduce bloating and fatigue.</li>
+                <li><span class='emoji-large'>🌿</span> <b>Eat iron-rich foods</b> (spinach, nuts, beans) to replenish your body.</li>
+                <li><span class='emoji-large'>🔥</span> <b>Use a heat pad</b> for cramps and lower back pain.</li>
+                <li><span class='emoji-large'>🧘‍♀️</span> <b>Gentle yoga</b> or stretching can help relieve discomfort.</li>
+            </ul>
+            <p><strong>Hygiene:</strong> Change your pad/tampon every 4-6 hours. Use breathable cotton underwear.</p>`,
+            `<h3><span class='emoji-large'>🌱</span>Follicular Phase</h3>
+            <p><strong>What's happening:</strong> Your body prepares for ovulation by developing follicles in the ovaries.</p>
+            <ul>
+                <li><span class='emoji-large'>💪</span> <b>Try new workouts</b> – your energy is rising!</li>
+                <li><span class='emoji-large'>🥗</span> <b>Eat protein & healthy fats</b> for hormone support.</li>
+                <li><span class='emoji-large'>💧</span> <b>Stay hydrated</b> to support cervical mucus production.</li>
+            </ul>`,
+            `<h3><span class='emoji-large'>🥚</span>Ovulation Phase</h3>
+            <p><strong>What's happening:</strong> An egg is released from the ovary and travels down the fallopian tube.</p>
+            <ul>
+                <li><span class='emoji-large'>🔍</span> <b>Notice changes</b> in cervical mucus (egg-white texture is normal).</li>
+                <li><span class='emoji-large'>🩲</span> <b>Wear cotton underwear</b> for comfort.</li>
+                <li><span class='emoji-large'>🍒</span> <b>Eat anti-inflammatory foods</b> (berries, turmeric, ginger).</li>
+            </ul>`,
+            `<h3><span class='emoji-large'>🌕</span>Luteal Phase</h3>
+            <p><strong>What's happening:</strong> The empty follicle produces progesterone to prepare the uterus for possible pregnancy.</p>
+            <ul>
+                <li><span class='emoji-large'>🥦</span> <b>Eat magnesium-rich foods</b> (dark chocolate, leafy greens) for mood.</li>
+                <li><span class='emoji-large'>🧘‍♀️</span> <b>Practice stress-reduction</b> (meditation, deep breathing).</li>
+                <li><span class='emoji-large'>🚶‍♀️</span> <b>Gentle walks</b> can help with PMS symptoms.</li>
+            </ul>`
         ];
 
-        function showPhaseDetails(index) {
-            // Hide all details first
-            phaseDetails.forEach(detail => {
-                detail.classList.remove('active');
-            });
-            
-            // Show selected detail
-            phaseDetails[index].classList.add('active');
-            
-            // Update active phase indicator
-            const phases = document.querySelectorAll('.phase');
-            phases.forEach(phase => {
-                phase.classList.remove('active');
-            });
-            phases[index].classList.add('active');
+        function openPhaseModal(index) {
+            document.getElementById('phase-modal-body').innerHTML = phaseModalData[index];
+            document.getElementById('phase-modal-bg').classList.add('active');
         }
-
-        // Show first phase by default
-        showPhaseDetails(0);
+        function closePhaseModal() {
+            document.getElementById('phase-modal-bg').classList.remove('active');
+        }
+        // Optional: Close modal on background click
+        document.getElementById('phase-modal-bg').addEventListener('click', function(e) {
+            if (e.target === this) closePhaseModal();
+        });
 
         // Accordion Toggle
         function toggleAccordion(item) {
@@ -898,6 +976,73 @@
                 // Show summary
                 saveSymptoms();
             }        });
+
+        // Phase Modal Functions
+        function openPhaseModal(index) {
+            const phaseData = [
+                {
+                    emoji: '🩸',
+                    title: 'Menstrual Phase',
+                    content: `
+                        <p><strong>What's happening:</strong> Your uterus sheds its lining, resulting in menstrual bleeding.</p>
+                        <ul>
+                            <li><span class="emoji-large">💧</span> <b>Stay hydrated</b> to help reduce bloating and fatigue.</li>
+                            <li><span class="emoji-large">🌿</span> <b>Eat iron-rich foods</b> (spinach, nuts, beans) to replenish your body.</li>
+                            <li><span class="emoji-large">🔥</span> <b>Use a heat pad</b> for cramps and lower back pain.</li>
+                            <li><span class="emoji-large">🧘‍♀️</span> <b>Gentle yoga</b> or stretching can help relieve discomfort.</li>
+                        </ul>
+                        <p><strong>Hygiene:</strong> Change your pad/tampon every 4-6 hours. Use breathable cotton underwear.</p>
+                    `
+                },
+                {
+                    emoji: '🌱',
+                    title: 'Follicular Phase',
+                    content: `
+                        <p><strong>What's happening:</strong> Your body prepares for ovulation by developing follicles in the ovaries.</p>
+                        <ul>
+                            <li><span class="emoji-large">💪</span> <b>Try new workouts</b> – your energy is rising!</li>
+                            <li><span class="emoji-large">🥗</span> <b>Eat protein & healthy fats</b> for hormone support.</li>
+                            <li><span class="emoji-large">💧</span> <b>Stay hydrated</b> to support cervical mucus production.</li>
+                        </ul>
+                    `
+                },
+                {
+                    emoji: '🥚',
+                    title: 'Ovulation Phase',
+                    content: `
+                        <p><strong>What's happening:</strong> An egg is released from the ovary and travels down the fallopian tube.</p>
+                        <ul>
+                            <li><span class="emoji-large">🔍</span> <b>Notice changes</b> in cervical mucus (egg-white texture is normal).</li>
+                            <li><span class="emoji-large">🩲</span> <b>Wear cotton underwear</b> for comfort.</li>
+                            <li><span class="emoji-large">🍒</span> <b>Eat anti-inflammatory foods</b> (berries, turmeric, ginger).</li>
+                        </ul>
+                    `
+                },
+                {
+                    emoji: '🌕',
+                    title: 'Luteal Phase',
+                    content: `
+                        <p><strong>What's happening:</strong> The empty follicle produces progesterone to prepare the uterus for possible pregnancy.</p>
+                        <ul>
+                            <li><span class="emoji-large">🥦</span> <b>Eat magnesium-rich foods</b> (dark chocolate, leafy greens) for mood.</li>
+                            <li><span class="emoji-large">🧘‍♀️</span> <b>Practice stress-reduction</b> (meditation, deep breathing).</li>
+                            <li><span class="emoji-large">🚶‍♀️</span> <b>Gentle walks</b> can help with PMS symptoms.</li>
+                        </ul>
+                    `
+                }
+            ];
+
+            const modalBody = document.getElementById('phase-modal-body');
+            modalBody.innerHTML = `
+                <h3><span class="emoji-large">${phaseData[index].emoji}</span>${phaseData[index].title}</h3>
+                ${phaseData[index].content}
+            `;
+            document.getElementById('phase-modal-bg').classList.add('active');
+        }
+
+        function closePhaseModal() {
+            document.getElementById('phase-modal-bg').classList.remove('active');
+        }
     </script>
     </div> <!-- End main-content -->
     
