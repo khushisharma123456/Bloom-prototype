@@ -7,12 +7,10 @@ class AyurvedicRemedyWrapper {
     async getAyurvedicRecommendations(symptoms) {
         try {
             // Fetch the recipes data
-            const recipesResponse = await fetch('/data/recipes.json');
-            
+            const recipesResponse = await fetch('/static/data/recipes.json');
             if (!recipesResponse.ok) {
                 throw new Error('Failed to fetch recipes data');
             }
-
             const recipesData = await recipesResponse.json();
 
             // Format the prompt for Gemini
@@ -54,13 +52,18 @@ class AyurvedicRemedyWrapper {
             }
 
             const data = await response.json();
-            
             if (!data.success) {
                 throw new Error(data.message || 'Failed to get ayurvedic recommendations');
             }
 
+            // Extract recommended names from Gemini response (support 'name' or 'title')
+            const recommendedNames = (data.recommendations.ayurvedicRemedies || []).map(r => (r.name || r.title) && (r.name || r.title).trim()).filter(Boolean);
+            // Filter original recipesData.remedies for these names
+            const remediesArr = Array.isArray(recipesData.remedies) ? recipesData.remedies : [];
+            const filteredRemedies = remediesArr.filter(remedy => recommendedNames.includes(remedy.name));
+
             return {
-                ayurvedicRemedies: data.recommendations.ayurvedicRemedies || []
+                ayurvedicRemedies: filteredRemedies
             };
         } catch (error) {
             console.error('Error getting ayurvedic recommendations:', error);
@@ -70,4 +73,4 @@ class AyurvedicRemedyWrapper {
 }
 
 // Export the wrapper
-export default AyurvedicRemedyWrapper; 
+export default AyurvedicRemedyWrapper;

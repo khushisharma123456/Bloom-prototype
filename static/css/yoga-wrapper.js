@@ -7,7 +7,7 @@ class YogaWrapper {
     async getYogaRecommendations(symptoms) {
         try {
             // Fetch the yoga data
-            const yogaResponse = await fetch('/data/yoga.json');
+            const yogaResponse = await fetch('/static/data/yoga.json');
             
             if (!yogaResponse.ok) {
                 throw new Error('Failed to fetch yoga data');
@@ -57,8 +57,13 @@ class YogaWrapper {
                 throw new Error(data.message || 'Failed to get yoga recommendations');
             }
 
+            // Extract recommended names from Gemini response
+            const recommendedNames = (data.recommendations.yogaAsanas || []).map(a => a.name && a.name.trim()).filter(Boolean);
+            // Filter original yogaData for these names
+            const filteredAsanas = yogaData.filter(asana => recommendedNames.includes(asana.name));
+
             return {
-                yogaAsanas: data.recommendations.yogaAsanas || []
+                yogaAsanas: filteredAsanas
             };
         } catch (error) {
             console.error('Error getting yoga recommendations:', error);
@@ -68,4 +73,4 @@ class YogaWrapper {
 }
 
 // Export the wrapper
-export default YogaWrapper; 
+export default YogaWrapper;

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, abort, jsonify, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -157,48 +157,42 @@ def survey():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
+        # Get the date string from the form (format: "d MMM yyyy" like "15 Jun 2023")
+        last_period_str = request.form.get('q2')
+        # Parse the date string into a date object
         try:
-            # Get the date string from the form (format: "d MMM yyyy" like "15 Jun 2023")
-            last_period_str = request.form.get('q2')
-            
-            # Parse the date string into a date object
+            last_period = datetime.strptime(last_period_str, '%d %b %Y').date()
+        except ValueError:
+            # Try alternative format if the first one fails
             try:
-                last_period = datetime.strptime(last_period_str, '%d %b %Y').date()
-            except ValueError:
-                # Try alternative format if the first one fails
-                try:
-                    last_period = datetime.strptime(last_period_str, '%Y-%m-%d').date()
-                except ValueError as e:
-                    flash(f'Invalid date format: {last_period_str}. Please use the calendar picker.', 'danger')
-                    return redirect(url_for('survey'))
-
-            # Debug print all form data
-            print("Form data received:", request.form)
-            
-            new_response = SurveyResponse(
-                user_id=session['user_id'],
-                q1_age=request.form.get('q1', type=int),
-                q2_last_period=last_period,
-                q3_period_duration=request.form.get('q3'),
-                q4_cycle_length=request.form.get('q4'),
-                q5_period_regularity=request.form.get('q5'),
-                q6_hair_growth=request.form.get('q6'),
-                q7_acne=request.form.get('q7'),
-                q8_hair_thinning=request.form.get('q8'),
-                q9_weight_gain=request.form.get('q9'),
-                q10_sugar_craving=request.form.get('q10'),
-                q11_family_history=request.form.get('q11'),
-                q12_fertility=request.form.get('q12'),
-                q13_mood_swings=request.form.get('q13')
-            )
-
-            user.survey_completed = True
+                last_period = datetime.strptime(last_period_str, '%Y-%m-%d').date()
+            except ValueError as e:
+                flash(f'Invalid date format: {last_period_str}. Please use the calendar picker.', 'danger')
+                return redirect(url_for('survey'))
+        # Debug print all form data
+        print("Form data received:", request.form)
+        new_response = SurveyResponse(
+            user_id=session['user_id'],
+            q1_age=request.form.get('q1', type=int),
+            q2_last_period=last_period,
+            q3_period_duration=request.form.get('q3'),
+            q4_cycle_length=request.form.get('q4'),
+            q5_period_regularity=request.form.get('q5'),
+            q6_hair_growth=request.form.get('q6'),
+            q7_acne=request.form.get('q7'),
+            q8_hair_thinning=request.form.get('q8'),
+            q9_weight_gain=request.form.get('q9'),
+            q10_sugar_craving=request.form.get('q10'),
+            q11_family_history=request.form.get('q11'),
+            q12_fertility=request.form.get('q12'),
+            q13_mood_swings=request.form.get('q13')
+        )
+        user.survey_completed = True
+        try:
             db.session.add(new_response)
             db.session.commit()
-
             flash('Thank you for completing the survey!', 'success')
             return redirect(url_for('dashboard'))
-
         except Exception as e:
             db.session.rollback()
             flash(f'Error saving survey responses: {str(e)}. Please check all fields and try again.', 'danger')
@@ -246,53 +240,25 @@ def dashboard():
         current_day=current_day,
         current_phase=current_phase,
         cycle_length=user.cycle_length,
-        period_length=user.period_length
+        period_length=user.period_length,
+        # Add user survey stats for graph
+        survey_stats={
+            'Irregular Periods': 100 if survey.q5_period_regularity and 'irregular' in survey.q5_period_regularity.lower() else 0,
+            'Excessive Hair': 100 if survey.q6_hair_growth and survey.q6_hair_growth.lower() == 'yes' else 0,
+            'Acne': 100 if survey.q7_acne and survey.q7_acne.lower() == 'yes' else 0,
+            'Hair Thinning': 100 if survey.q8_hair_thinning and survey.q8_hair_thinning.lower() == 'yes' else 0,
+            'Weight Gain': 100 if survey.q9_weight_gain and survey.q9_weight_gain.lower() == 'yes' else 0,
+            'Fatigue & Sugar Cravings': 0,  # Add logic if you have this in survey
+            'Family History of PCOS/Diabetes': 0,  # Add logic if you have this in survey
+            'Infertility': 0,  # Add logic if you have this in survey
+            'Mood Swings/Anxiety': 100 if survey.q13_mood_swings and survey.q13_mood_swings.lower() in ['frequently', 'occasionally'] else 0
+        }
     )
 
     
 # Period Tracker Page (Only for logged-in users)
 pain_mapping = {'No Pain': 0, 'Mild': 3, 'Moderate': 5, 'Severe': 10}
 flow_mapping = {'None': 0, 'Light': 2, 'Medium': 5, 'Heavy': 8}
-
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from datetime import datetime, timedelta
-import os
-import json
-
-try:
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(base_dir, "menstrualcyclelen.json")
-    print("Loading JSON from:", json_path)
-
-    with open(json_path, "r") as f:
-        data = json.load(f)
-except FileNotFoundError as e:
-    print("File not found:", e)
-    data = {}  # Or maybe you want to crash intentionally with raise e
-except Exception as e:
-    print("Unexpected error loading JSON:", e)
-    data = {}
-
-
-# ------------------------ Helper: Predict Cycle ------------------------
-def predict_cycle(start_date_str, cycle_length):
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-    next_period = start_date + timedelta(days=cycle_length)
-    ovulation_start = next_period - timedelta(days=14)
-    ovulation_end = ovulation_start + timedelta(days=5)
-
-    return {
-        "next_period": next_period.strftime("%Y-%m-%d"),
-        "ovulation_window": [
-            ovulation_start.strftime("%Y-%m-%d"),
-            ovulation_end.strftime("%Y-%m-%d")
-        ]
-    }
-
-# ------------------------ Main Route ------------------------
-from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime, timedelta
-
 
 @app.route('/period_tracker', methods=['GET', 'POST'])
 def period_tracker():
@@ -839,7 +805,6 @@ def remedy_details(remedy_name):
         print("Recipe not found!")
         abort(404)
     
-    
     return render_template('remedy.html', remedy=recipe)
 
 @app.route('/remedies')
@@ -849,143 +814,36 @@ def all_remedies():
     return render_template('remedy.html', remedies=all_recipes)
 
 
-# ======================= YOGA ROUTINES API ROUTES =======================
-
-@app.route('/api/routines', methods=['GET'])
-def get_routines():
-    """Get all routines (from routines.json + user's custom routines)"""
-    try:
-        # Load routines from routines.json
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        routines_path = os.path.join(base_dir, 'routines.json')
-        
-        featured_routines = []
-        if os.path.exists(routines_path):
-            with open(routines_path, 'r') as f:
-                featured_routines = json.load(f)
-          # Load user's custom routines (use default user if not logged in for testing)
-        custom_routines = []
-        user_id = session.get('user_id', 1)  # Default to user_id=1 for testing
-        if user_id:
-            user_custom_routines = CustomRoutine.query.filter_by(user_id=user_id).all()
-            custom_routines = [
-                {
-                    'name': routine.name,
-                    'description': routine.description or 'Custom routine',
-                    'poses': json.loads(routine.poses),
-                    'custom': True,
-                    'created_at': routine.created_at.isoformat()
-                }
-                for routine in user_custom_routines
-            ]
-        
-        # Combine featured and custom routines
-        all_routines = featured_routines + custom_routines
-        return jsonify(all_routines)
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/routines', methods=['POST'])
-def create_custom_routine():
-    """Create a new custom routine"""
-    # For testing: use a default user if not logged in
-    user_id = session.get('user_id', 1)  # Default to user_id=1 for testing
-    
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
-        
-        # Validate required fields
-        if not data.get('name'):
-            return jsonify({'error': 'Routine name is required'}), 400
-        if not data.get('poses') or len(data['poses']) == 0:
-            return jsonify({'error': 'At least one pose is required'}), 400
-        
-        # Create new custom routine
-        new_routine = CustomRoutine(
-            name=data['name'],
-            description=data.get('description', 'Custom routine'),
-            poses=json.dumps(data['poses']),  # Store poses as JSON string
-            user_id=user_id
-        )
-        
-        db.session.add(new_routine)
-        db.session.commit()
-        
-        return jsonify({
-            'success': True,
-            'message': f'Routine "{data["name"]}" created successfully!',
-            'routine': {
-                'name': new_routine.name,
-                'description': new_routine.description,
-                'poses': json.loads(new_routine.poses),
-                'custom': True,
-                'created_at': new_routine.created_at.isoformat()
-            }
-        })
-        
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/routines/<routine_name>', methods=['DELETE'])
-def delete_custom_routine(routine_name):
-    """Delete a custom routine"""
-    # For testing: use a default user if not logged in
-    user_id = session.get('user_id', 1)  # Default to user_id=1 for testing
-    
-    try:
-        # Find the custom routine by name and user_id
-        routine = CustomRoutine.query.filter_by(name=routine_name, user_id=user_id).first()
-        
-        if not routine:
-            return jsonify({'error': 'Routine not found or you do not have permission to delete it'}), 404
-        
-        # Delete the routine
-        db.session.delete(routine)
-        db.session.commit()
-        
-        return jsonify({
-            'success': True,
-            'message': f'Routine "{routine_name}" deleted successfully!'
-        })
-        
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/exercises', methods=['GET'])
-def get_exercises():
-    """Get all available exercises from exercise.json"""
-    try:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        exercises_path = os.path.join(base_dir, 'exercise.json')
-        
-        if os.path.exists(exercises_path):
-            with open(exercises_path, 'r') as f:
-                exercises = json.load(f)
-            return jsonify(exercises)
-        else:
-            return jsonify({'error': 'Exercises file not found'}), 404
-            
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/exercise')
-def exercise():
-    """Render the exercise page"""
-    if 'user_id' not in session:
-        flash('Please log in first!', 'warning')
-        return redirect(url_for('login'))
-    return render_template('exercise.html', user_name=session['user_name'])
-
-# ======================= END YOGA ROUTINES API ROUTES =======================
-
-
             
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+@app.route('/personalised-yoga')
+def personalised_yoga():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('personalised-yoga.html', user_name=session.get('user_name', 'User'))
+
+@app.route('/personalised-remdy')
+def personalised_remdy():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('personalised-remdy.html', user_name=session.get('user_name', 'User'))
+
+def predict_cycle(start_date, cycle_length):
+    from datetime import datetime, timedelta
+    # start_date: string in 'YYYY-MM-DD' format
+    try:
+        start = datetime.strptime(start_date, '%Y-%m-%d')
+    except Exception:
+        return {'error': 'Invalid start_date format'}
+    next_period = start + timedelta(days=cycle_length)
+    return {
+        'start_date': start_date,
+        'cycle_length': cycle_length,
+        'next_period': next_period.strftime('%Y-%m-%d')
+    }
