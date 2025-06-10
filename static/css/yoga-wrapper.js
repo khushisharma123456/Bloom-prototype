@@ -7,7 +7,7 @@ class YogaWrapper {
     async getYogaRecommendations(symptoms) {
         try {
             // Fetch the yoga data
-            const yogaResponse = await fetch('/data/yoga.json');
+            const yogaResponse = await fetch('/static/data/yoga.json');
             
             if (!yogaResponse.ok) {
                 throw new Error('Failed to fetch yoga data');
@@ -68,4 +68,4 @@ class YogaWrapper {
 }
 
 // Export the wrapper
-export default YogaWrapper; 
+export default YogaWrapper;

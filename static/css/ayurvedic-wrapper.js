@@ -7,7 +7,7 @@ class AyurvedicRemedyWrapper {
     async getAyurvedicRecommendations(symptoms) {
         try {
             // Fetch the recipes data
-            const recipesResponse = await fetch('/data/recipes.json');
+            const recipesResponse = await fetch('/static/data/recipes.json');
             
             if (!recipesResponse.ok) {
                 throw new Error('Failed to fetch recipes data');
@@ -70,4 +70,4 @@ class AyurvedicRemedyWrapper {
 }
 
 // Export the wrapper
-export default AyurvedicRemedyWrapper; 
+export default AyurvedicRemedyWrapper;
