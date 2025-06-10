@@ -1,0 +1,215 @@
+/* Common Sidebar Styles for Bloom Application */
+:root {
+    --bg-color: #FFF9F9;
+    --sidebar-color: #F9F5FF;
+    --text-dark: #4A4A4A;
+    --text-light: #8A7FAA;
+    --accent-pink: #FFD6E0;
+    --accent-peach: #FFE8D6;
+    --accent-teal: #C1EDE6;
+    --accent-lavender: #E8E0FF;
+    --graph-pink: #FFB8D1;
+    --graph-lavender: #B8B3FF;
+    --primary-purple: #6E5B9A;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 240px;
+    background: linear-gradient(to bottom, var(--sidebar-color), white);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+}
+
+/* Remove all underlines from sidebar links */
+.sidebar a {
+    text-decoration: none !important;
+}
+
+.sidebar a:hover,
+.sidebar a:visited,
+.sidebar a:focus,
+.sidebar a:active {
+    text-decoration: none !important;
+}
+
+.logo {
+    font-family: 'Nunito', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-purple);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo:hover {
+    text-decoration: none;
+    color: var(--primary-purple);
+}
+
+.logo i {
+    margin-right: 10px;
+    color: var(--graph-pink);
+}
+
+.menu-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+}
+
+.menu-link:hover {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.menu-link:visited {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.menu-link:focus {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    color: var(--text-dark);
+}
+
+.nav-item i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+.nav-item:hover {
+    background-color: var(--accent-lavender);
+    color: var(--primary-purple);
+}
+
+.nav-item:hover i {
+    color: var(--primary-purple);
+}
+
+.nav-item.active {
+    background-color: var(--accent-pink);
+    color: var(--primary-purple);
+    font-weight: 600;
+}
+
+.nav-item.active i {
+    color: var(--primary-purple);
+}
+
+.profile {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--accent-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.profile-name {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+}
+
+/* Main Content Adjustment */
+.main-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    min-height: 100vh;
+}
+
+/* Body adjustment for sidebar layout */
+body.sidebar-layout {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 200px;
+        padding: 20px 15px;
+    }
+    
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        padding: 20px 10px;
+        align-items: center;
+    }
+    
+    .nav-item span, .logo span, .profile-name {
+        display: none;
+    }
+    
+    .nav-item {
+        justify-content: center;
+        padding: 12px 0;
+    }
+    
+    .nav-item i {
+        margin-right: 0;
+    }
+    
+    .main-content {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}

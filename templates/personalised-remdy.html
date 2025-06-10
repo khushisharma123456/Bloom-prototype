@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalized Ayurvedic Remedies</title>
+    <title>Bloom - Personalized Ayurvedic Remedies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .card {
@@ -90,10 +93,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-    </style>
+        }    </style>
 </head>
-<body>    <div class="container py-5">
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
+    
+    <div class="main-content">
+        <div class="container py-5">
         <h1 class="text-center mb-5">Personalized Ayurvedic Remedies</h1>
         
         <!-- Loading Spinner -->
@@ -172,10 +179,13 @@
         }).catch(error => {
             // Hide loading spinner
             loadingSpinner.style.display = 'none';
-            remediesContainer.innerHTML = `<div class="alert alert-danger">Failed to load ayurvedic recommendations: ${error.message}</div>`;
-        });
+            remediesContainer.innerHTML = `<div class="alert alert-danger">Failed to load ayurvedic recommendations: ${error.message}</div>`;        });
     </script>
 
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>

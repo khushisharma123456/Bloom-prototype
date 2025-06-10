@@ -11,9 +11,11 @@
 </head>
 
 <body>
-    <div class="app-container">
-        <div class="header">
+    <div class="app-container">        <div class="header">
             <div class="logo-container">
+                <a href="{{ url_for('dashboard') }}" class="back-button" title="Back to Dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
                 <span class="logo-text">Bloom</span>
             </div>
             <div class="left-header">

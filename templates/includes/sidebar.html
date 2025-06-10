@@ -1,0 +1,71 @@
+<!-- Common Sidebar Component for Bloom Application -->
+<div class="sidebar">
+    <a href="/dashboard" class="logo">
+        <i class="fas fa-spa"></i>
+        <span>Bloom</span>
+    </a>
+    
+    <a href="/dashboard" class="menu-link">
+        <div class="nav-item" data-nav="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </div>
+    </a>
+
+    <a href="/yoga" class="menu-link">
+        <div class="nav-item" data-nav="yoga">
+            <i class="fas fa-yin-yang"></i>
+            <span>Yoga</span>
+        </div>
+    </a>
+
+    <a href="/nutrition" class="menu-link">
+        <div class="nav-item" data-nav="nutrition">
+            <i class="fas fa-utensils"></i>
+            <span>Nutrition</span>
+        </div>
+    </a>
+
+    <a href="/mood" class="menu-link">
+        <div class="nav-item" data-nav="mood">
+            <i class="fas fa-smile"></i>
+            <span>Mood Tracker</span>
+        </div>
+    </a>
+
+    <a href="/consultation" class="menu-link">
+        <div class="nav-item" data-nav="consultation">
+            <i class="fas fa-user-md"></i>
+            <span>Consultation</span>
+        </div>
+    </a>    <a href="/chatbot" class="menu-link">
+        <div class="nav-item" data-nav="chatbot">
+            <i class="fas fa-comments"></i>
+            <span>Chatbot</span>
+        </div>
+    </a>
+
+    <a href="/settings" class="menu-link">
+        <div class="nav-item" data-nav="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </div>
+    </a>
+    
+    <div class="profile">
+        <div class="profile-avatar">
+            {% if user_name %}
+                {{ user_name[0].upper() }}
+            {% else %}
+                U
+            {% endif %}
+        </div>
+        <div class="profile-name">
+            {% if user_name %}
+                {{ user_name }}
+            {% else %}
+                User
+            {% endif %}
+        </div>
+    </div>
+</div>

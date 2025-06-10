@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom - Menstrual Wellness Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Bloom - Menstrual Wellness Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -34,9 +34,7 @@
             color: var(--text-dark);
             display: flex;
             min-height: 100vh;
-        }
-
-        /* Sidebar Styles */
+        }        /* Sidebar Styles */
         .sidebar {
             width: 240px;
             background: linear-gradient(to bottom, var(--sidebar-color), white);
@@ -48,6 +46,18 @@
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
         }
 
+        /* Remove all underlines from sidebar links */
+        .sidebar a {
+            text-decoration: none !important;
+        }
+
+        .sidebar a:hover,
+        .sidebar a:visited,
+        .sidebar a:focus,
+        .sidebar a:active {
+            text-decoration: none !important;
+        }
+
         .logo {
             font-family: 'Nunito', sans-serif;
             font-size: 24px;
@@ -56,11 +66,31 @@
             margin-bottom: 40px;
             display: flex;
             align-items: center;
+            text-decoration: none !important;
+        }
+
+        .logo:hover {
+            text-decoration: none !important;
+            color: var(--primary-purple);
         }
 
         .logo i {
             margin-right: 10px;
             color: var(--graph-pink);
+        }
+
+        .menu-link {
+            text-decoration: none !important;
+            color: inherit;
+            display: block;
+        }
+
+        .menu-link:hover,
+        .menu-link:visited,
+        .menu-link:focus,
+        .menu-link:active {
+            text-decoration: none !important;
+            color: inherit;
         }
 
         .nav-item {
@@ -467,15 +497,217 @@
 
         .mood-option .star.active {
             color: #FFD700;
-        }
-
-        .mood-feedback {
+        }        .mood-feedback {
             margin-top: 20px;
             padding: 10px;
             background-color: var(--accent-peach);
             border-radius: 8px;
             text-align: center;
             display: none;
+        }        /* Daily Check-in Box Styles */
+        .checkin-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--accent-lavender);
+        }
+
+        .checkin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .checkin-title h3 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 3px 0;
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkin-title p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .checkin-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .weekly-calendar {
+            margin-bottom: 15px;
+        }
+
+        .week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .week-day {
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-light);
+            padding: 5px;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background-color: var(--accent-lavender);
+            color: var(--text-dark);
+            min-height: 28px;
+        }
+
+        .day-cell.today {
+            background-color: var(--primary-purple);
+            color: white;
+            box-shadow: 0 2px 6px rgba(110, 91, 154, 0.3);
+        }
+
+        .day-cell.checked-in {
+            background-color: var(--accent-teal);
+            color: white;
+        }
+
+        .day-cell.checked-in::after {
+            content: '✓';
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            font-size: 8px;
+            background-color: var(--primary-purple);
+            color: white;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-cell.other-month {
+            color: #ccc;
+            background-color: #f5f5f5;
+        }
+
+        .day-cell:hover:not(.other-month) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkin-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkin-btn {
+            background: linear-gradient(135deg, var(--accent-teal), var(--primary-purple));
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkin-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(110, 91, 154, 0.3);
+        }
+
+        .checkin-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-info {
+            font-size: 12px;
+            color: var(--text-light);
+        }/* Responsive design for check-in box */
+        @media (max-width: 768px) {
+            .checkin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .checkin-stats {
+                align-self: stretch;
+                justify-content: space-around;
+            }
+
+            .checkin-actions {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+        }
+
+        /* Animation for success message */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         /* Mood and Spotify Section */
@@ -693,72 +925,12 @@
         }
     </style>
 </head>
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-spa"></i>
-            <span>Bloom</span>
-        </div>
-        
-        <a href="/chatbot" class="menu-link">
-        <div class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </div>
-        </a>
-
-        <a href="/yoga" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-yin-yang"></i>
-            <span>Yoga</span>
-        </div>
-        </a>
-
-        <a href="/nutrition" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-utensils"></i>
-            <span>Nutrition</span>
-        </div>
-        </a>
-
-        <a href="/mood" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-smile"></i>
-            <span>Mood Tracker</span>
-        </div>
-        </a>
-
-        <a href="/consultation" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-book-open"></i>
-            <span>Consultation</span>
-        </div>
-        </a>
-
-        <a href="/chatbot" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-lightbulb"></i>
-            <span>Chatbot</span>
-        </div>
-        </a>
-
-        <a href="/settings" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </div>
-        </a>
-        
-        <div class="profile">
-            <div class="profile-avatar">M</div>
-            <div class="profile-name">{{ user_name }}</div>
-        </div>
-    </div>
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
     
     <!-- Main Content -->
-    <div class="main-content">
-        <div class="greeting">
+    <div class="main-content">        <div class="greeting">
             <h1>Welcome, {{ user_name }}!</h1>
             {% if current_day > 0 %}
                 <p>You're on Day {{ current_day }} of your {{ current_phase }} Phase</p>
@@ -777,6 +949,51 @@
             <div class="chart-title">Your PCOS Symptoms vs General Trends</div>
             <div id="chartsContainer" style="display:none;"></div>
             <canvas id="comparisonChart" width="900" height="270" style="margin-top: 40px; max-width:100%; max-height:270px; width:100%; height:270px; border:none;"></canvas>
+        </div>
+        
+        <!-- Daily Check-in Box -->
+        <div class="checkin-container">
+            <div class="checkin-header">
+                <div class="checkin-title">
+                    <h3><i class="fas fa-calendar-check"></i> Daily Check-in</h3>
+                    <p>Keep track of your wellness journey</p>
+                </div>
+                <div class="checkin-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="currentStreak">0</span>
+                        <span class="stat-label">Current Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalLogins">0</span>
+                        <span class="stat-label">Total Logins</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="weekly-calendar">
+                <div class="week-header">
+                    <span class="week-day">Sun</span>
+                    <span class="week-day">Mon</span>
+                    <span class="week-day">Tue</span>
+                    <span class="week-day">Wed</span>
+                    <span class="week-day">Thu</span>
+                    <span class="week-day">Fri</span>
+                    <span class="week-day">Sat</span>
+                </div>
+                <div class="week-grid" id="weekGrid">
+                    <!-- Week days will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="checkin-actions">
+                <button class="checkin-btn" id="checkinBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Check In Today
+                </button>
+                <div class="login-info">
+                    <span id="lastLoginTime">Last login: Today</span>
+                </div>
+            </div>
         </div>
         
         <!-- Symptoms Section -->
@@ -1164,11 +1381,218 @@
                             cornerRadius: 8,
                             displayColors: false
                         }
-                    }
+                    }                }
+            });        }
+    });    // Daily Check-in Functionality
+    class DailyCheckIn {
+        constructor() {
+            this.checkinData = {
+                checkins: {},
+                totalLogins: 0,
+                currentStreak: 0
+            };
+            this.init();
+        }
+
+        async loadCheckinData() {
+            try {
+                const response = await fetch('/api/checkin/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    this.checkinData = data;
+                    return data;
+                } else {
+                    console.error('Failed to load check-in data');
+                    return this.checkinData;
                 }
+            } catch (error) {
+                console.error('Error loading check-in data:', error);
+                return this.checkinData;
+            }
+        }
+
+        async recordLogin() {
+            try {
+                const response = await fetch('/api/checkin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.isNewLogin) {
+                        console.log('New login recorded');
+                    }
+                    return data;
+                } else {
+                    console.error('Failed to record login');
+                }
+            } catch (error) {
+                console.error('Error recording login:', error);
+            }
+        }
+
+        async init() {
+            await this.recordLogin();
+            await this.loadCheckinData();
+            this.renderWeeklyCalendar();
+            this.updateStats();
+            this.setupEventListeners();
+            this.updateLastLoginTime();
+        }
+
+        renderWeeklyCalendar() {
+            const weekGrid = document.getElementById('weekGrid');
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+
+            weekGrid.innerHTML = '';
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                dayCell.textContent = date.getDate();
+                
+                const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+                const todayString = today.toISOString().split('T')[0];
+                
+                // Add today class
+                if (dateString === todayString) {
+                    dayCell.classList.add('today');
+                }
+                
+                // Add checked-in class if user has checked in
+                if (this.checkinData.checkins[dateString]?.checkedIn) {
+                    dayCell.classList.add('checked-in');
+                }
+                
+                // Add other month class for dates from other months
+                if (date.getMonth() !== today.getMonth()) {
+                    dayCell.classList.add('other-month');
+                }
+                
+                weekGrid.appendChild(dayCell);
+            }
+        }
+
+        updateStats() {
+            document.getElementById('currentStreak').textContent = this.checkinData.currentStreak || 0;
+            document.getElementById('totalLogins').textContent = this.checkinData.totalLogins || 0;
+        }
+
+        updateLastLoginTime() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayData = this.checkinData.checkins[today];
+            
+            if (todayData && todayData.loginTime) {
+                document.getElementById('lastLoginTime').textContent = 
+                    `Last login: Today at ${todayData.loginTime}`;
+            } else {
+                document.getElementById('lastLoginTime').textContent = 
+                    'Last login: Today';
+            }
+        }
+
+        async checkInToday() {
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            try {
+                const response = await fetch('/api/checkin/daily', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Update local data
+                        const today = new Date().toISOString().split('T')[0];
+                        if (!this.checkinData.checkins[today]) {
+                            this.checkinData.checkins[today] = {};
+                        }
+                        this.checkinData.checkins[today].checkedIn = true;
+                        this.checkinData.checkins[today].checkinTime = data.checkinTime;
+                        this.checkinData.currentStreak += 1;
+                        
+                        // Update UI
+                        this.renderWeeklyCalendar();
+                        this.updateStats();
+                        
+                        // Update button
+                        checkinBtn.innerHTML = '<i class="fas fa-check-double"></i> Checked In!';
+                        checkinBtn.disabled = true;
+                        
+                        // Show success message
+                        this.showCheckinSuccess();
+                    } else {
+                        // Already checked in
+                        checkinBtn.innerHTML = '<i class="fas fa-check-double"></i> Checked In!';
+                        checkinBtn.disabled = true;
+                    }
+                } else {
+                    console.error('Failed to check in');
+                    alert('Failed to check in. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during check-in:', error);
+                alert('Error during check-in. Please try again.');
+            }
+        }
+
+        showCheckinSuccess() {
+            const successMsg = document.createElement('div');
+            successMsg.className = 'checkin-success';
+            successMsg.innerHTML = '<i class="fas fa-star"></i> Great job! You\'ve checked in today!';
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--accent-teal), var(--primary-purple));
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+        }
+
+        setupEventListeners() {
+            const checkinBtn = document.getElementById('checkinBtn');
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Check if already checked in today
+            if (this.checkinData.checkins[today]?.checkedIn) {
+                checkinBtn.innerHTML = '<i class="fas fa-check-double"></i> Checked In!';
+                checkinBtn.disabled = true;
+            }
+            
+            checkinBtn.addEventListener('click', () => {
+                this.checkInToday();
             });
         }
+    }
+
+    // Initialize Daily Check-in when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        new DailyCheckIn();
     });
     </script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
