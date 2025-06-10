@@ -991,26 +991,72 @@ recipes = load_recipes()
 
 @app.route('/remedy/<path:remedy_name>')
 def remedy_details(remedy_name):
-    print(f"\n\n=== DEBUG: Received request for: {remedy_name} ===")  # Check terminal
-    decoded_name = unquote(remedy_name).lower()
-    print(f"Decoded name: {decoded_name}")
-    
-    recipe = recipes.get(decoded_name)
-    if not recipe:
-        recipe = recipes.get(remedy_name.replace('-', ' ').lower())
-    
-    if not recipe:
-        print("Recipe not found!")
-        abort(404)
-    
-    
-    return render_template('remedy.html', remedy=recipe)
+    try:
+        # Load recipes data from the correct path
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(base_dir, 'static', 'data', 'recipes.json')
+        
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+            remedies = data.get('remedies', [])
+            
+        # Normalize the remedy name for comparison
+        decoded_name = unquote(remedy_name).strip().lower()
+        
+        # Find the matching remedy
+        found_remedy = None
+        for remedy in remedies:
+            if remedy.get('name', '').strip().lower() == decoded_name:
+                found_remedy = remedy
+                break
+        
+        if not found_remedy:
+            # Try alternative matching if exact match not found
+            for remedy in remedies:
+                if decoded_name in remedy.get('name', '').strip().lower():
+                    found_remedy = remedy
+                    break
+        
+        if found_remedy:
+            return render_template('remedy.html', remedy=found_remedy)
+        else:
+            # Render a user-friendly fallback
+            return render_template('remedy.html', remedy={
+                "name": remedy_name,
+                "description": "Sorry, this remedy was not found.",
+                "ingredients": [],
+                "steps": [],
+                "benefits": [],
+                "image": url_for('static', filename='images/default-remedy.png')
+            })
+            
+    except Exception as e:
+        print(f"Error loading remedy: {str(e)}")
+        return render_template('remedy.html', remedy={
+            "name": "Error",
+            "description": "An error occurred while loading this remedy.",
+            "ingredients": [],
+            "steps": [],
+            "benefits": [],
+            "image": url_for('static', filename='images/default-remedy.png')
+        })
 
 @app.route('/remedies')
 def all_remedies():
-    # recipes is a dict: {title.lower(): recipe_dict}
-    all_recipes = list(recipes.values())
-    return render_template('remedy.html', remedies=all_recipes)
+    try:
+        # Load recipes data from the correct path
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(base_dir, 'static', 'data', 'recipes.json')
+        
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+            remedies = data.get('remedies', [])
+            
+        return render_template('remedy.html', remedies=remedies)
+        
+    except Exception as e:
+        print(f"Error loading all remedies: {str(e)}")
+        return render_template('remedy.html', remedies=[])
 
 @app.route('/api/get-yoga-recommendations', methods=['POST'])
 def get_yoga_recommendations():
