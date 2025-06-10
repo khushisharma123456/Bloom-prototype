@@ -1,150 +1,315 @@
-/* Base Styles & Variables */
+/* ======================== */
+/* Bloom Dashboard - Soft Pastel Theme */
+/* ======================== */
+
+/* Updated Color Variables */
 :root {
-  --primary-color: #8B4E7D;
-  --primary-light: #a85f97;
-  --primary-dark: #57304e;
-  --accent-color: #ff6b6b;
-  --text-dark: #2b2d42;
-  --text-light: #f8f9fa;
-  --bg-light: #fff;
-  --bg-secondary: #f8f0f5;
-  --success-color: #4caf50;
-  --warning-color: #ff9800;
-  --info-color: #2196f3;
+  /* Core Palette */
+  --bloom-lavender: #e8dff5;
+  --bloom-blush: #f7e4ed;
+  --bloom-plum: #b28fb2;
+  --bloom-rose: #e0b8d0;
+  --bloom-cream: #f9f5f0;
+  --bloom-charcoal: #4a4a4a;
+  --bloom-brown: #7a6d6d;
+  --bloom-white: #ffffff;
+  --bloom-active: #9a7bb8;
+  
+  /* Semantic Colors */
+  --primary-color: var(--bloom-plum);
+  --primary-dark: #8a6aae;
+  --primary-light: var(--bloom-lavender);
+  --accent-color: #e8b5ce;
+  --text-dark: var(--bloom-charcoal);
+  
+  /* Extended Pastels */
+  --pastel-peach: #ffdfd3;
+  --pastel-mint: #d4f1f0;
+  --pastel-lilac: #dcd0ff;
+  --pastel-lavender: #eae4f5;
+  --pastel-blush: #f9eef2;
+
+  /* Utility Colors */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --border-light: 1px solid rgba(0,0,0,0.03);
 }
 
+/* ======================== */
+/* Base Styles */
+/* ======================== */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body, html {
-  background-color: #f9f5f7;
+body {
+  font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+  background-color: var(--bloom-cream);
   color: var(--text-dark);
   line-height: 1.6;
-  font-size: 18px; /* Set a medium base font size */
+  -webkit-font-smoothing: antialiased;
 }
 
+h1, h2, h3, h4 {
+  font-weight: 600;
+  color: var(--bloom-charcoal);
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--bloom-brown);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ======================== */
+/* Layout Structure */
+/* ======================== */
 .app-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 240px 1fr;
   min-height: 100vh;
-  background-color: #FAF6F1;
 }
 
-/* Header Styles */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  background-color: var(--primary-color);
-  color: white;
-  padding: 15px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  height: 40px;
-}
-
-.left-header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.home {
-  font-weight: bold;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.profile {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-}
-
-/* Main Content Layout */
 .main-content {
   display: flex;
-  flex: 1;
-  background-color: #FAF6F1;
-}
-
-/* Side Navigation */
-.side-nav {
-  width: 220px;
-  background: linear-gradient(180deg, var(--primary-color), var(--primary-light));
-  padding: 30px 0;
-  display: flex;
   flex-direction: column;
-  gap: 5px;
+  overflow-x: hidden;
 }
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 25px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.nav-item.active {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-left: 4px solid white;
-}
-
-.nav-item:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.nav-icon {
-  margin-right: 15px;
-  font-size: 1.2rem;
-}
-
-/* Content Sections */
 .content-sections {
-  flex: 1;
-  padding: 30px;
-  background-color: #FAF6F1;
+  padding: 2rem;
+  flex-grow: 1;
 }
 
 .content-section {
   display: none;
+  animation: fadeIn 0.3s ease;
 }
 
 .content-section.active {
   display: block;
 }
 
-.section-header {
-  margin-bottom: 30px;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.section-header h1 {
+/* ======================== */
+/* Sidebar Styles */
+/* ======================== */
+.main-sidebar {
+  background-color: var(--bloom-white);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 0;
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 0 1.25rem 1.25rem;
+  border-bottom: 1px solid var(--bloom-lavender);
+  margin-bottom: 1rem;
+}
+
+.sidebar-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--primary-dark);
-  margin-bottom: 10px;
-  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.section-header p {
-  color: #666;
-  margin-bottom: 20px;
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
 }
 
-/* Water Tracker Section */
+.sidebar-item {
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  margin: 0.25rem 0.75rem;
+  border-radius: 8px;
+}
+
+.sidebar-item:hover {
+  background-color: color-mix(in srgb, var(--bloom-lavender) 80%, white);
+}
+
+.sidebar-item.active {
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-active));
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-icon {
+  margin-right: 0.75rem;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.sidebar-text {
+  font-size: 0.95rem;
+}
+
+/* ======================== */
+/* Top Navigation */
+/* ======================== */
+.top-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 5;
+}
+
+.top-nav-items {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  color: var(--bloom-white);
+}
+
+.nav-item:hover {
+  background-color: color-mix(in srgb, var(--bloom-white) 15%, transparent);
+}
+
+.nav-item.active {
+  background-color: color-mix(in srgb, var(--bloom-white) 10%, transparent);
+  font-weight: 500;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--bloom-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+/* ======================== */
+/* Cards & Containers */
+/* ======================== */
+.card {
+  background-color: var(--bloom-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: var(--border-light);
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  color: var(--primary-dark);
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ======================== */
+/* Buttons & Interactive Elements */
+/* ======================== */
+.btn {
+  border-radius: 24px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--bloom-rose), var(--bloom-plum));
+  color: var(--bloom-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: var(--bloom-lavender);
+  color: var(--primary-dark);
+}
+
+.btn-secondary:hover {
+  background-color: color-mix(in srgb, var(--bloom-lavender) 80%, white);
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ======================== */
+/* Water Tracker */
+/* ======================== */
 .water-container {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 3rem;
   max-width: 800px;
   margin: 0 auto;
 }
@@ -152,19 +317,19 @@ body, html {
 .water-bottle {
   width: 150px;
   height: 300px;
-  background-color: white;
+  background-color: var(--bloom-white);
   border-radius: 0 0 40px 40px;
-  border: 4px solid var(--primary-color);
+  border: 4px solid color-mix(in srgb, var(--primary-color) 70%, white);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.03);
 }
 
 .water-fill {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: #6ab3f8;
+  background: linear-gradient(to top, var(--pastel-lilac), var(--bloom-lavender));
   transition: height 0.5s ease;
   display: flex;
   justify-content: center;
@@ -172,10 +337,10 @@ body, html {
 }
 
 .water-amount {
-  color: white;
+  color: var(--bloom-white);
   font-weight: bold;
   font-size: 1.2rem;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 
 .water-markings {
@@ -196,114 +361,125 @@ body, html {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25rem;
 }
 
 .water-btn {
-  padding: 12px 20px;
-  background-color: var(--primary-color);
-  color: white;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--bloom-rose), var(--bloom-plum));
+  color: var(--bloom-white);
   border: none;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
 }
 
 .water-btn:hover {
-  background-color: var(--primary-dark);
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
   transform: translateY(-2px);
 }
 
 .water-progress {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .water-progress span {
   display: block;
-  margin-bottom: 8px;
-  color: #666;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
 }
 
 .progress-bar {
   height: 10px;
-  background-color: #eee;
+  background-color: var(--bloom-lavender);
   border-radius: 5px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+  background: linear-gradient(90deg, var(--bloom-rose), var(--bloom-plum));
   transition: width 0.5s ease;
 }
 
-/* Ayurvedic Remedies Section */
+/* ======================== */
+/* Ayurvedic Remedies */
+/* ======================== */
 .search-box {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
   max-width: 500px;
 }
 
 .search-box input {
   flex: 1;
-  padding: 12px 15px;
-  border: 2px solid #ddd;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--bloom-lavender);
   border-radius: 25px 0 0 25px;
   font-size: 1rem;
   outline: none;
+  background-color: var(--bloom-white);
 }
 
 .search-box button {
-  padding: 0 20px;
-  background-color: var(--primary-color);
-  color: white;
+  padding: 0 1.25rem;
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+  color: var(--bloom-white);
   border: none;
   border-radius: 0 25px 25px 0;
   cursor: pointer;
   font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.search-box button:hover {
+  opacity: 0.9;
 }
 
 .remedy-categories {
   display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
-  
 }
 
 .category-btn {
-  padding: 8px 16px;
-  background-color: #eee;
+  padding: 0.5rem 1rem;
+  background-color: color-mix(in srgb, var(--bloom-lavender) 60%, white);
   border: none;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
 }
 
 .category-btn.active {
-  background-color: var(--primary-color);
-  color: white;
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+  color: var(--bloom-white);
+  box-shadow: var(--shadow-sm);
 }
 
 .remedy-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
-  align-items: stretch; /* Ensure all cards stretch to same height */
+  gap: 1.5rem;
 }
 
 .remedy-card {
-  background-color: #FAF6F1;
+  background-color: var(--bloom-white);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Make all cards equal height */
+}
+
+.remedy-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
 }
 
 .remedy-image {
@@ -311,7 +487,8 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 1.25rem;
+  background-color: var(--pastel-blush);
 }
 
 .remedy-image img {
@@ -321,30 +498,37 @@ body, html {
 }
 
 .remedy-info {
-  padding: 20px;
-  flex: 1 1 auto;
+  padding: 1.25rem;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
 }
 
 .remedy-info h3 {
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   color: var(--primary-dark);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 .remedy-benefit {
   color: var(--accent-color);
-  font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
 }
 
 .remedy-desc {
-  color: #666;
-  margin-bottom: 15px;
-  font-size: 0.92rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.remedy-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
 }
 
 .save-remedy {
@@ -352,7 +536,7 @@ body, html {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: #ccc;
+  color: var(--bloom-lavender);
   transition: color 0.3s ease;
 }
 
@@ -360,72 +544,48 @@ body, html {
   color: var(--accent-color);
 }
 
-/* Recipes Section */
+.save-remedy.saved {
+  color: var(--accent-color);
+}
+
+/* ======================== */
+/* Recipe Cards */
+/* ======================== */
 .recipe-filters {
   display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .recipe-filters select {
-  padding: 10px 15px;
-  border: 2px solid #ddd;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--bloom-lavender);
   border-radius: 8px;
-  background-color: white;
+  background-color: var(--bloom-white);
   font-size: 1rem;
+  cursor: pointer;
 }
 
 .recipe-carousel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
-/* Cross-browser: Center and shrink single recipe card */
-.recipe-carousel.single-card {
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  justify-items: center;
-  align-items: start;
-  height: auto !important;
-  min-height: 0 !important;
-}
-.recipe-carousel.single-card .recipe-card {
-  max-width: 340px;
-  min-width: 240px;
-  width: 100%;
-  flex: none !important;
-  height: auto !important;
-  display: flex !important;
-  flex-direction: column;
-}
-
-.recipe-carousel.single-card .recipe-info {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.recipe-carousel.single-card .view-recipe {
-  margin-top: auto;
-}
-
-/* Remove grid min-height for single card */
-.recipe-carousel.single-card {
-  min-height: unset !important;
-}
-
-.recipe-card, .remedy-card {
-  background-color: #FAF6F1;
+.recipe-card {
+  background-color: var(--bloom-white);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Make all cards equal height */
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
 }
 
 .recipe-image {
@@ -439,154 +599,188 @@ body, html {
   position: absolute;
   top: 15px;
   right: 15px;
-  background-color: var(--primary-color);
-  color: white;
-  padding: 5px 10px;
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-active));
+  color: var(--bloom-white);
+  padding: 0.25rem 0.75rem;
   border-radius: 20px;
-  font-size: 0.82rem;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .recipe-info {
-  padding: 20px;
-  flex: 1 1 auto;
+  padding: 1.25rem;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
 }
 
 .recipe-info h3 {
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
   color: var(--primary-dark);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .recipe-info p {
-  font-size: 0.92rem;
-  margin-bottom: 15px;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  flex-grow: 1;
 }
 
 .recipe-meta {
   display: flex;
-  gap: 15px;
-  margin-bottom: 10px;
-  color: #666;
-  font-size: 0.9rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+  font-size: 0.85rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .view-recipe {
   display: block;
   width: 100%;
-  padding: 9px;
-  background-color: var(--primary-color);
-  color: white;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+  color: var(--bloom-white);
   border: none;
   border-radius: 8px;
-  margin-top: 15px;
+  margin-top: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   font-size: 0.95rem;
-  margin-top: auto; /* Push button to bottom of card */
+  text-align: center;
 }
 
 .view-recipe:hover {
-  background-color: var(--primary-dark);
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-active));
 }
 
-/* Wellness Tips Section */
+/* ======================== */
+/* Wellness Tips */
+/* ======================== */
 .tips-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
+  gap: 1.5rem;
 }
 
 .tip-card {
-  background-color: #FAF6F1;
-  padding: 25px;
+  background-color: var(--bloom-white);
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .tip-card h3 {
   color: var(--primary-dark);
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
 }
 
 .tip-card p {
-  color: #666;
-  margin-bottom: 15px;
+  color: var(--text-dark);
+  margin-bottom: 1.25rem;
 }
 
 .tip-action {
-  background-color: var(--primary-color);
-  color: white;
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+  color: var(--bloom-white);
   border: none;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .tip-action:hover {
-  background-color: var(--primary-dark);
+  background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-active));
 }
 
+/* ======================== */
 /* Responsive Design */
+/* ======================== */
+@media (max-width: 1200px) {
+  .app-container {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
 @media (max-width: 992px) {
   .water-container {
     flex-direction: column;
-    gap: 30px;
+    gap: 2rem;
   }
   
-  .remedy-grid {
+  .remedy-grid, .tips-container {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
+  .app-container {
+    grid-template-columns: 1fr;
   }
   
-  .side-nav {
-    width: 100%;
-    flex-direction: row;
-    padding: 0;
-    justify-content: space-around;
+  .main-sidebar {
+    display: none;
   }
   
-  .nav-item {
-    flex-direction: column;
-    padding: 15px 10px;
-    border-left: none;
-  }
-  
-  .nav-item.active {
-    border-left: none;
-    border-bottom: 4px solid white;
-  }
-  
-  .nav-icon {
-    margin-right: 0;
-    margin-bottom: 5px;
+  .top-nav-items {
+    gap: 1rem;
   }
   
   .content-sections {
-    padding: 20px;
+    padding: 1.5rem;
   }
 }
 
 @media (max-width: 576px) {
-  .header {
-    padding: 15px;
+  .top-navbar {
+    padding: 1rem;
   }
   
-  .remedy-grid {
+  .recipe-carousel, .remedy-grid, .tips-container {
     grid-template-columns: 1fr;
   }
   
   .recipe-filters {
     flex-direction: column;
   }
+  
+  .water-bottle {
+    width: 120px;
+    height: 240px;
+  }
 }
+
+/* ======================== */
+/* Utility Classes */
+/* ======================== */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.text-center { text-align: center; }
+.text-accent { color: var(--accent-color); }
+.text-primary { color: var(--primary-color); }

@@ -54,30 +54,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateWaterDisplay(); // Initialize UI with saved or 0 value
 
-    // Ayurveda Section - Category Filter
-    const categoryButtons = document.querySelectorAll('.category-btn');
+    // Ayurveda Section - Filter and Search
+    const ayurvedaCategoryButtons = document.querySelectorAll('#ayurveda .category-btn');
+    const ayurvedaSearchInput = document.querySelector('#ayurveda .search-box input');
+    const ayurvedaCards = document.querySelectorAll('#ayurveda .recipe-card');
+    let currentAyurvedaCategory = 'All';
+    let ayurvedaSearchTerm = '';
     
-    categoryButtons.forEach(button => {
+    ayurvedaCategoryButtons.forEach(button => {
         button.addEventListener('click', function() {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            ayurvedaCategoryButtons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
-            
-            const category = this.textContent;
-            filterRemedies(category);
+            currentAyurvedaCategory = this.textContent;
+            filterAndSearchAyurveda();
         });
     });
     
-    function filterRemedies(category) {
-        if (category === 'All') {
-            remedyCards.forEach(card => card.style.display = 'block');
-            return;
-        }
-        
-        remedyCards.forEach(card => {
+    if (ayurvedaSearchInput) {
+        ayurvedaSearchInput.addEventListener('input', function() {
+            ayurvedaSearchTerm = this.value.toLowerCase();
+            filterAndSearchAyurveda();
+        });
+    }
+    
+    function filterAndSearchAyurveda() {
+        ayurvedaCards.forEach(card => {
             const badgeElem = card.querySelector('.recipe-badge');
             const badge = badgeElem ? badgeElem.textContent : '';
-            const display = badge.includes(category) ? 'block' : 'none';
-            card.style.display = display;
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const description = card.querySelector('p').textContent.toLowerCase();
+            
+            const matchesCategory = currentAyurvedaCategory === 'All' || badge.includes(currentAyurvedaCategory);
+            const matchesSearch = ayurvedaSearchTerm === '' || 
+                                title.includes(ayurvedaSearchTerm) || 
+                                description.includes(ayurvedaSearchTerm);
+            
+            card.style.display = matchesCategory && matchesSearch ? 'block' : 'none';
         });
     }
 
