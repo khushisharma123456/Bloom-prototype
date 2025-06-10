@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <title>Bloom - Organic & Ayurvedic Store</title>
     <style>
         :root {
@@ -324,7 +327,7 @@
 </head>
 <body>
     <div class="container">
-        {% include 'sidebar.html' %}
+        {% include 'includes/sidebar.html' %}
         
         <div class="main-content">
             <div class="welcome-banner">
@@ -553,5 +556,6 @@
             });
         });
     </script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
