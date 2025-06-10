@@ -3,76 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom - Women's Wellness</title>
+    <title>Bloom - Nutrition & Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Nutrition.css') }}">
-    <!-- Add Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <div class="app-container">
-        <!-- New Left Sidebar -->
-        <nav class="main-sidebar">
-            <div class="sidebar-header">
-                <img src="Images/logo.png" alt="Bloom Logo" class="logo">
-            </div>
-            <ul class="sidebar-nav">
-                <li class="sidebar-item">
-                    <i class="fas fa-home sidebar-icon"></i>
-                    <span>Dashboard</span>
-                </li>
-                <li class="sidebar-item">
-                    <i class="fas fa-water sidebar-icon"></i>
-                    <span>Hydration</span>
-                </li>
-                <li class="sidebar-item">
-                    <i class="fas fa-spa sidebar-icon"></i>
-                    <span>Yoga</span>
-                </li>
-                <li class="sidebar-item">
-                    <i class="fas fa-utensils sidebar-icon"></i>
-                    <span>Nutrition</span>
-                </li>
-                <li class="sidebar-item">
-                    <i class="fas fa-smile sidebar-icon"></i>
-                    <span>Mood Tracking</span>
-                </li>
-                <li class="sidebar-item">
-                    <i class="fas fa-comment sidebar-icon"></i>
-                    <span>Chatbot</span>
-                </li>
-                <li class="sidebar-item">
-                    <i class="fas fa-cog sidebar-icon"></i>
-                    <span>Settings</span>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Main Content Area -->
-        <div class="main-content">
-            <!-- Top Navigation Bar -->
-            <header class="top-navbar">
-                <div class="top-nav-items">
-                    <div class="nav-item active" data-section="water-tracker">
-                        <i class="fas fa-tint nav-icon"></i>
-                        <span>Water Tracker</span>
-                    </div>
-                    <div class="nav-item" data-section="ayurveda">
-                        <i class="fas fa-leaf nav-icon"></i>
-                        <span>Ayurvedic Remedies</span>
-                    </div>
-                    <div class="nav-item" data-section="recipes">
-                        <i class="fas fa-utensils nav-icon"></i>
-                        <span>Healthy Recipes</span>
-                    </div>
-                </div>
-                <div class="user-profile">
-                    <img src="Images/profile.png" alt="Profile" class="profile">
-                </div>
-            </header>
-
-            <!-- Content Sections (same as before, just moved) -->
-            <!-- Content Sections -->
-            <div class="content-sections">
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}    <div class="main-content">
+        <!-- Content Sections -->
+        <div class="content-sections">>>
                 <!-- Water Tracker Section -->
                 <section id="water-tracker" class="content-section active">
                     <div class="section-header">
@@ -1017,13 +958,13 @@
             </div>
         </div>
                         <!-- More recipe cards would go here -->
-                    </div>
-                </section>
+                    </div>                </section>
 
             </div>
         </div>
     </div>
 
     <script src="{{ url_for('static', filename='css/Nutrition.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>

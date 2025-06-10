@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Mood Tracker - Reflect, Track, Thrive</title>
-    <link rel="icon" href="assets/Daily Mood Tracker.png" type="image/x-icon">
+    <title>Bloom - Daily Mood Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/moodcss.css') }}">
     <style>
         .spotify-login-btn {
@@ -70,24 +72,15 @@
 
         .star.active {
             color: #ffd700;
-        }
-    </style>
+        }    </style>
 </head>
-<body>
-    <div class="app-container">
-
-        <div class="head">
-            <div class="logo-container">
-                <img src="Images/logo .png" alt="logo" class="logo">
-            </div>
-            <div class="left-header">
-                <a href="Home.html" class="home">Home</a>
-                <img src="Images/profile.png" alt="prf" class="profile">
-            </div>
-        </div>
-
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
+    
+    <div class="main-content">
         <header class="glass-card">
-            <p style="position: relative;  right: 13c:\Users\suhan\OneDrive\Pictures\Screenshots\Screenshot 2025-03-22 003732.png%; text-align: center;">Daily Mood Tracker</p>
+            <p style="text-align: center;">Daily Mood Tracker</p>
             <div class="header-controls">
                 <button type="button" id="calendar-toggle">📅</button>
             </div>
@@ -151,9 +144,9 @@
         </div>
     </div>
     
-    <audio id="sound-happy" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
-    
+    <audio id="sound-happy" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>    
     <script src="css/moodjs.js"></script>
     <script src="spotify-integration.js"></script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>

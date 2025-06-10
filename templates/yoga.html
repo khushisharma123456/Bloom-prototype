@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom - Yoga for Menstrual Wellness</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Bloom - Yoga for Menstrual Wellness</title>    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <style>
         :root {
             --lavender: #e6e6fa;
@@ -24,88 +25,15 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Nunito', sans-serif;
-        }
-
-        body {
-            display: flex;
+        }        body {
             background-color: #fef6f9;
             color: #333;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            background: linear-gradient(135deg, rgba(255,182,193,0.9) 0%, rgba(230,230,250,0.9) 100%);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--dark-gray);
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .nav-menu {
-            flex-grow: 1;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: var(--rounded);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255,255,255,0.5);
-        }
-
-        .nav-item.active {
-            background-color: var(--white);
-            font-weight: 600;
-        }
-
-        .nav-item i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.5);
-            margin-top: auto;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--white);
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* Main Content Styles */
+        /* Remove old sidebar styles - now using common sidebar */
+        
+        /* Main Content Styles - override common sidebar */
         .main-content {
-            flex: 1;
-            margin-left: 250px;
             padding: 30px;
         }
 
@@ -159,17 +87,15 @@
             background-color: var(--soft-pink);
             color: white;
             font-weight: 600;
-        }
-
-        /* Routine Cards */
+        }        /* Routine Cards */
         .routine-cards {
             margin-bottom: 40px;
         }
 
         .card-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            overflow-x: auto;
             padding-bottom: 20px;
         }
 
@@ -234,6 +160,33 @@
             transform: scale(1.05);
         }
 
+        .routine-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .delete-button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 50%;
+            background-color: rgba(255, 77, 77, 0.8);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+
+        .delete-button:hover {
+            background-color: rgba(255, 77, 77, 1);
+            transform: scale(1.1);
+        }
+
         .pose-icon {
             position: absolute;
             right: 20px;
@@ -291,19 +244,40 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-        }
-
-        .pose-card {
+        }        .pose-card {
             background-color: white;
             border-radius: var(--rounded);
             padding: 15px;
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .pose-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .pose-card:active {
+            transform: translateY(-2px);
+        }
+
+        .pose-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--soft-pink), var(--lavender));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .pose-card:hover::before {
+            transform: scaleX(1);
         }
 
         .pose-card h4 {
@@ -462,6 +436,163 @@
 
         .save-btn:hover {
             background-color: #ff9aae;
+        }        /* Yoga Pose Popup Styles */
+        .pose-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: var(--rounded);
+            overflow-y: auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .popup-header {
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--soft-pink) 100%);
+            padding: 20px;
+            border-radius: var(--rounded) var(--rounded) 0 0;
+            position: relative;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #5a4a6a;
+            transition: var(--transition);
+        }
+
+        .popup-close:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .popup-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #5a4a6a;
+            margin: 0;
+            padding-right: 40px;
+        }
+
+        .popup-type {
+            background-color: rgba(255,255,255,0.8);
+            color: #5a4a6a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .popup-body {
+            padding: 25px;
+        }
+
+        .pose-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--rounded);
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #5a4a6a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 8px;
+            color: var(--soft-pink);
+        }
+
+        .instructions {
+            color: #666;
+            line-height: 1.6;
+            background-color: var(--light-gray);
+            padding: 15px;
+            border-radius: var(--rounded);
+        }
+
+        .benefits-list, .precautions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits-list li, .precautions-list li {
+            padding: 8px 0;
+            color: #666;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .benefits-list li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+
+        .precautions-list li:before {
+            content: "⚠";
+            color: #ffc107;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+
+        .ideal-time {
+            background: linear-gradient(135deg, var(--lavender) 0%, rgba(230,230,250,0.5) 100%);
+            padding: 15px;
+            border-radius: var(--rounded);
+            text-align: center;
+            font-weight: 600;
+            color: #5a4a6a;
+        }
+
+        .time-icon {
+            font-size: 20px;
+            margin-right: 8px;
+            color: var(--soft-pink);
         }
 
         /* Responsive Adjustments */
@@ -489,49 +620,21 @@
             .routine-card {
                 width: 100%;
             }
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+            .popup-content {
+                width: 95%;
+                margin: 10px;
+            }
+            .popup-header {
+                padding: 15px;
+            }
+            .popup-body {
+                padding: 20px;
+            }
+        }    </style>
 </head>
-<body>
-    <!-- Fixed Sidebar -->
-    <div class="sidebar">
-        <div class="logo">Bloom</div>
-        <div class="nav-menu">
-            <div class="nav-item">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-smile"></i>
-                <span>Mood Tracker</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-utensils"></i>
-                <span>Nutrition</span>
-            </div>
-            <div class="nav-item active">
-                <i class="fas fa-spa"></i>
-                <span>Yoga</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-lightbulb"></i>
-                <span>Tips</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-book-open"></i>
-                <span>Recipes</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </div>
-        </div>
-        <div class="user-profile">
-            <div class="avatar">JD</div>
-            <span class="username">Jane Doe</span>
-        </div>
-    </div>
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
 
     <!-- Main Content -->
     <div class="main-content">
@@ -550,36 +653,8 @@
         <!-- Routine Cards -->
         <section class="routine-cards">
             <h2>Featured Routines</h2>
-            <div class="card-container">
-                <!-- Card 1 -->
-                <div class="routine-card lavender-theme">
-                    <div class="card-content">
-                        <h3>Meditative Routine</h3>
-                        <p>Gentle poses to calm the mind and ease cramps</p>
-                        <button class="start-button">Start</button>
-                    </div>
-                    <div class="pose-icon">🧘‍♀️</div>
-                </div>
-                
-                <!-- Card 2 -->
-                <div class="routine-card peach-theme">
-                    <div class="card-content">
-                        <h3>Relax Routine</h3>
-                        <p>Stretches to release tension and improve circulation</p>
-                        <button class="start-button">Start</button>
-                    </div>
-                    <div class="pose-icon">🙆‍♀️</div>
-                </div>
-                
-                <!-- Card 3 -->
-                <div class="routine-card teal-theme">
-                    <div class="card-content">
-                        <h3>Mixed Routine</h3>
-                        <p>Balance of strength and relaxation for overall wellness</p>
-                        <button class="start-button">Start</button>
-                    </div>
-                    <div class="pose-icon">💪</div>
-                </div>
+            <div class="card-container" id="routine-cards">
+                <!-- Routine cards will be loaded here by JS -->
             </div>
         </section>
         
@@ -639,24 +714,139 @@
                 </div>
             </div>
             
-            <button class="save-btn" id="save-routine-btn">Save Routine</button>
-        </div>
+            <button class="save-btn" id="save-routine-btn">Save Routine</button>        </div>
     </div>
 
-    <script>
-        // Sample data for yoga poses
-        const yogaPoses = [
-            { name: "Sukhasana (Easy Pose)", icon: "🧘‍♀️", tags: ["Meditative"], description: "Calms the mind and relieves stress" },
-            { name: "Balasana (Child's Pose)", icon: "🙇‍♀️", tags: ["Relief"], description: "Gently stretches the hips and lower back" },
-            { name: "Vrikshasana (Tree Pose)", icon: "🌳", tags: ["Mix"], description: "Improves balance and focus" },
-            { name: "Marjaryasana (Cat Pose)", icon: "🐱", tags: ["Relief"], description: "Stretches the back and relieves tension" },
-            { name: "Bitilasana (Cow Pose)", icon: "🐄", tags: ["Relief"], description: "Increases spinal flexibility" },
-            { name: "Adho Mukha Svanasana (Downward Dog)", icon: "🦮", tags: ["Mix"], description: "Strengthens and stretches the whole body" },
-            { name: "Bhujangasana (Cobra Pose)", icon: "🐍", tags: ["Relief"], description: "Stretches the abdomen and chest" },
-            { name: "Supta Baddha Konasana (Reclining Butterfly)", icon: "🦋", tags: ["Meditative", "Relief"], description: "Relaxes the hips and groin" },
-            { name: "Viparita Karani (Legs-Up-the-Wall)", icon: "🦵", tags: ["Meditative", "Relief"], description: "Relieves tired legs and improves circulation" },
-            { name: "Savasana (Corpse Pose)", icon: "😴", tags: ["Meditative"], description: "Deep relaxation for body and mind" }
-        ];
+    <!-- Yoga Pose Information Popup -->
+    <div class="pose-popup" id="pose-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title" id="popup-title">Pose Name</h2>
+                <span class="popup-type" id="popup-type">Type</span>
+                <span class="popup-close" id="popup-close">&times;</span>
+            </div>
+            <div class="popup-body">
+                <img class="pose-image" id="popup-image" src="" alt="Pose Image">
+                
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Instructions
+                    </div>
+                    <div class="instructions" id="popup-instructions">
+                        Instructions will appear here
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-heart"></i>
+                        Benefits
+                    </div>
+                    <ul class="benefits-list" id="popup-benefits">
+                        <!-- Benefits will be populated here -->
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-clock"></i>
+                        Ideal Time to Hold
+                    </div>
+                    <div class="ideal-time">
+                        <span class="time-icon">⏱️</span>
+                        <span id="popup-ideal-time">Duration</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Precautions
+                    </div>
+                    <ul class="precautions-list" id="popup-precautions">
+                        <!-- Precautions will be populated here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>    <script>
+        // Sample data for yoga poses - will be replaced with exercise.json data
+        let yogaPoses = [];
+        let exerciseData = [];        // Load exercise data from exercise.json
+        async function loadExerciseData() {
+            try {
+                // Show loading state
+                poseGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 16px; color: var(--soft-pink);"></i>
+                        <h3>Loading yoga poses...</h3>
+                        <p>Please wait while we fetch the latest yoga pose information.</p>
+                    </div>
+                `;
+
+                const response = await fetch('/api/exercises');
+                if (!response.ok) {
+                    throw new Error('Failed to load exercise data');
+                }
+                exerciseData = await response.json();
+                
+                // Transform exercise data to match yogaPoses format
+                yogaPoses = exerciseData.map(exercise => ({
+                    name: exercise.name,
+                    icon: getIconForType(exercise.type),
+                    tags: [capitalizeFirst(exercise.type)],
+                    description: exercise.instructions.substring(0, 60) + "...",
+                    exerciseData: exercise // Store full data for popup
+                }));
+                
+                // Populate the pose library after data is loaded
+                populatePoseLibrary();
+                populatePoseSelector();
+                
+            } catch (error) {
+                console.error('Error loading exercise data:', error);
+                // Show error state
+                poseGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px; color: #dc3545;"></i>
+                        <h3>Failed to load yoga poses</h3>
+                        <p>There was an error loading the yoga pose data. Using fallback data.</p>
+                    </div>
+                `;
+                
+                // Fallback to sample data if loading fails
+                yogaPoses = [
+                    { name: "Sukhasana (Easy Pose)", icon: "🧘‍♀️", tags: ["Meditative"], description: "Calms the mind and relieves stress" },
+                    { name: "Balasana (Child's Pose)", icon: "🙇‍♀️", tags: ["Relief"], description: "Gently stretches the hips and lower back" },
+                    { name: "Vrikshasana (Tree Pose)", icon: "🌳", tags: ["Mix"], description: "Improves balance and focus" },
+                    { name: "Marjaryasana (Cat Pose)", icon: "🐱", tags: ["Relief"], description: "Stretches the back and relieves tension" },
+                    { name: "Bitilasana (Cow Pose)", icon: "🐄", tags: ["Relief"], description: "Increases spinal flexibility" },
+                    { name: "Adho Mukha Svanasana (Downward Dog)", icon: "🦮", tags: ["Mix"], description: "Strengthens and stretches the whole body" },
+                    { name: "Bhujangasana (Cobra Pose)", icon: "🐍", tags: ["Relief"], description: "Stretches the abdomen and chest" },
+                    { name: "Supta Baddha Konasana (Reclining Butterfly)", icon: "🦋", tags: ["Meditative", "Relief"], description: "Relaxes the hips and groin" },
+                    { name: "Viparita Karani (Legs-Up-the-Wall)", icon: "🦵", tags: ["Meditative", "Relief"], description: "Relieves tired legs and improves circulation" },
+                    { name: "Savasana (Corpse Pose)", icon: "😴", tags: ["Meditative"], description: "Deep relaxation for body and mind" }
+                ];
+                setTimeout(() => {
+                    populatePoseLibrary();
+                    populatePoseSelector();
+                }, 2000);
+            }
+        }
+
+        function getIconForType(type) {
+            const icons = {
+                'meditative': '🧘‍♀️',
+                'relief': '🙇‍♀️',
+                'mixed': '🌳'
+            };
+            return icons[type] || '🧘‍♀️';
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
 
         // DOM Elements
         const poseGrid = document.getElementById('pose-grid');
@@ -669,10 +859,71 @@
         const modalDurationOptions = document.querySelectorAll('.modal .duration-option');
         const tagButtons = document.querySelectorAll('.tag-btn');
 
-        // Populate pose library
+        // Popup elements
+        const posePopup = document.getElementById('pose-popup');
+        const popupClose = document.getElementById('popup-close');
+        const popupTitle = document.getElementById('popup-title');
+        const popupType = document.getElementById('popup-type');
+        const popupImage = document.getElementById('popup-image');
+        const popupInstructions = document.getElementById('popup-instructions');
+        const popupBenefits = document.getElementById('popup-benefits');
+        const popupIdealTime = document.getElementById('popup-ideal-time');
+        const popupPrecautions = document.getElementById('popup-precautions');        // Show pose popup
+        function showPosePopup(poseData) {
+            // Handle missing data gracefully
+            if (!poseData || !poseData.name) {
+                console.error('Pose data is missing or invalid');
+                return;
+            }
+
+            popupTitle.textContent = poseData.name;
+            popupType.textContent = capitalizeFirst(poseData.type || 'general');
+            popupImage.src = poseData.image || '/static/Images/meditation-figure.png';
+            popupImage.alt = poseData.name;
+            popupInstructions.textContent = poseData.instructions || 'Instructions not available for this pose.';
+            popupIdealTime.textContent = poseData.idealTime || `${Math.floor((poseData.duration || 60) / 60)}:${((poseData.duration || 60) % 60).toString().padStart(2, '0')} minutes`;
+
+            // Populate benefits
+            popupBenefits.innerHTML = '';
+            if (poseData.benefits && poseData.benefits.length > 0) {
+                poseData.benefits.forEach(benefit => {
+                    const li = document.createElement('li');
+                    li.textContent = benefit;
+                    popupBenefits.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Promotes relaxation and well-being';
+                popupBenefits.appendChild(li);
+            }
+
+            // Populate precautions
+            popupPrecautions.innerHTML = '';
+            if (poseData.precautions && poseData.precautions.length > 0) {
+                poseData.precautions.forEach(precaution => {
+                    const li = document.createElement('li');
+                    li.textContent = precaution;
+                    popupPrecautions.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Listen to your body and avoid strain';
+                popupPrecautions.appendChild(li);
+            }
+
+            // Show popup
+            posePopup.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Hide pose popup
+        function hidePosePopup() {
+            posePopup.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }        // Populate pose library
         function populatePoseLibrary() {
             poseGrid.innerHTML = '';
-            yogaPoses.forEach(pose => {
+            yogaPoses.forEach((pose, index) => {
                 const poseCard = document.createElement('div');
                 poseCard.className = 'pose-card';
                 
@@ -686,6 +937,67 @@
                     <div class="pose-icon-small">${pose.icon}</div>
                     <div class="pose-tags">${tagsHTML}</div>
                 `;
+                
+                // Add click event to show popup
+                poseCard.addEventListener('click', () => {
+                    const exerciseDetails = pose.exerciseData || exerciseData.find(e => e.name === pose.name.split(' (')[0]) || {};
+                    showPosePopup(exerciseDetails);
+                });
+                
+                poseGrid.appendChild(poseCard);
+            });
+        }
+
+        // Search functionality
+        function setupSearchFunctionality() {
+            const searchInput = document.querySelector('.search-bar input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filteredPoses = yogaPoses.filter(pose => 
+                        pose.name.toLowerCase().includes(searchTerm) ||
+                        pose.description.toLowerCase().includes(searchTerm) ||
+                        pose.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                    );
+                    renderFilteredPoses(filteredPoses);
+                });
+            }
+        }        // Render filtered poses
+        function renderFilteredPoses(filteredPoses) {
+            poseGrid.innerHTML = '';
+            
+            if (filteredPoses.length === 0) {
+                poseGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; color: var(--soft-pink);"></i>
+                        <h3>No poses found</h3>
+                        <p>Try searching with different keywords or clear your search to see all poses.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredPoses.forEach((pose, index) => {
+                const poseCard = document.createElement('div');
+                poseCard.className = 'pose-card';
+                
+                const tagsHTML = pose.tags.map(tag => {
+                    const tagClass = tag.toLowerCase() + '-tag';
+                    return `<span class="tag ${tagClass}">${tag}</span>`;
+                }).join('');
+                
+                poseCard.innerHTML = `
+                    <h4>${pose.name}</h4>
+                    <div class="pose-icon-small">${pose.icon}</div>
+                    <div class="pose-tags">${tagsHTML}</div>
+                `;
+                
+                // Add click event to show popup
+                poseCard.addEventListener('click', () => {
+                    const exerciseDetails = pose.exerciseData || exerciseData.find(e => e.name === pose.name.split(' (')[0]) || {};
+                    showPosePopup(exerciseDetails);
+                });
+                
                 poseGrid.appendChild(poseCard);
             });
         }
@@ -717,6 +1029,110 @@
                 `;
                 poseSelector.appendChild(poseItem);
             });
+        }// Routine Cards Loader (now uses backend API)
+        function getAllRoutines() {
+            return fetch('/api/routines')
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch routines');
+                    }
+                    return res.json();
+                })
+                .catch(error => {
+                    console.error('Error fetching routines:', error);
+                    return [];
+                });
+        }
+
+        function renderRoutineCards() {
+            getAllRoutines().then(routines => {
+                const cardContainer = document.getElementById('routine-cards');
+                cardContainer.innerHTML = '';
+                const themes = ['lavender-theme', 'peach-theme', 'teal-theme'];
+                const icons = ['🧘‍♀️', '🙆‍♀️', '💪'];
+                
+                if (routines.length === 0) {
+                    cardContainer.innerHTML = '<p>No routines available. Create your first routine!</p>';
+                    return;
+                }
+                  routines.forEach((routine, i) => {
+                    const card = document.createElement('div');
+                    card.className = `routine-card ${themes[i % themes.length]}`;
+                    
+                    // Check if this is a custom routine
+                    const isCustom = routine.custom === true;
+                    
+                    card.innerHTML = `
+                        <div class="card-content">
+                          <h3>${routine.name}</h3>
+                          <p>${routine.description || 'Custom routine'}</p>
+                          <div class="routine-actions">
+                            <button class="start-button">Start</button>
+                            ${isCustom ? '<button class="delete-button" title="Delete this routine">🗑️</button>' : ''}
+                          </div>
+                        </div>
+                        <div class="pose-icon">${icons[i % icons.length]}</div>
+                    `;
+                    
+                    card.querySelector('.start-button').onclick = () => {
+                        window.location.href = 'exercise?routine=' + encodeURIComponent(routine.name);
+                    };
+                    
+                    // Add delete functionality for custom routines
+                    if (isCustom) {
+                        const deleteBtn = card.querySelector('.delete-button');
+                        deleteBtn.onclick = (e) => {
+                            e.stopPropagation(); // Prevent card click event
+                            if (confirm(`Are you sure you want to delete the routine "${routine.name}"?`)) {
+                                deleteCustomRoutine(routine.name);
+                            }
+                        };
+                    }
+                    
+                    cardContainer.appendChild(card);
+                });
+            });
+        }
+
+        // Save custom routine to backend
+        function saveCustomRoutine(routine) {
+            return fetch('/api/routines', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(routine)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                return data;
+            });
+        }
+
+        // Delete custom routine
+        function deleteCustomRoutine(routineName) {
+            return fetch(`/api/routines/${encodeURIComponent(routineName)}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                alert(data.message || `Routine "${routineName}" deleted successfully!`);
+                renderRoutineCards(); // Refresh the routine cards
+                return data;
+            })
+            .catch(error => {
+                alert('Error deleting routine: ' + error.message);
+                throw error;
+            });
         }
 
         // Event Listeners
@@ -730,37 +1146,57 @@
             document.body.style.overflow = 'auto';
         });
 
+        // Popup event listeners
+        popupClose.addEventListener('click', hidePosePopup);
+        
+        posePopup.addEventListener('click', (e) => {
+            if (e.target === posePopup) {
+                hidePosePopup();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && posePopup.style.display === 'flex') {
+                hidePosePopup();
+            }
+        });
+
         saveRoutineBtn.addEventListener('click', () => {
             const routineName = document.getElementById('routine-name').value;
             if (!routineName) {
                 alert('Please enter a routine name');
                 return;
             }
-            
-            const selectedDuration = document.querySelector('.modal .duration-option.active').textContent;
-            const selectedPoses = [];
-            
+            const selectedDuration = document.querySelector('.modal .duration-option.active').textContent;            const selectedPoses = [];
             document.querySelectorAll('.pose-item input:checked').forEach(checkbox => {
                 const poseName = checkbox.nextElementSibling.querySelector('label').textContent;
                 const duration = checkbox.parentElement.querySelector('.pose-item-duration').value;
-                selectedPoses.push({ name: poseName, duration: duration });
+                // Extract just the Sanskrit name (before the parentheses)
+                const sanskritName = poseName.split(' (')[0];
+                selectedPoses.push(sanskritName);
             });
-            
             if (selectedPoses.length === 0) {
                 alert('Please select at least one pose');
                 return;
             }
             
-            // Here you would typically save the routine to your backend
-            console.log('New Routine:', {
+            // Save to backend via API
+            saveCustomRoutine({
                 name: routineName,
-                duration: selectedDuration,
+                description: `Custom routine (${selectedDuration})`,
                 poses: selectedPoses
+            }).then(data => {
+                alert(`Routine "${routineName}" saved successfully!`);
+                routineModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                renderRoutineCards(); // Refresh the routine cards
+                // Clear form
+                document.getElementById('routine-name').value = '';
+                document.querySelectorAll('.pose-item input:checked').forEach(cb => cb.checked = false);
+            }).catch(error => {
+                alert('Error saving routine: ' + error.message);
             });
-            
-            alert(`Routine "${routineName}" saved successfully!`);
-            routineModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
         });
 
         // Duration selection
@@ -791,11 +1227,14 @@
                 routineModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
+        });        // Initialize the page
+        loadExerciseData().then(() => {
+            setupSearchFunctionality();
+            renderRoutineCards();
         });
-
-        // Initialize the page
-        populatePoseLibrary();
-        populatePoseSelector();
     </script>
+    
+    <!-- Common Sidebar JavaScript -->
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
