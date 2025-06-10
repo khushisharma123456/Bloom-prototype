@@ -274,17 +274,10 @@ def dashboard():
         cycle_length=user.cycle_length,
         period_length=user.period_length,
         survey_stats=survey_stats
-    )
-
-    
+    )    
 # Period Tracker Page (Only for logged-in users)
 pain_mapping = {'No Pain': 0, 'Mild': 3, 'Moderate': 5, 'Severe': 10}
 flow_mapping = {'None': 0, 'Light': 2, 'Medium': 5, 'Heavy': 8}
-
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from datetime import datetime, timedelta
-import os
-import json
 
 try:
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -317,9 +310,6 @@ def predict_cycle(start_date_str, cycle_length):
     }
 
 # ------------------------ Main Route ------------------------
-from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime, timedelta
-
 
 @app.route('/period_tracker', methods=['GET', 'POST'])
 def period_tracker():
@@ -414,6 +404,13 @@ def mood():
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
     return render_template('mood.html', user_name=session['user_name'])
+
+@app.route('/education')
+def education():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('education.html', user_name=session['user_name'])
 
 # Add this function to check Spotify token status
 def is_spotify_token_valid():
@@ -938,13 +935,11 @@ def get_ayurvedic_recommendations():
             # Check both 'category' (list or string) and 'badge' (string)
             categories = remedy.get('category', [])
             badge = remedy.get('badge', '')
-            
-            # Normalize
+              # Normalize
             if isinstance(categories, str):
                 categories = [categories]
             normalized_categories = [c.strip().lower() for c in categories]
             normalized_badge = badge.strip().lower()
-            
             print(f"Remedy: {remedy.get('name', 'Unknown')} | Badge: {normalized_badge} | Categories: {normalized_categories}")
               # Match if any symptom matches category or badge
             if any(symptom in normalized_categories for symptom in normalized_symptoms) or \
@@ -970,8 +965,6 @@ def get_ayurvedic_recommendations():
 @app.route('/api/get-recommendations', methods=['POST'])
 def get_gemini_recommendations():
     try:
-        import requests
-        
         # Debug: Check if API key exists
         api_key = os.getenv('GEMINI_API_KEY')
         print(f"API Key exists: {'Yes' if api_key else 'No'}")
@@ -1025,8 +1018,7 @@ def get_gemini_recommendations():
             }), 500
             
         gemini_response = result['candidates'][0]['content']['parts'][0]['text']
-        
-        # Try to parse as JSON
+          # Try to parse as JSON
         try:
             parsed_response = json.loads(gemini_response)
             return jsonify({
@@ -1047,7 +1039,8 @@ def get_gemini_recommendations():
             'success': False,
             'message': 'API request timed out. Please try again.'
         }), 500
-    except requests.exceptions.RequestException as e:        return jsonify({
+    except requests.exceptions.RequestException as e:
+        return jsonify({
             'success': False,
             'message': f'Network error: {str(e)}'
         }), 500
