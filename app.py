@@ -174,7 +174,7 @@ def survey():
                 q4_cycle_length=request.form.get('q4'),
                 q5_period_regularity=request.form.get('q5'),
                 q6_hair_growth=request.form.get('q6'),
-                q7_acne=request.form.get('q7'),
+                q7_acne=request.form.get('q7'),  # FIXED: missing closing parenthesis
                 q8_hair_thinning=request.form.get('q8'),
                 q9_weight_gain=request.form.get('q9'),
                 q10_sugar_craving=request.form.get('q10'),
@@ -830,8 +830,13 @@ def remedy_details(remedy_name):
         print("Recipe not found!")
         abort(404)
     
-    
     return render_template('remedy.html', remedy=recipe)
+
+@app.route('/remedies')
+def all_remedies():
+    # recipes is a dict: {title.lower(): recipe_dict}
+    all_recipes = list(recipes.values())
+    return render_template('remedy.html', remedies=all_recipes)
 
 @app.route('/api/get-yoga-recommendations', methods=['POST'])
 def get_yoga_recommendations():
@@ -850,12 +855,6 @@ def get_yoga_recommendations():
             'yogaAsanas': recommendations
         }
     })
-@app.route('/remedies')
-def all_remedies():
-    # recipes is a dict: {title.lower(): recipe_dict}
-    all_recipes = list(recipes.values())
-    return render_template('remedy.html', remedies=all_recipes)
-
 
 @app.route('/api/get-ayurvedic-recommendations', methods=['POST'])
 def get_ayurvedic_recommendations():
