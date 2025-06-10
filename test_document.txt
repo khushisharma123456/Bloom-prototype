@@ -1,0 +1,17 @@
+This is a test document for the Bloom chatbot.
+
+The chatbot should be able to read this text content and answer questions about it.
+
+Key points in this document:
+1. This is a test file
+2. It contains sample content
+3. The chatbot should extract and analyze this text
+4. Users can ask questions about the content
+
+Sample data:
+- Project: Bloom Prototype
+- Type: Health and Wellness Chatbot
+- Features: Period tracking, mood monitoring, nutrition advice
+- Technology: Flask, JavaScript, Gemini AI
+
+This document can be used to test whether the file upload and content extraction functionality is working properly in the chatbot.

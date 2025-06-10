@@ -12,6 +12,8 @@
 
 html {
     overflow-wrap: break-word;
+    overflow: hidden;
+    height: 100%;
 }
 
 body {
@@ -20,6 +22,8 @@ body {
     padding: 0;
     color: var(--text-color);
     background-color: var(--cream-bg);
+    overflow: hidden;
+    height: 100%;
 }
 
 .app-container {
@@ -122,14 +126,18 @@ body {
     flex: 1;
     display: flex;
     overflow: hidden;
+    width: 100%;
 }
 
 .left {
     width: 260px;
+    min-width: 260px;
+    max-width: 260px;
     padding: 1rem;
     background-color: white;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .history-header {
@@ -161,6 +169,7 @@ body {
 .chat-history-section {
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
 }
 
 .no-history-message {
@@ -200,16 +209,21 @@ body {
 
 .right {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     padding: 1rem;
     background-color: var(--cream-bg);
+    overflow: hidden;
+    height: 100%;
 }
 
 .chat-container {
     flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .user-prompt, .ai-prompt {
@@ -604,9 +618,22 @@ body {
 
 /* Chat Messages Container */
 .chat-messages {
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 1rem;
+    min-height: 0;
+}
+
+/* Welcome Screen - should not scroll */
+.welcome-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
 }
 
 /* Attachment Dropdown Styles */
@@ -689,193 +716,213 @@ body {
 
 /* File Preview Styles */
 .file-preview {
-    background-color: var(--light-pink);
+    background: linear-gradient(135deg, var(--light-pink), var(--secondary-pink));
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 12px;
     margin: 8px 0;
     display: flex;
     align-items: center;
-    animation: fadeIn 0.3s ease-in-out;
+    animation: slideInUp 0.3s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.preview-header {
+.file-preview .preview-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
 }
 
-.preview-header i:first-child {
-    color: var(--primary-color);
-    font-size: 16px;
+.file-preview .preview-header i:first-child {
+    color: white;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    border-radius: 6px;
 }
 
-.preview-title {
+.file-preview .preview-title {
     flex: 1;
     font-size: 14px;
-    color: var(--text-color);
+    color: white;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.remove-preview {
-    background: none;
+.file-preview .file-size {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 8px;
+}
+
+.file-preview .remove-preview {
+    background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: var(--text-color);
+    color: white;
     cursor: pointer;
-    padding: 4px;
+    padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     transition: background-color 0.2s;
+    width: 28px;
+    height: 28px;
 }
 
-.remove-preview:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+.file-preview .remove-preview:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
-.remove-preview i {
-    font-size: 14px;
+.file-preview .remove-preview i {
+    font-size: 12px;
 }
 
-.preview-image img {
-    max-width: 100%;
-    max-height: 200px;
-    object-fit: contain;
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.preview-video video {
-    max-width: 100%;
-    max-height: 200px;
+/* Message Attachments Styles */
+.message-attachments {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.preview-file {
+.user-prompt .message-attachments {
+    border-top-color: rgba(255, 255, 255, 0.3);
+}
+
+.ai-prompt .message-attachments {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.message-attachment {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.user-prompt .message-attachment {
+    background: rgba(255, 255, 255, 0.2);
     color: white;
 }
 
-.preview-file i {
-    font-size: 1.2rem;
-}
-
-.file-size {
-    font-size: 0.8rem;
-    opacity: 0.8;
-}
-
-/* Message Attachment Styles */
-.message-attachment {
-    margin-top: 8px;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.message-attachment img {
-    max-width: 100%;
-    max-height: 200px;
-    object-fit: contain;
-}
-
-.message-attachment video {
-    max-width: 100%;
-    max-height: 200px;
+.ai-prompt .message-attachment {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-color);
 }
 
 .message-attachment i {
-    margin-right: 8px;
-    color: white;
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
 }
 
-/* Microphone Button Styles */
-.mic-btn {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.attachment-name {
+    flex: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.mic-btn:hover {
-    color: var(--accent-pink);
-    background-color: rgba(255, 158, 210, 0.1);
-}
-
-.mic-btn.recording {
-    color: #ff4757;
-    animation: pulse 1.5s infinite;
-}
-
-.mic-btn.recording i {
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Speech Recognition Status */
-.speech-status {
-    position: absolute;
-    bottom: -25px;
-    left: 0;
+.attachment-size {
     font-size: 0.8rem;
-    color: var(--accent-pink);
-    display: none;
+    opacity: 0.8;
+    font-weight: normal;
 }
 
-.speech-status.active {
-    display: block;
-    animation: fadeIn 0.3s ease-in-out;
+.user-prompt .attachment-size {
+    color: rgba(255, 255, 255, 0.8);
 }
 
-/* Add custom flower icon styles */
-.fa-flower {
-    position: relative;
-    display: inline-block;
-    width: 24px;
-    height: 24px;
+.ai-prompt .attachment-size {
+    color: rgba(0, 0, 0, 0.6);
 }
 
-.fa-flower::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, white 0%, white 40%, transparent 40%);
-    transform: rotate(0deg);
+/* Responsive Design and Layout Fixes */
+@media (max-width: 1024px) {
+    .left {
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
+    }
 }
 
-.fa-flower::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, white 0%, white 40%, transparent 40%);
-    transform: rotate(120deg);
+@media (max-width: 768px) {
+    .left {
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+        padding: 0.5rem;
+    }
+    
+    .right {
+        padding: 0.5rem;
+    }
+    
+    .input-area {
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
 }
 
-.fa-flower::before {
-    transform: rotate(240deg);
+@media (max-width: 480px) {
+    .body {
+        flex-direction: column;
+    }
+    
+    .left {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: 150px;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    
+    .line {
+        width: 100%;
+        height: 1px;
+    }
+    
+    .right {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
+/* Ensure no layout shifts during interactions */
+.app-container,
+.body,
+.left,
+.right {
+    box-sizing: border-box;
+}
+
+/* Prevent shrinking during file operations */
+.left.processing,
+.body.processing {
+    pointer-events: none;
+}
+
+.left.processing {
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
 }
