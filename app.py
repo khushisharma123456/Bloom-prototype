@@ -878,3 +878,17 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+@app.route('/personalised-yoga')
+def personalised_yoga():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('personalised-yoga.html', user_name=session.get('user_name', 'User'))
+
+@app.route('/personalised-remdy')
+def personalised_remdy():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('personalised-remdy.html', user_name=session.get('user_name', 'User'))

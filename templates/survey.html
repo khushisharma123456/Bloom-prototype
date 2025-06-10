@@ -7,18 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bloom-lavender: #E2D1F9;
-            --bloom-pink: #FFD6E0;
-            --bloom-peach: #FFDFD3;
+            --bloom-lavender: #B8B3FF; /* Biollet (lavender) */
+            --bloom-pink: #FFFFFF;    /* White */
+            --bloom-peach: #E8E0FF;   /* Light biollet */
             --bloom-light: #F9F7FC;
-            --bloom-dark: #5E4A7D;
+            --bloom-dark: #6E5B9A;    /* Deep biollet */
             --bloom-text: #4A4458;
-            --bloom-shadow: 0 4px 20px rgba(94, 74, 125, 0.1);
+            --bloom-shadow: 0 4px 20px rgba(110, 91, 154, 0.10);
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FFF5F9, #F9F7FC);
+            background: linear-gradient(135deg, #F9F7FC, #B8B3FF 60%);
             color: var(--bloom-text);
             min-height: 100vh;
             padding: 20px;
@@ -38,6 +38,7 @@
             box-shadow: var(--bloom-shadow);
             margin: 40px auto;
             animation: slideUp 0.6s ease-out;
+            border: 2px solid var(--bloom-lavender);
         }
 
         @keyframes slideUp {
@@ -68,7 +69,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, var(--bloom-pink), var(--bloom-lavender));
+            background: linear-gradient(90deg, var(--bloom-lavender), var(--bloom-pink));
             border-radius: 3px;
         }
 
@@ -84,14 +85,14 @@
             border: 2px solid var(--bloom-lavender);
             border-radius: 12px;
             padding: 12px 15px;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(184, 179, 255, 0.08);
             transition: all 0.3s ease;
             box-shadow: none !important;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: var(--bloom-pink);
-            box-shadow: 0 0 0 4px rgba(226, 209, 249, 0.5) !important;
+            border-color: var(--bloom-dark);
+            box-shadow: 0 0 0 4px rgba(184, 179, 255, 0.18) !important;
         }
 
         .form-check {
@@ -107,8 +108,8 @@
         }
 
         .form-check-input:checked {
-            background-color: var(--bloom-pink);
-            border-color: var(--bloom-pink);
+            background-color: var(--bloom-lavender);
+            border-color: var(--bloom-dark);
         }
 
         .form-check-input:focus {
@@ -125,7 +126,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--bloom-pink), var(--bloom-peach));
+            background: linear-gradient(135deg, var(--bloom-lavender), var(--bloom-dark));
             border: none;
             border-radius: 12px;
             padding: 12px 30px;
@@ -133,7 +134,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(255, 214, 224, 0.4);
+            box-shadow: 0 4px 15px rgba(184, 179, 255, 0.18);
             transition: all 0.3s ease;
             display: block;
             width: 100%;
@@ -143,22 +144,23 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 214, 224, 0.6);
-            background: linear-gradient(135deg, var(--bloom-peach), var(--bloom-pink));
+            box-shadow: 0 6px 20px rgba(110, 91, 154, 0.18);
+            background: linear-gradient(135deg, var(--bloom-dark), var(--bloom-lavender));
         }
 
         .mb-4 {
-            background-color: white;
+            background-color: #F9F7FC;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 25px !important;
-            box-shadow: 0 2px 10px rgba(226, 209, 249, 0.2);
+            box-shadow: 0 2px 10px rgba(184, 179, 255, 0.10);
+            border: 1.5px solid var(--bloom-lavender);
             transition: all 0.3s ease;
         }
 
         .mb-4:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(226, 209, 249, 0.3);
+            box-shadow: 0 5px 15px rgba(110, 91, 154, 0.13);
         }
 
         /* Calendar Picker Styles */
