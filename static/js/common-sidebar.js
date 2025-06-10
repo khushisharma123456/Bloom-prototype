@@ -7,10 +7,9 @@ function setActiveNavItem() {
     const dropdownItems = document.querySelectorAll('.dropdown-item');
     
     // Remove active class from all items
-    navItems.forEach(item => item.classList.remove('active'));
-    dropdownItems.forEach(item => item.classList.remove('active'));
-      // Map of paths to nav items
-    dropdownItems.forEach(item => item.classList.remove('active'));    // Map of paths to nav items
+    navItems.forEach(item => item.classList.remove('active'));    dropdownItems.forEach(item => item.classList.remove('active'));
+    
+    // Map of paths to nav items
     const pathMap = {
         '/': 'dashboard',  // Root still maps to dashboard for fallback
         '/dashboard': 'dashboard',
@@ -20,11 +19,10 @@ function setActiveNavItem() {
         '/education': 'education',
         '/consultation': 'consultation',
         '/chatbot': 'chatbot',
-        '/settings': 'settings',
-        '/Period-Tracker': 'period-tracker',
+        '/settings': 'settings',        '/Period-Tracker': 'period-tracker',
         '/recipe': 'nutrition', // Recipe pages should highlight nutrition
-        '/personalised-yoga': 'yoga',
-        '/personalised-remdy': 'nutrition'
+        // '/personalised-yoga': 'yoga',  // Removed to prevent auto-selection of yoga sidebar
+        // '/personalised-remdy': 'nutrition'  // Removed to prevent auto-selection of nutrition sidebar
     };
     
     // Find matching nav item and set as active

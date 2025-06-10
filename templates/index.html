@@ -1086,8 +1086,7 @@
                     if (idx > -1) selectedSymptoms.splice(idx, 1);
                 };
                 chip.appendChild(delBtn);
-            }
-            chip.addEventListener('click', () => {
+            }            chip.addEventListener('click', () => {
                 chip.classList.toggle('selected');
                 const symptom = name;
                 if (chip.classList.contains('selected')) {
@@ -1098,6 +1097,8 @@
                     const index = selectedSymptoms.indexOf(symptom);
                     if (index > -1) selectedSymptoms.splice(index, 1);
                 }
+                // Update localStorage immediately when symptoms change
+                updateSelectedSymptomsDisplay();
             });
             return chip;
         }
@@ -1147,8 +1148,7 @@
 
         // Remove 'selected' class from all symptom chips on load
         document.querySelectorAll('.symptom-chip.selected').forEach(function(chip) { chip.classList.remove('selected'); });
-        
-        // Add click handlers to existing symptom chips
+          // Add click handlers to existing symptom chips
         document.querySelectorAll('.symptom-chip:not(.add-symptom)').forEach(chip => {
             chip.addEventListener('click', () => {
                 chip.classList.toggle('selected');
@@ -1161,20 +1161,15 @@
                     const index = selectedSymptoms.indexOf(symptom);
                     if (index > -1) selectedSymptoms.splice(index, 1);
                 }
+                // Update localStorage immediately when symptoms change
+                updateSelectedSymptomsDisplay();
             });
         });
-        
-        // Ensure selected symptoms are saved to localStorage on symptom selection
+          // Ensure selected symptoms are saved to localStorage on symptom selection
         function updateSelectedSymptomsDisplay() {
-            selectedSymptomsContainer.innerHTML = '';
-            selectedSymptoms.forEach(symptom => {
-                const badge = document.createElement('span');
-                badge.className = 'badge bg-primary m-1';
-                badge.textContent = symptom;
-                selectedSymptomsContainer.appendChild(badge);
-            });
             // Save to localStorage for personalized pages
             localStorage.setItem('selectedSymptoms', JSON.stringify(Array.from(selectedSymptoms)));
+            console.log('Symptoms saved to localStorage:', selectedSymptoms);
         }
 
         // Join Now button event listener

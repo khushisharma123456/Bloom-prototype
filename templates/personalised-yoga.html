@@ -7,133 +7,1206 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .card {
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <style>
+        :root {
+            --bg-color: #FFF9F9;
+            --text-dark: #4A4A4A;
+            --text-light: #8A7FAA;
+            --accent-pink: #FFD6E0;
+            --accent-peach: #FFE8D6;
+            --accent-teal: #C1EDE6;
+            --accent-lavender: #E8E0FF;
+            --primary-purple: #6E5B9A;
+            --soft-shadow: 0 4px 20px rgba(110, 91, 154, 0.1);
+            --gradient-primary: linear-gradient(135deg, #FFD6E0 0%, #E8E0FF 100%);
+            --gradient-secondary: linear-gradient(135deg, #C1EDE6 0%, #FFE8D6 100%);
         }
-        .card:hover {
-            transform: translateY(-5px);
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
         }
-        .card-img-top {
-            height: 250px;
-            object-fit: cover;
+
+        .main-content {
+            background: linear-gradient(135deg, #FFF9F9 0%, #F9F5FF 50%, #FFF9F9 100%);
+            min-height: 100vh;
+            padding-top: 2rem;
         }
-        .benefit-badge {
-            margin-right: 5px;
-            margin-bottom: 5px;
+
+        .page-header {
+            background: var(--gradient-primary);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            box-shadow: var(--soft-shadow);
+            position: relative;
+            overflow: hidden;
         }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .page-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .symptoms-display {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 1rem;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
+
+        .symptom-tag {
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            display: inline-block;
+        }        .yoga-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--soft-shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 2px solid #f0f0f0;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .yoga-card.compact {
+            height: 180px;
+            transform: scale(1);
+        }
+
+        .yoga-card.expanded {
+            height: auto;
+            min-height: 500px;
+            transform: scale(1);
+            z-index: 1000;
+            position: relative;
+        }
+
+        .yoga-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(110, 91, 154, 0.2);
+            border-color: var(--accent-lavender);
+        }
+
+        .yoga-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 20px 20px 0 0;
+        }        .card-img-wrapper {
+            display: none; /* Hide image wrapper for new design */
+        }
+
+        .yoga-card-content {
+            padding: 1.5rem;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .yoga-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .yoga-card.expanded .yoga-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }        .card-img-top {
+            display: none; /* Not using images anymore */
+        }
+
+        .duration-overlay {
+            display: none; /* Not showing duration overlay in new design */
+        }        /* Remove old card-body styling since we're using yoga-card-content now */.card-body-compact {
+            display: block;
+        }
+
+        .card-body-detailed {
+            display: none;
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .yoga-card.expanded .card-body-compact {
+            display: none;
+        }
+
+        .yoga-card.expanded .card-body-detailed {
+            display: block;
+        }
+
+        .yoga-card.expanded .yoga-card-content {
+            text-align: left;
+            align-items: flex-start;
+        }        .expand-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(110, 91, 154, 0.8);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .yoga-card.compact:hover .expand-hint {
+            opacity: 1;
+        }
+
+        .yoga-card.expanded .expand-hint {
+            display: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--primary-purple);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .yoga-card.expanded .close-btn {
+            display: flex;
+        }        .asana-name {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .yoga-card.expanded .asana-name {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .yoga-card.compact .asana-name {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-clamp: 2;
+        }        .asana-description {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .yoga-card.compact .asana-description {
+            display: none; /* Hide description in compact view for cleaner look */
+        }
+
+        .yoga-card.expanded .asana-description {
+            display: block;
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .benefits-preview {
+            display: none; /* Hide in compact view for cleaner look */
+        }
+
+        .yoga-card.expanded .benefits-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+
+        .benefit-preview {
+            background: var(--accent-lavender);
+            color: var(--primary-purple);
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .yoga-card.compact .benefits-preview .benefit-preview:nth-child(n+3) {
+            display: none;
+        }
+
+        .more-benefits {
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
         .section-title {
-            color: #2c7873;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin: 1.5rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .precaution-item {
+
+        .section-title.steps::before { content: '📝'; }
+        .section-title.benefits::before { content: '✨'; }
+        .section-title.relieves::before { content: '💚'; }
+        .section-title.precautions::before { content: '⚠️'; }
+
+        .steps-list {
+            background: var(--accent-lavender);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .steps-list li {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .steps-list li::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--primary-purple);
+            color: white;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .steps-list {
+            counter-reset: step-counter;
+        }
+
+        .benefit-badge {
+            background: var(--gradient-secondary);
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            border: none;
+        }
+
+        .symptom-badge {
+            background: var(--gradient-primary);
+            color: var(--primary-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .precautions-list {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 0;
+        }
+
+        .precautions-list li {
             color: #dc3545;
-        }        .duration-badge {
-            background-color: #6c757d;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
         }
+
         .loading-spinner {
             display: none;
             text-align: center;
-            padding: 20px;
-        }    </style>
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--soft-shadow);
+            margin: 2rem auto;
+            max-width: 400px;
+        }
+
+        .loading-spinner .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3rem;
+            color: var(--primary-purple);
+        }
+
+        .loading-message {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .error-container {
+            background: linear-gradient(135deg, #ffe6e6 0%, #fff0f0 100%);
+            border: 2px solid #dc3545;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            color: #dc3545;
+            margin: 2rem 0;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            text-align: center;
+            box-shadow: var(--soft-shadow);
+            margin: 2rem 0;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }        /* Beautiful Modal Styles */
+        .yoga-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(110, 91, 154, 0.3);
+            position: relative;
+            animation: modalSlideIn 0.4s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: var(--gradient-primary);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: white;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .modal-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }        .modal-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .modal-difficulty {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
+
+        .modal-duration-container {
+            text-align: center;
+            width: 100%;
+        }
+
+        .modal-duration-container .modal-section-title {
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-duration-container .modal-info-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            background: linear-gradient(135deg, var(--accent-lavender), rgba(232, 224, 255, 0.5));
+            border-radius: 15px;
+            padding: 1rem;
+            display: block;
+            width: 100%;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--accent-lavender);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-purple);
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(110, 91, 154, 0.1);
+            border-left: 4px solid var(--accent-lavender);
+        }
+
+        .modal-section-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }        .modal-section-title.steps::before { content: '📝'; font-size: 1.5rem; }
+        .modal-section-title.benefits::before { content: '✨'; font-size: 1.5rem; }
+        .modal-section-title.relieves::before { content: '💚'; font-size: 1.5rem; }
+        .modal-section-title.precautions::before { content: '⚠️'; font-size: 1.5rem; }
+        .modal-section-title.duration::before { content: '⏱️'; font-size: 1.5rem; }
+        .modal-section-title.difficulty::before { content: '🎯'; font-size: 1.5rem; }
+
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-info-item {
+            background: linear-gradient(135deg, var(--accent-lavender), rgba(232, 224, 255, 0.5));
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .modal-info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-top: 0.5rem;
+        }
+
+        .modal-steps-list {
+            list-style: none;
+            padding: 0;
+            counter-reset: step-counter;
+        }
+
+        .modal-steps-list li {
+            margin-bottom: 1rem;
+            padding-left: 2.5rem;
+            position: relative;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .modal-steps-list li::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-lavender));
+            color: white;
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(110, 91, 154, 0.3);
+        }
+
+        .modal-badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .modal-benefit-badge {
+            background: var(--gradient-secondary);
+            color: var(--text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-benefit-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal-symptom-badge {
+            background: var(--gradient-primary);
+            color: var(--primary-purple);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-symptom-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal-precautions-list {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.05), rgba(255, 193, 207, 0.1));
+            border-left: 4px solid #dc3545;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 0;
+            list-style: none;
+        }
+
+        .modal-precautions-list li {
+            color: #dc3545;
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .modal-precautions-list li::before {
+            content: '⚠';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .yoga-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                padding: 2rem 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-emoji {
+                font-size: 3rem;
+            }
+        }
+    </style>
 </head>
 <body class="sidebar-layout">
     <!-- Common Sidebar -->
     {% include 'includes/sidebar.html' %}
-    
-    <div class="main-content">
-        <div class="container py-5">
-        <h1 class="text-center mb-5">Yoga Asana Guide</h1>
-        
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Getting your personalized yoga recommendations...</p>
-        </div>
-        
-        <div class="row" id="yogaAsanasContainer">
-            <!-- Yoga cards will be inserted here by JavaScript -->
-        </div>
-    </div>
-
-    <script type="module">
-import YogaWrapper from '../static/css/yoga-wrapper.js';
-
-// Retrieve selected symptoms from localStorage (set on index page)
-const symptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
-const wrapper = new YogaWrapper();
-
-const container = document.getElementById('yogaAsanasContainer');
-const loadingSpinner = document.getElementById('loadingSpinner');
-
-console.log('Selected symptoms:', symptoms);
-
-// Show loading spinner and automatically get recommendations
-loadingSpinner.style.display = 'block';
-
-// Use default symptoms if none selected for testing
-const symptomsToUse = symptoms.length > 0 ? symptoms : ['cramps', 'bloating'];
-console.log('Using symptoms:', symptomsToUse);
-
-wrapper.getYogaRecommendations(symptomsToUse).then(result => {
-    // Hide loading spinner
-    loadingSpinner.style.display = 'none';
-    
-    console.log('Yoga API Response:', result);
-    
-    const yogaData = result.yogaAsanas;
-    if (!yogaData || yogaData.length === 0) {
-        container.innerHTML = '<div class="alert alert-info">No yoga asanas found for your symptoms.</div>';
-        return;
-    }
-    let html = '';
-    yogaData.forEach(asana => {
-        html += `
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <img src="${asana.image}" class="card-img-top" alt="${asana.name}">
-                    <div class="card-body">
-                        <h5 class="card-title">${asana.name}</h5>
-                        <span class="badge duration-badge mb-3">${asana.duration}</span>
-                        <h6 class="section-title">Steps:</h6>
-                        <ol class="card-text">
-                            ${(asana.steps || []).map(step => `<li>${step}</li>`).join('')}
-                        </ol>
-                        <h6 class="section-title">Benefits:</h6>
-                        <div class="mb-3">
-                            ${(asana.benefits || []).map(benefit => `
-                                <span class="badge bg-success benefit-badge">${benefit}</span>
-                            `).join('')}
-                        </div>
-                        <h6 class="section-title">Relieves:</h6>
-                        <div class="mb-3">
-                            ${(asana.relievesSymptoms || []).map(symptom => `
-                                <span class="badge bg-primary benefit-badge">${symptom}</span>
-                            `).join('')}
-                        </div>
-                        <h6 class="section-title">Precautions:</h6>
-                        <ul>
-                            ${(asana.precautions || []).map(precaution => `
-                                <li class="precaution-item">${precaution}</li>
-                            `).join('')}
-                        </ul>
-                    </div>
+      <div class="main-content">
+        <div class="container py-4">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Your Personalized Yoga Journey</h1>
+                <p class="page-subtitle">Tailored yoga poses to help you feel your best during your cycle</p>
+                <div class="symptoms-display" id="symptomsDisplay">
+                    <small class="text-muted">Addressing your symptoms:</small>
+                    <div id="symptomTags"></div>
                 </div>
             </div>
-        `;    });
-    container.innerHTML = html;
-}).catch(error => {
-    // Hide loading spinner
-    loadingSpinner.style.display = 'none';
-    container.innerHTML = `<div class="alert alert-danger">Failed to load yoga data: ${error.message}</div>`;
+        
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="loading-message">Creating your personalized yoga recommendations...</p>
+            </div>            <div class="row" id="yogaAsanasContainer">
+                <!-- Yoga cards will be inserted here by JavaScript -->
+            </div>
         </div>
     </div>
+
+    <!-- Beautiful Yoga Modal -->
+    <div class="yoga-modal" id="yogaModal">
+        <div class="modal-content">            <div class="modal-header">
+                <button class="modal-close" id="modalClose">&times;</button>
+                <div class="modal-emoji" id="modalEmoji">🧘‍♀️</div>
+                <h2 class="modal-title" id="modalTitle">Yoga Asana Name</h2>
+                <div class="modal-difficulty" id="modalDifficulty">Beginner</div>
+            </div>            <div class="modal-body">
+                <!-- Duration Info -->
+                <div class="modal-section">
+                    <div class="modal-duration-container">
+                        <h3 class="modal-section-title duration">Duration</h3>
+                        <div class="modal-info-value" id="modalDuration">5–10 minutes</div>
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title steps">How to Practice</h3>
+                    <ol class="modal-steps-list" id="modalSteps">
+                        <!-- Steps will be populated here -->
+                    </ol>
+                </div>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title benefits">Benefits</h3>
+                    <div class="modal-badges-container" id="modalBenefits">
+                        <!-- Benefits will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title relieves">Helps With</h3>
+                    <div class="modal-badges-container" id="modalSymptoms">
+                        <!-- Symptoms will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title precautions">Important Notes</h3>
+                    <ul class="modal-precautions-list" id="modalPrecautions">
+                        <!-- Precautions will be populated here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><script type="module">
+import YogaWrapper from "{{ url_for('static', filename='css/yoga-wrapper.js') }}";
+
+// Function to get appropriate emoji for yoga asana
+function getYogaEmoji(asanaName) {
+    const name = asanaName.toLowerCase();
+    
+    // Common yoga pose emojis mapping
+    if (name.includes('child') || name.includes('balasana')) return '🧎‍♀️';
+    if (name.includes('cat') || name.includes('marjary')) return '🐱';
+    if (name.includes('cow') || name.includes('bitil')) return '🐄';
+    if (name.includes('downward') || name.includes('dog') || name.includes('adho')) return '🐕';
+    if (name.includes('cobra') || name.includes('bhujang')) return '🐍';
+    if (name.includes('tree') || name.includes('vrikshasana')) return '🌳';
+    if (name.includes('mountain') || name.includes('tadasana')) return '🏔️';
+    if (name.includes('warrior') || name.includes('virabhadrasana')) return '⚔️';
+    if (name.includes('triangle') || name.includes('trikonasana')) return '📐';
+    if (name.includes('bridge') || name.includes('setu')) return '🌉';
+    if (name.includes('lotus') || name.includes('padmasana')) return '🪷';
+    if (name.includes('fish') || name.includes('matsyasana')) return '🐟';
+    if (name.includes('camel') || name.includes('ustrasana')) return '🐪';
+    if (name.includes('eagle') || name.includes('garudasana')) return '🦅';
+    if (name.includes('butterfly') || name.includes('baddha konasana')) return '🦋';
+    if (name.includes('seated') || name.includes('sukhasana')) return '🧘‍♀️';
+    if (name.includes('corpse') || name.includes('savasana')) return '😴';
+    if (name.includes('plank') || name.includes('chaturanga')) return '💪';
+    if (name.includes('wheel') || name.includes('chakrasana')) return '🎡';
+    if (name.includes('headstand') || name.includes('sirsasana')) return '🤸‍♀️';
+    if (name.includes('shoulder') || name.includes('sarvangasana')) return '🤸‍♂️';
+    if (name.includes('forward') || name.includes('uttanasana')) return '🙇‍♀️';
+    if (name.includes('twist') || name.includes('bharadvajasana')) return '🌀';
+    if (name.includes('leg') || name.includes('viparita')) return '🦵';
+    if (name.includes('pigeon') || name.includes('kapotasana')) return '🕊️';
+    if (name.includes('lunge') || name.includes('anjaneyasana')) return '🏃‍♀️';
+    
+    // Default emoji for other poses
+    return '🧘‍♀️';
+}
+
+// Function to get difficulty level based on yoga pose
+function getYogaDifficulty(asanaName) {
+    const name = asanaName.toLowerCase();
+    
+    // Beginner poses (restorative, gentle, lying down)
+    const beginnerPoses = [
+        'child', 'balasana', 'knees-to-chest', 'apanasana', 'legs-up-the-wall', 'viparita karani',
+        'corpse', 'savasana', 'bound angle', 'baddha konasana', 'happy baby', 'ananda balasana',
+        'gentle', 'supine', 'reclining', 'seated', 'sukhasana', 'easy'
+    ];
+    
+    // Intermediate poses (standing, moderate stretches, balance)
+    const intermediatePoses = [
+        'warrior', 'virabhadrasana', 'triangle', 'trikonasana', 'tree', 'vrikshasana',
+        'bridge', 'setu', 'cat', 'marjary', 'cow', 'bitil', 'downward dog', 'adho mukha',
+        'cobra', 'bhujang', 'camel', 'ustrasana', 'pigeon', 'kapotasana', 'lunge', 'anjaneyasana',
+        'forward fold', 'uttanasana', 'twist', 'bharadvajasana'
+    ];
+    
+    // Advanced poses (inversions, arm balances, deep backbends)
+    const advancedPoses = [
+        'headstand', 'sirsasana', 'shoulder stand', 'sarvangasana', 'wheel', 'chakrasana',
+        'crow', 'bakasana', 'eagle', 'garudasana', 'plank', 'chaturanga', 'side plank',
+        'vasisthasana', 'firefly', 'tittibhasana'
+    ];
+    
+    // Check which category the pose belongs to
+    for (let pose of advancedPoses) {
+        if (name.includes(pose)) return 'Advanced';
+    }
+    
+    for (let pose of intermediatePoses) {
+        if (name.includes(pose)) return 'Intermediate';
+    }
+    
+    for (let pose of beginnerPoses) {
+        if (name.includes(pose)) return 'Beginner';
+    }
+    
+    // Default to beginner for safety
+    return 'Beginner';
+}
+
+// Wrap everything in an async function to avoid illegal return statements
+async function initializeYogaPage() {
+    // Retrieve selected symptoms from localStorage (set on index page)
+    const symptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
+    const wrapper = new YogaWrapper();
+
+    const container = document.getElementById('yogaAsanasContainer');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const symptomTagsContainer = document.getElementById('symptomTags');
+
+    console.log('Selected symptoms:', symptoms);
+
+    // Display selected symptoms in the header
+    function displaySymptoms(symptoms) {
+        if (symptoms.length > 0) {
+            symptomTagsContainer.innerHTML = symptoms.map(symptom => 
+                `<span class="symptom-tag">${symptom}</span>`
+            ).join('');
+        } else {
+            document.getElementById('symptomsDisplay').style.display = 'none';
+        }
+    }
+
+    // Show loading spinner and display symptoms
+    if (symptoms.length === 0) {
+        // No symptoms selected - show empty state
+        loadingSpinner.style.display = 'none';
+        document.getElementById('symptomsDisplay').style.display = 'none';
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🧘‍♀️</div>
+                    <h3>No symptoms selected</h3>
+                    <p class="text-muted">Please go back to the home page and select your symptoms to get personalized yoga recommendations.</p>
+                    <a href="/" class="btn btn-primary mt-3">Select Symptoms</a>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    loadingSpinner.style.display = 'block';
+    displaySymptoms(symptoms);
+
+    try {
+        // Get yoga recommendations based on symptoms
+        const result = await wrapper.getYogaRecommendations(symptoms);
+        
+        // Hide loading spinner
+        loadingSpinner.style.display = 'none';
+        console.log('Yoga API Response:', result);
+        
+        const yogaData = result.yogaAsanas;
+        if (!yogaData || yogaData.length === 0) {
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🧘‍♀️</div>
+                        <h3>No yoga recommendations available</h3>
+                        <p class="text-muted">We couldn't find specific yoga poses for your symptoms. Please try selecting different symptoms or contact our wellness team.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }        let html = '';
+        yogaData.forEach((asana, index) => {
+            // Get emoji for the yoga asana
+            const asanaEmoji = getYogaEmoji(asana.name);
+            
+            html += `
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="yoga-card compact" data-yoga-id="${index}" data-asana='${JSON.stringify(asana).replace(/'/g, "&apos;")}'>
+                        <div class="yoga-card-content">
+                            <div class="yoga-emoji">${asanaEmoji}</div>
+                            <h5 class="asana-name">${asana.name}</h5>
+                        </div>
+                        
+                        <div class="expand-hint">
+                            <i class="fas fa-expand"></i> Click to view details
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        
+        // Add click event listeners to yoga cards
+        addCardClickListeners(yogaData);
+    } catch (error) {
+        // Hide loading spinner
+        loadingSpinner.style.display = 'none';
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="error-container">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>Oops! Something went wrong</h3>
+                    <p>We couldn't load your yoga recommendations right now. Please try refreshing the page or contact our support team.</p>
+                    <p class="text-muted small">Error: ${error.message}</p>
+                </div>
+            </div>
+        `;
+        console.error('Error:', error);
+    }
+}
+
+// Function to add click event listeners to yoga cards
+function addCardClickListeners(yogaData) {
+    const yogaCards = document.querySelectorAll('.yoga-card');
+    
+    yogaCards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+            const asanaData = yogaData[index];
+            showYogaModal(asanaData);
+        });
+    });
+}
+
+// Function to show the yoga modal with asana details
+function showYogaModal(asana) {
+    const modal = document.getElementById('yogaModal');
+    const modalEmoji = document.getElementById('modalEmoji');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDuration = document.getElementById('modalDuration');
+    const modalDifficulty = document.getElementById('modalDifficulty');
+    const modalSteps = document.getElementById('modalSteps');
+    const modalBenefits = document.getElementById('modalBenefits');
+    const modalSymptoms = document.getElementById('modalSymptoms');
+    const modalPrecautions = document.getElementById('modalPrecautions');
+
+    // Set emoji and title
+    modalEmoji.textContent = getYogaEmoji(asana.name);
+    modalTitle.textContent = asana.name;    // Set duration
+    if (asana.duration) {
+        // Fix encoding issues and format duration properly
+        let duration = asana.duration.replace(/â€"/g, '–').replace(/â€/g, '–');
+        modalDuration.textContent = duration;
+    } else {
+        modalDuration.textContent = '5–10 minutes';
+    }// Set difficulty
+    if (asana.difficulty) {
+        modalDifficulty.textContent = asana.difficulty;
+    } else {
+        modalDifficulty.textContent = getYogaDifficulty(asana.name);
+    }
+
+    // Populate steps
+    modalSteps.innerHTML = '';
+    if (asana.steps && asana.steps.length > 0) {
+        asana.steps.forEach(step => {
+            const li = document.createElement('li');
+            li.textContent = step;
+            modalSteps.appendChild(li);
+        });
+    } else {
+        const li = document.createElement('li');
+        li.textContent = 'Detailed instructions will be provided during practice sessions.';
+        modalSteps.appendChild(li);
+    }
+
+    // Populate benefits
+    modalBenefits.innerHTML = '';
+    if (asana.benefits && asana.benefits.length > 0) {
+        asana.benefits.forEach(benefit => {
+            const badge = document.createElement('span');
+            badge.className = 'modal-benefit-badge';
+            badge.textContent = benefit;
+            modalBenefits.appendChild(badge);
+        });
+    } else {
+        const badge = document.createElement('span');
+        badge.className = 'modal-benefit-badge';
+        badge.textContent = 'General wellness and flexibility';
+        modalBenefits.appendChild(badge);
+    }
+
+    // Populate symptoms it helps with
+    modalSymptoms.innerHTML = '';
+    if (asana.relievesSymptoms && asana.relievesSymptoms.length > 0) {
+        asana.relievesSymptoms.forEach(symptom => {
+            const badge = document.createElement('span');
+            badge.className = 'modal-symptom-badge';
+            badge.textContent = symptom;
+            modalSymptoms.appendChild(badge);
+        });
+    } else {
+        const badge = document.createElement('span');
+        badge.className = 'modal-symptom-badge';
+        badge.textContent = 'General discomfort';
+        modalSymptoms.appendChild(badge);
+    }
+
+    // Populate precautions
+    modalPrecautions.innerHTML = '';
+    if (asana.precautions && asana.precautions.length > 0) {
+        asana.precautions.forEach(precaution => {
+            const li = document.createElement('li');
+            li.textContent = precaution;
+            modalPrecautions.appendChild(li);
+        });
+    } else {
+        const li = document.createElement('li');
+        li.textContent = 'Listen to your body and avoid strain or discomfort.';
+        modalPrecautions.appendChild(li);
+    }    // Show modal
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Function to close the yoga modal
+function closeYogaModal() {
+    const modal = document.getElementById('yogaModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Add modal event listeners
+function setupModalEventListeners() {
+    const modal = document.getElementById('yogaModal');
+    const modalClose = document.getElementById('modalClose');
+    
+    // Close modal when clicking the X button
+    if (modalClose) {
+        modalClose.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeYogaModal();
+        });
+    }
+    
+    // Close modal when clicking outside the modal content
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeYogaModal();
+            }
+        });
+    }
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+            closeYogaModal();
+        }
+    });
+}
+
+// Initialize the page when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    setupModalEventListeners();
+    initializeYogaPage();
+});
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
