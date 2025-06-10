@@ -38,6 +38,10 @@
 <body>
     <div class="container py-5">
         <h1 class="text-center mb-5">Yoga Asana Guide</h1>
+        <div class="mb-4">
+            <strong>Your selected symptoms:</strong>
+            <span id="selectedSymptomsDisplay" class="badge bg-info text-dark"></span>
+        </div>
         <div class="row" id="yogaAsanasContainer">
             <!-- Yoga cards will be inserted here by JavaScript -->
         </div>
@@ -49,6 +53,14 @@ import YogaWrapper from '../static/css/yoga-wrapper.js';
 // Retrieve selected symptoms from localStorage (set on index page)
 const symptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
 const wrapper = new YogaWrapper();
+
+// Display selected symptoms for debugging/user feedback
+const symptomsDisplay = document.getElementById('selectedSymptomsDisplay');
+if (symptoms.length > 0) {
+    symptomsDisplay.innerText = symptoms.join(', ');
+} else {
+    symptomsDisplay.innerText = 'None';
+}
 
 const container = document.getElementById('yogaAsanasContainer');
 

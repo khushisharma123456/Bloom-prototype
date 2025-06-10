@@ -1046,29 +1046,9 @@
             document.body.prepend(chartError);
             return;
         }
-        // Remove old surveyData/chart code and add grouped bar chart logic
-        // Only run this if the comparisonChart canvas exists (i.e., on the dashboard page)
         if (document.getElementById('comparisonChart')) {
-            // Example: Simulate user survey answers (replace with real data from backend if available)
-            // For demo, you can set these values dynamically from backend or localStorage
-            let userStats = {
-                "Irregular Periods": 100, // e.g., user answered Irregular
-                "Excessive Hair": 0,      // e.g., user answered No
-                "Acne": 100,              // e.g., user answered Yes
-                "Hair Thinning": 0,      // ...
-                "Weight Gain": 100,
-                "Fatigue & Sugar Cravings": 0,
-                "Family History of PCOS/Diabetes": 0,
-                "Infertility": 0,
-                "Mood Swings/Anxiety": 100
-            };
-            // Try to load real user data from localStorage if available
-            if (localStorage.getItem('userStats')) {
-                try {
-                    const stored = JSON.parse(localStorage.getItem('userStats'));
-                    if (stored && typeof stored === 'object') userStats = stored;
-                } catch (e) {}
-            }
+            // Use userStats from backend if available
+            var userStats = {{ survey_stats|tojson|safe }};
             // Reference population data
             const populationStats = {
                 "Irregular Periods": 70,
@@ -1094,7 +1074,6 @@
                             label: 'Most Women (%)',
                             data: popData,
                             backgroundColor: function(context) {
-                                // pastel blue with hover highlight
                                 const base = 'rgba(186, 222, 255, 0.7)';
                                 const hover = 'rgba(186, 222, 255, 1)';
                                 return context.active ? hover : base;
@@ -1109,7 +1088,6 @@
                             label: 'You (%)',
                             data: userData,
                             backgroundColor: function(context) {
-                                // pastel pink with hover highlight
                                 const base = 'rgba(255, 194, 209, 0.7)';
                                 const hover = 'rgba(255, 194, 209, 1)';
                                 return context.active ? hover : base;
@@ -1143,43 +1121,27 @@
                             ticks: {
                                 stepSize: 20,
                                 font: { size: 17, weight: 'bold', family: 'Nunito' },
-                                color: '#2a2347', // darker
+                                color: '#2a2347',
                             },
-                            title: {
-                                display: false // Hide y-axis title
-                            },
-                            grid: {
-                                display: false
-                            },
-                            border: {
-                                display: false // Hide y-axis line
-                            }
+                            title: { display: false },
+                            grid: { display: false },
+                            border: { display: false }
                         },
                         x: {
                             ticks: {
-                                display: false, // Hide x-axis category labels
+                                display: false,
                                 font: { size: 15, weight: 600, style: 'normal', family: 'Nunito' },
                                 color: '#2a2347',
                                 maxRotation: 0,
                                 minRotation: 0,
                                 autoSkip: false,
                             },
-                            title: {
-                                display: false // Hide x-axis title
-                            },
-                            grid: {
-                                display: false
-                            },
-                            border: {
-                                display: false // Hide x-axis line
-                            }
+                            title: { display: false },
+                            grid: { display: false },
+                            border: { display: false }
                         }
                     },
-                    layout: {
-                        padding: {
-                            bottom: 32 // Extra space for x labels
-                        }
-                    },
+                    layout: { padding: { bottom: 32 } },
                     plugins: {
                         legend:{
                             display: true,
@@ -1187,11 +1149,7 @@
                             labels: {
                                 boxWidth: 12,
                                 padding: 15,
-                                font: {
-                                    size: 14,
-                                    family: 'Nunito',
-                                    weight: 'bold'
-                                },
+                                font: { size: 14, family: 'Nunito', weight: 'bold' },
                                 color: '#2a2347'
                             }
                         },
@@ -1207,10 +1165,10 @@
                             displayColors: false
                         }
                     }
-                } // <-- Correctly close options object
-            }); // <-- Correctly close new Chart()
+                }
+            });
         }
-    }); // <-- Correctly close DOMContentLoaded
+    });
     </script>
 </body>
 </html>

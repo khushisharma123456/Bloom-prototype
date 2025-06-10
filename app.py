@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, session, flash, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -176,7 +176,7 @@ def survey():
                 q6_hair_growth=request.form.get('q6'),
                 q7_acne=request.form.get('q7'),  # FIXED: missing closing parenthesis
                 q8_hair_thinning=request.form.get('q8'),
-                q9_weight_gain=request.form.get('q9'),
+                q9_weight_gain=request.form.get('q9',
                 q10_sugar_craving=request.form.get('q10'),
                 q11_family_history=request.form.get('q11'),
                 q12_fertility=request.form.get('q12'),
@@ -237,7 +237,19 @@ def dashboard():
         current_day=current_day,
         current_phase=current_phase,
         cycle_length=user.cycle_length,
-        period_length=user.period_length
+        period_length=user.period_length,
+        # Add user survey stats for graph
+        survey_stats={
+            'Irregular Periods': 100 if survey.q5_period_regularity and 'irregular' in survey.q5_period_regularity.lower() else 0,
+            'Excessive Hair': 100 if survey.q6_hair_growth and survey.q6_hair_growth.lower() == 'yes' else 0,
+            'Acne': 100 if survey.q7_acne and survey.q7_acne.lower() == 'yes' else 0,
+            'Hair Thinning': 100 if survey.q8_hair_thinning and survey.q8_hair_thinning.lower() == 'yes' else 0,
+            'Weight Gain': 100 if survey.q9_weight_gain and survey.q9_weight_gain.lower() == 'yes' else 0,
+            'Fatigue & Sugar Cravings': 0,  # Add logic if you have this in survey
+            'Family History of PCOS/Diabetes': 0,  # Add logic if you have this in survey
+            'Infertility': 0,  # Add logic if you have this in survey
+            'Mood Swings/Anxiety': 100 if survey.q13_mood_swings and survey.q13_mood_swings.lower() in ['frequently', 'occasionally'] else 0
+        }
     )
 
     
@@ -245,42 +257,6 @@ def dashboard():
 pain_mapping = {'No Pain': 0, 'Mild': 3, 'Moderate': 5, 'Severe': 10}
 flow_mapping = {'None': 0, 'Light': 2, 'Medium': 5, 'Heavy': 8}
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from datetime import datetime, timedelta
-import os
-import json
-
-try:
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(base_dir, "menstrualcyclelen.json")
-    print("Loading JSON from:", json_path)
-
-    with open(json_path, "r") as f:
-        data = json.load(f)
-except FileNotFoundError as e:
-    print("File not found:", e)
-    data = {}  # Or maybe you want to crash intentionally with raise e
-except Exception as e:
-    print("Unexpected error loading JSON:", e)
-    data = {}
-
-
-# ------------------------ Helper: Predict Cycle ------------------------
-def predict_cycle(start_date_str, cycle_length):
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-    next_period = start_date + timedelta(days=cycle_length)
-    ovulation_start = next_period - timedelta(days=14)
-    ovulation_end = ovulation_start + timedelta(days=5)
-
-    return {
-        "next_period": next_period.strftime("%Y-%m-%d"),
-        "ovulation_window": [
-            ovulation_start.strftime("%Y-%m-%d"),
-            ovulation_end.strftime("%Y-%m-%d")
-        ]
-    }
-
-# ------------------------ Main Route ------------------------
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime, timedelta
 
@@ -843,11 +819,15 @@ def get_yoga_recommendations():
     data = request.get_json()
     symptoms = data.get('symptoms', [])
     yoga_data = data.get('yogaData', [])
-    # Filter yoga asanas that match any of the symptoms in their 'relievesSymptoms' field
+    # Normalize symptoms for robust matching
+    normalized_symptoms = [s.strip().lower() for s in symptoms]
     recommendations = []
     for asana in yoga_data:
         relieves = asana.get('relievesSymptoms', [])
-        if any(symptom in relieves for symptom in symptoms):
+        normalized_relieves = [r.strip().lower() for r in relieves]
+        # Debug print for troubleshooting
+        print(f"User symptoms: {normalized_symptoms} | Asana relieves: {normalized_relieves}")
+        if any(symptom in normalized_relieves for symptom in normalized_symptoms):
             recommendations.append(asana)
     return jsonify({
         'success': True,
@@ -861,11 +841,21 @@ def get_ayurvedic_recommendations():
     data = request.get_json()
     symptoms = data.get('symptoms', [])
     recipes_data = data.get('recipesData', [])
-    # Filter remedies that match any of the symptoms in their 'category' field
+    # Normalize symptoms for robust matching
+    normalized_symptoms = [s.strip().lower() for s in symptoms]
     recommendations = []
     for recipe in recipes_data:
+        # Check both 'category' (list or string) and 'badge' (string)
         categories = recipe.get('category', [])
-        if any(symptom in categories for symptom in symptoms):
+        badge = recipe.get('badge', '')
+        # Normalize
+        if isinstance(categories, str):
+            categories = [categories]
+        normalized_categories = [c.strip().lower() for c in categories]
+        normalized_badge = badge.strip().lower()
+        # Match if any symptom matches category or badge
+        if any(symptom in normalized_categories for symptom in normalized_symptoms) or \
+           any(symptom == normalized_badge for symptom in normalized_symptoms):
             recommendations.append(recipe)
     return jsonify({
         'success': True,
