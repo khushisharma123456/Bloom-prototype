@@ -8,16 +8,14 @@ function setActiveNavItem() {
     
     // Remove active class from all items
     navItems.forEach(item => item.classList.remove('active'));
-    dropdownItems.forEach(item => item.classList.remove('active'));
-    
-    // Map of paths to nav items
+    dropdownItems.forEach(item => item.classList.remove('active'));    // Map of paths to nav items
     const pathMap = {
         '/': 'dashboard',  // Root still maps to dashboard for fallback
         '/dashboard': 'dashboard',
         '/index': 'dashboard',
         '/yoga': 'yoga',
         '/nutrition': 'nutrition',
-        '/mood': 'mood',
+        '/education': 'education',
         '/consultation': 'consultation',
         '/chatbot': 'chatbot',
         '/settings': 'settings',

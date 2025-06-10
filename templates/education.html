@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Menstrual Health Education</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
+    <style>
+        :root {
+            --pink-light: #FFE8F5;
+            --pink-medium: #FFC2E2;
+            --pink-dark: #FF8EC7;
+            --purple-light: #F0E6FF;
+            --purple-medium: #D9C2FF;
+            --purple-dark: #B28CFF;
+            --cream: #FFF9F0;
+            --text-dark: #4A3A60;
+            --text-light: #7A6B8F;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+            max-width: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--text-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Timeline Styles */
+        .timeline-container {
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .timeline {
+            display: flex;
+            gap: 15px;
+            min-width: 700px;
+        }
+
+        .phase {
+            background-color: var(--pink-light);
+            border-radius: 12px;
+            padding: 15px;
+            width: 160px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .phase:hover {
+            background-color: var(--pink-medium);
+            transform: translateY(-5px);
+        }
+
+        .phase.active {
+            background-color: var(--pink-dark);
+            color: white;
+        }
+
+        .phase-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .phase-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .phase-days {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .phase.active .phase-days {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .phase-details {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--pink-medium);
+        }
+
+        .phase-details.active {
+            display: block;
+        }
+
+        .phase-details h3 {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .phase-details p {
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .phase-details ul {
+            margin-left: 20px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Accordion Styles */
+        .accordion-item {
+            margin-bottom: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: var(--purple-light);
+        }
+
+        .accordion-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--purple-medium);
+        }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: white;
+        }
+
+        .accordion-content-inner {
+            padding: 15px 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Carousel Styles */
+        .carousel {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            padding: 30px;
+            background-color: var(--pink-light);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .carousel-item h3 {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .carousel-item p {
+            color: var(--text-light);
+            max-width: 80%;
+        }
+
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        .carousel-control.prev {
+            left: 15px;
+        }
+
+        .carousel-control.next {
+            right: 15px;
+        }
+
+        /* Symptom Tracker Styles */
+        .tracker-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-option input {
+            accent-color: var(--pink-dark);
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--purple-medium);
+            background-color: white;
+            color: var(--text-dark);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }        .slider {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--purple-medium);
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--pink-dark);
+            cursor: pointer;
+        }
+
+        .slider-value {
+            width: 30px;
+            text-align: center;
+        }
+
+        .tracker-button {
+            background-color: var(--pink-dark);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            grid-column: span 2;
+        }
+
+        .tracker-button:hover {
+            background-color: var(--purple-dark);
+        }
+
+        .tracker-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--purple-light);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .tracker-summary h3 {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .summary-value {
+            color: var(--text-light);
+        }        @media (max-width: 768px) {
+            .tracker-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .tracker-button {
+                grid-column: span 1;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+        }    </style>
+</head>
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+        <h1>Menstrual Health Education</h1>
+        <p>Understand your body better and stay confident through every phase of your cycle 💖</p>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">🌸 Your Cycle Timeline</h2>
+        <div class="timeline-container">
+            <div class="timeline">
+                <div class="phase" onclick="showPhaseDetails(0)">
+                    <div class="phase-icon">🩸</div>
+                    <div class="phase-name">Menstrual</div>
+                    <div class="phase-days">Days 1–5</div>
+                </div>
+                <div class="phase" onclick="showPhaseDetails(1)">
+                    <div class="phase-icon">🌱</div>
+                    <div class="phase-name">Follicular</div>
+                    <div class="phase-days">Days 6–13</div>
+                </div>
+                <div class="phase" onclick="showPhaseDetails(2)">
+                    <div class="phase-icon">🥚</div>
+                    <div class="phase-name">Ovulation</div>
+                    <div class="phase-days">Day 14</div>
+                </div>
+                <div class="phase" onclick="showPhaseDetails(3)">
+                    <div class="phase-icon">🌕</div>
+                    <div class="phase-name">Luteal</div>
+                    <div class="phase-days">Days 15–28</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="phase-details" id="menstrual-details">
+            <h3>Menstrual Phase</h3>
+            <p><strong>What's happening:</strong> Your uterus sheds its lining, resulting in menstrual bleeding.</p>
+            <p><strong>Hormones:</strong> Estrogen and progesterone are at their lowest levels.</p>
+            <p><strong>Common symptoms:</strong></p>
+            <ul>
+                <li>Cramps in the lower abdomen</li>
+                <li>Lower back pain</li>
+                <li>Bloating</li>
+                <li>Fatigue</li>
+            </ul>
+            <p><strong>Hygiene & diet tips:</strong></p>
+            <ul>
+                <li>Change your pad/tampon every 4-6 hours</li>
+                <li>Use heat pads for cramps</li>
+                <li>Stay hydrated and eat iron-rich foods</li>
+                <li>Gentle exercise can help with cramps</li>
+            </ul>
+        </div>
+
+        <div class="phase-details" id="follicular-details">
+            <h3>Follicular Phase</h3>
+            <p><strong>What's happening:</strong> Your body prepares for ovulation by developing follicles in the ovaries.</p>
+            <p><strong>Hormones:</strong> Estrogen begins to rise, stimulating the uterine lining to thicken.</p>
+            <p><strong>Common symptoms:</strong></p>
+            <ul>
+                <li>Increased energy</li>
+                <li>Improved mood</li>
+                <li>Higher pain tolerance</li>
+            </ul>
+            <p><strong>Hygiene & diet tips:</strong></p>
+            <ul>
+                <li>Great time for more intense workouts</li>
+                <li>Focus on protein and healthy fats</li>
+                <li>Stay hydrated to support cervical mucus production</li>
+            </ul>
+        </div>
+
+        <div class="phase-details" id="ovulation-details">
+            <h3>Ovulation Phase</h3>
+            <p><strong>What's happening:</strong> An egg is released from the ovary and travels down the fallopian tube.</p>
+            <p><strong>Hormones:</strong> Estrogen peaks, triggering a surge in luteinizing hormone (LH).</p>
+            <p><strong>Common symptoms:</strong></p>
+            <ul>
+                <li>Increased cervical mucus (egg-white consistency)</li>
+                <li>Mild pain on one side of the abdomen (mittelschmerz)</li>
+                <li>Increased libido</li>
+                <li>Breast tenderness</li>
+            </ul>
+            <p><strong>Hygiene & diet tips:</strong></p>
+            <ul>
+                <li>Wear breathable cotton underwear</li>
+                <li>Monitor discharge for health indicators</li>
+                <li>Stay hydrated to maintain cervical mucus</li>
+                <li>Include anti-inflammatory foods</li>
+            </ul>
+        </div>
+
+        <div class="phase-details" id="luteal-details">
+            <h3>Luteal Phase</h3>
+            <p><strong>What's happening:</strong> The empty follicle produces progesterone to prepare the uterus for possible pregnancy.</p>
+            <p><strong>Hormones:</strong> Progesterone rises, then falls if pregnancy doesn't occur.</p>
+            <p><strong>Common symptoms:</strong></p>
+            <ul>
+                <li>Bloating</li>
+                <li>Breast tenderness</li>
+                <li>Mood swings (PMS)</li>
+                <li>Food cravings</li>
+                <li>Fatigue</li>
+            </ul>
+            <p><strong>Hygiene & diet tips:</strong></p>
+            <ul>
+                <li>Reduce salt intake to minimize bloating</li>
+                <li>Increase magnesium-rich foods for mood</li>
+                <li>Practice stress-reduction techniques</li>
+                <li>Gentle exercise can help with PMS symptoms</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">📚 Educational Resources</h2>
+        <div class="accordion">
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>✅ How to Apply a Pad</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>1. Wash your hands before handling the pad.</p>
+                        <p>2. Remove the pad from its packaging and unfold it.</p>
+                        <p>3. Peel off the adhesive backing (usually a long strip).</p>
+                        <p>4. Center the pad in your underwear with the adhesive side down.</p>
+                        <p>5. Press firmly along the length of the pad to secure it to your underwear.</p>
+                        <p>6. Make sure the wider part of the pad is at the back.</p>
+                        <p>7. Some pads have wings - peel off the backing from these and wrap them around the sides of your underwear for extra security.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>🗑️ How to Dispose of a Pad Properly</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>1. Wrap the used pad in its original wrapper or toilet paper.</p>
+                        <p>2. If available, use the special disposal bags some brands provide.</p>
+                        <p>3. Place it in a designated sanitary disposal bin (found in most public restrooms).</p>
+                        <p>4. If no disposal bin is available, wrap it securely and place it in a trash can.</p>
+                        <p><strong>Never flush pads down the toilet</strong> - they can cause serious plumbing blockages.</p>
+                        <p>At home, consider using a small trash can with a lid in your bathroom.</p>
+                        <p>Empty the bathroom trash regularly to prevent odor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>🔍 Common Vaginal Infections</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p><strong>Yeast Infection:</strong></p>
+                        <ul>
+                            <li>Thick, white discharge (like cottage cheese)</li>
+                            <li>Itching and irritation</li>
+                            <li>Burning during urination</li>
+                            <li>Redness and swelling</li>
+                        </ul>
+                        
+                        <p><strong>Bacterial Vaginosis (BV):</strong></p>
+                        <ul>
+                            <li>Thin, grayish-white discharge</li>
+                            <li>Fishy odor (especially after sex)</li>
+                            <li>Itching or burning (less common)</li>
+                        </ul>
+                        
+                        <p><strong>Urinary Tract Infection (UTI):</strong></p>
+                        <ul>
+                            <li>Burning sensation when urinating</li>
+                            <li>Frequent urge to urinate</li>
+                            <li>Cloudy or strong-smelling urine</li>
+                            <li>Pelvic pain</li>
+                        </ul>
+                        
+                        <p><strong>Prevention Tips:</strong></p>
+                        <ul>
+                            <li>Wear cotton underwear</li>
+                            <li>Avoid douching</li>
+                            <li>Wipe front to back</li>
+                            <li>Change out of wet clothes promptly</li>
+                            <li>Practice safe sex</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>❤️ Consent and Safe Sex (basic overview)</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p><strong>Consent Basics:</strong></p>
+                        <ul>
+                            <li>Consent must be <strong>freely given</strong> without pressure</li>
+                            <li>It must be <strong>informed</strong> (all parties understand what they're agreeing to)</li>
+                            <li>It must be <strong>enthusiastic</strong> - look for a "yes!" not just the absence of a "no"</li>
+                            <li>Consent can be <strong>withdrawn</strong> at any time</li>
+                            <li>Consent is <strong>specific</strong> - agreeing to one activity doesn't mean agreeing to others</li>
+                        </ul>
+                        
+                        <p><strong>Safe Sex Practices:</strong></p>
+                        <ul>
+                            <li>Use condoms to prevent STIs and pregnancy</li>
+                            <li>Get regular STI testing if sexually active</li>
+                            <li>Discuss sexual health with partners before becoming intimate</li>
+                            <li>Consider additional birth control methods if pregnancy prevention is desired</li>
+                            <li>Be aware that some STIs can spread through oral sex</li>
+                        </ul>
+                        
+                        <p><strong>Period Sex:</strong></p>
+                        <ul>
+                            <li>It's perfectly healthy if all parties are comfortable</li>
+                            <li>Use protection (STI risk still exists)</li>
+                            <li>Put down a towel for easier cleanup</li>
+                            <li>Shower before/after if desired</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>🧼 Hygiene During Periods</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p><strong>General Hygiene:</strong></p>
+                        <ul>
+                            <li>Wash your hands before and after changing period products</li>
+                            <li>Change your pad/tampon every 4-6 hours (more often if heavy flow)</li>
+                            <li>Clean the genital area with warm water (avoid harsh soaps inside the vagina)</li>
+                            <li>Shower regularly during your period</li>
+                            <li>Wear clean, breathable cotton underwear</li>
+                        </ul>
+                        
+                        <p><strong>Tampon Safety:</strong></p>
+                        <ul>
+                            <li>Never wear a tampon for more than 8 hours</li>
+                            <li>Use the lowest absorbency needed for your flow</li>
+                            <li>Alternate between tampons and pads if possible</li>
+                            <li>Be aware of Toxic Shock Syndrome (TSS) symptoms</li>
+                        </ul>
+                        
+                        <p><strong>Menstrual Cup Care:</strong></p>
+                        <ul>
+                            <li>Sterilize your cup before first use and after each period</li>
+                            <li>Wash hands before insertion/removal</li>
+                            <li>Empty every 8-12 hours</li>
+                            <li>Clean with mild, unscented soap between uses</li>
+                        </ul>
+                        
+                        <p><strong>Odor Control:</strong></p>
+                        <ul>
+                            <li>Change products regularly to prevent odor</li>
+                            <li>Avoid scented products which can cause irritation</li>
+                            <li>Stay hydrated to help flush out bacteria</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">💡 Daily Tips</h2>
+        <div class="carousel">
+            <button class="carousel-control prev" onclick="prevSlide()">❮</button>
+            <div class="carousel-inner" id="carousel-inner">
+                <div class="carousel-item">
+                    <h3>Hydration is Key</h3>
+                    <p>Drink plenty of water during your period to help reduce bloating and fatigue.</p>
+                </div>
+                <div class="carousel-item">
+                    <h3>Regular Changes</h3>
+                    <p>Change your pad or tampon every 4-6 hours to maintain hygiene and prevent infections.</p>
+                </div>
+                <div class="carousel-item">
+                    <h3>Comfortable Clothing</h3>
+                    <p>Wear loose, comfortable clothing during your period to reduce discomfort and irritation.</p>
+                </div>
+                <div class="carousel-item">
+                    <h3>Healthy Snacks</h3>
+                    <p>Choose iron-rich foods like spinach and nuts to replenish what you lose during menstruation.</p>
+                </div>
+                <div class="carousel-item">
+                    <h3>Gentle Exercise</h3>
+                    <p>Light exercise like walking or yoga can help alleviate cramps and boost your mood.</p>
+                </div>
+            </div>
+            <button class="carousel-control next" onclick="nextSlide()">❯</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">📊 Symptom Tracker</h2>
+        <form id="symptom-form" class="tracker-form">
+            <div class="form-group">
+                <label for="flow-level">Flow Level:</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="flow-level" value="light"> Light
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="flow-level" value="medium" checked> Medium
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="flow-level" value="heavy"> Heavy
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mood">Mood:</label>
+                <select id="mood" name="mood">
+                    <option value="happy">😊 Happy</option>
+                    <option value="neutral">😐 Neutral</option>
+                    <option value="sad">😔 Sad</option>
+                    <option value="anxious">😰 Anxious</option>
+                    <option value="irritable">😠 Irritable</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pain-level">Pain Level (0-10):</label>
+                <div class="slider-container">
+                    <input type="range" min="0" max="10" value="3" class="slider" id="pain-level" name="pain-level">
+                    <span class="slider-value" id="pain-value">3</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Additional Notes:</label>
+                <textarea id="notes" name="notes" rows="2" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--purple-medium);"></textarea>
+            </div>
+
+            <button type="button" class="tracker-button" onclick="saveSymptoms()">Save Today's Symptoms</button>
+        </form>
+
+        <div class="tracker-summary" id="tracker-summary">
+            <h3>Today's Summary</h3>
+            <div class="summary-item">
+                <span class="summary-label">Flow Level:</span>
+                <span class="summary-value" id="summary-flow">Medium</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Mood:</span>
+                <span class="summary-value" id="summary-mood">😐 Neutral</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Pain Level:</span>
+                <span class="summary-value" id="summary-pain">3/10</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Notes:</span>
+                <span class="summary-value" id="summary-notes">-</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Phase Details Toggle
+        const phaseDetails = [
+            document.getElementById('menstrual-details'),
+            document.getElementById('follicular-details'),
+            document.getElementById('ovulation-details'),
+            document.getElementById('luteal-details')
+        ];
+
+        function showPhaseDetails(index) {
+            // Hide all details first
+            phaseDetails.forEach(detail => {
+                detail.classList.remove('active');
+            });
+            
+            // Show selected detail
+            phaseDetails[index].classList.add('active');
+            
+            // Update active phase indicator
+            const phases = document.querySelectorAll('.phase');
+            phases.forEach(phase => {
+                phase.classList.remove('active');
+            });
+            phases[index].classList.add('active');
+        }
+
+        // Show first phase by default
+        showPhaseDetails(0);
+
+        // Accordion Toggle
+        function toggleAccordion(item) {
+            item.classList.toggle('active');
+        }
+
+        // Carousel Functionality
+        let currentSlide = 0;
+        const carouselInner = document.getElementById('carousel-inner');
+        const totalSlides = document.querySelectorAll('.carousel-item').length;
+
+        function updateCarousel() {
+            carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        // Auto-advance carousel every 5 seconds
+        setInterval(nextSlide, 5000);
+
+        // Pain Level Slider Update
+        const painSlider = document.getElementById('pain-level');
+        const painValue = document.getElementById('pain-value');
+
+        painSlider.addEventListener('input', function() {
+            painValue.textContent = this.value;
+        });
+
+        // Symptom Tracker
+        function saveSymptoms() {
+            const flowLevel = document.querySelector('input[name="flow-level"]:checked').value;
+            const mood = document.getElementById('mood').value;
+            const painLevel = document.getElementById('pain-level').value;
+            const notes = document.getElementById('notes').value;
+
+            // Save to localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const symptoms = {
+                date: today,
+                flowLevel,
+                mood,
+                painLevel,
+                notes
+            };
+            
+            localStorage.setItem('symptoms-' + today, JSON.stringify(symptoms));
+
+            // Update summary display
+            document.getElementById('summary-flow').textContent = flowLevel.charAt(0).toUpperCase() + flowLevel.slice(1);
+            
+            const moodEmoji = {
+                'happy': '😊 Happy',
+                'neutral': '😐 Neutral',
+                'sad': '😔 Sad',
+                'anxious': '😰 Anxious',
+                'irritable': '😠 Irritable'
+            };
+            document.getElementById('summary-mood').textContent = moodEmoji[mood];
+            
+            document.getElementById('summary-pain').textContent = `${painLevel}/10`;
+            document.getElementById('summary-notes').textContent = notes || '-';
+            
+            // Show summary
+            document.getElementById('tracker-summary').style.display = 'block';
+        }
+
+        // Load previous symptoms if available
+        window.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const savedSymptoms = localStorage.getItem('symptoms-' + today);
+            
+            if (savedSymptoms) {
+                const symptoms = JSON.parse(savedSymptoms);
+                
+                // Set form values
+                document.querySelector(`input[name="flow-level"][value="${symptoms.flowLevel}"]`).checked = true;
+                document.getElementById('mood').value = symptoms.mood;
+                document.getElementById('pain-level').value = symptoms.painLevel;
+                document.getElementById('pain-value').textContent = symptoms.painLevel;
+                document.getElementById('notes').value = symptoms.notes;
+                
+                // Show summary
+                saveSymptoms();
+            }        });
+    </script>
+    </div> <!-- End main-content -->
+    
+    <!-- Include common sidebar JavaScript -->
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
+</body>
+</html>
