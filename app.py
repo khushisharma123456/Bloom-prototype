@@ -195,7 +195,7 @@ def survey():
             flash(f'Error saving survey responses: {str(e)}. Please check all fields and try again.', 'danger')
             print("Error details:", str(e))
             return redirect(url_for('survey'))
-    
+
     return render_template('survey.html')
 
 @app.route('/dashboard')
@@ -833,7 +833,41 @@ def remedy_details(remedy_name):
     print(f"Found recipe: {recipe['title']}")  # Verify match
     return render_template('remedy.html', remedy=recipe)
 
+@app.route('/api/get-yoga-recommendations', methods=['POST'])
+def get_yoga_recommendations():
+    data = request.get_json()
+    symptoms = data.get('symptoms', [])
+    yoga_data = data.get('yogaData', [])
+    # Filter yoga asanas that match any of the symptoms in their 'relievesSymptoms' field
+    recommendations = []
+    for asana in yoga_data:
+        relieves = asana.get('relievesSymptoms', [])
+        if any(symptom in relieves for symptom in symptoms):
+            recommendations.append(asana)
+    return jsonify({
+        'success': True,
+        'recommendations': {
+            'yogaAsanas': recommendations
+        }
+    })
 
+@app.route('/api/get-ayurvedic-recommendations', methods=['POST'])
+def get_ayurvedic_recommendations():
+    data = request.get_json()
+    symptoms = data.get('symptoms', [])
+    recipes_data = data.get('recipesData', [])
+    # Filter remedies that match any of the symptoms in their 'category' field
+    recommendations = []
+    for recipe in recipes_data:
+        categories = recipe.get('category', [])
+        if any(symptom in categories for symptom in symptoms):
+            recommendations.append(recipe)
+    return jsonify({
+        'success': True,
+        'recommendations': {
+            'ayurvedicRemedies': recommendations
+        }
+    })
             
 if __name__ == '__main__':
     with app.app_context():

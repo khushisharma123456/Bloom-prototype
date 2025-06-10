@@ -43,164 +43,62 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // First, get the API key from your server
-            fetch('/api/get-api-key')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to get API key');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const apiKey = data.apiKey;
-                    // Now fetch the yoga data using the API key
-                    return fetchYogaData(apiKey);
-                })
-                .then(yogaData => {
-                    displayYogaAsanas(yogaData);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    const container = document.getElementById('yogaAsanasContainer');
-                    container.innerHTML = `
-                        <div class="alert alert-danger">
-                            Failed to load yoga data: ${error.message}
-                        </div>
-                    `;
-                });
-        });
+    <script type="module">
+import YogaWrapper from '../static/css/yoga-wrapper.js';
 
-        function fetchYogaData(apiKey) {
-            // In a real implementation, you would use the API key to call the Gemini API
-            // For this example, we'll use the static data you provided
-            
-            // Simulate API call with your sample data
-            return new Promise((resolve) => {
-                // In a real app, you would do something like:
-                // fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: JSON.stringify({
-                //         contents: [{
-                //             parts: [{
-                //                 text: "Generate yoga asana information in JSON format"
-                //             }]
-                //         }]
-                //     })
-                // })
-                
-                // For now, we'll use your sample data directly
-                const yogaData = [
-                    {
-                      "name": "Supta Baddha Konasana (Reclining Bound Angle Pose)",
-                      "steps": [
-                        "Lie on your back, bend your knees, and bring the soles of your feet together.",
-                        "Let your knees fall open to the sides.",
-                        "Place your arms comfortably at your sides and relax."
-                      ],
-                      "duration": "5–10 minutes",
-                      "precautions": [
-                        "Support knees with pillows if they strain your inner thighs.",
-                        "Avoid if you have severe hip or groin injury."
-                      ],
-                      "image": "https://www.yogajournal.com/wp-content/uploads/2021/12/supta-baddha-konasana-759.jpg",
-                      "benefits": [
-                        "Relieves pelvic tension",
-                        "Promotes relaxation",
-                        "Improves blood circulation in the pelvic region"
-                      ],
-                      "relievesSymptoms": [
-                        "Menstrual cramps",
-                        "Bloating",
-                        "Irritability"
-                      ]
-                    },
-                    {
-                      "name": "Balasana (Child's Pose)",
-                      "steps": [
-                        "Kneel on the floor with your toes together and knees hip-width apart.",
-                        "Lower your torso between your thighs.",
-                        "Extend your arms forward or rest them alongside your body."
-                      ],
-                      "duration": "1–3 minutes",
-                      "precautions": [
-                        "Avoid if you have knee injuries",
-                        "Use padding under knees if needed"
-                      ],
-                      "image": "https://www.yogajournal.com/wp-content/uploads/2007/08/childspose_292_3731_cropped.jpg",
-                      "benefits": [
-                        "Calms the brain",
-                        "Relieves stress and fatigue",
-                        "Stretches the hips and thighs"
-                      ],
-                      "relievesSymptoms": [
-                        "Stress",
-                        "Back pain",
-                        "Fatigue"
-                      ]
-                    }
-                ];
-                resolve(yogaData);
-            });
-        }
+// Retrieve selected symptoms from localStorage (set on index page)
+const symptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
+const wrapper = new YogaWrapper();
 
-        function displayYogaAsanas(yogaData) {
-            const container = document.getElementById('yogaAsanasContainer');
-            
-            if (!yogaData || yogaData.length === 0) {
-                container.innerHTML = '<div class="alert alert-info">No yoga asanas found.</div>';
-                return;
-            }
-            
-            let html = '';
-            
-            yogaData.forEach(asana => {
-                html += `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card">
-                            <img src="${asana.image}" class="card-img-top" alt="${asana.name}">
-                            <div class="card-body">
-                                <h5 class="card-title">${asana.name}</h5>
-                                <span class="badge duration-badge mb-3">${asana.duration}</span>
-                                
-                                <h6 class="section-title">Steps:</h6>
-                                <ol class="card-text">
-                                    ${asana.steps.map(step => `<li>${step}</li>`).join('')}
-                                </ol>
-                                
-                                <h6 class="section-title">Benefits:</h6>
-                                <div class="mb-3">
-                                    ${asana.benefits.map(benefit => `
-                                        <span class="badge bg-success benefit-badge">${benefit}</span>
-                                    `).join('')}
-                                </div>
-                                
-                                <h6 class="section-title">Relieves:</h6>
-                                <div class="mb-3">
-                                    ${asana.relievesSymptoms.map(symptom => `
-                                        <span class="badge bg-primary benefit-badge">${symptom}</span>
-                                    `).join('')}
-                                </div>
-                                
-                                <h6 class="section-title">Precautions:</h6>
-                                <ul>
-                                    ${asana.precautions.map(precaution => `
-                                        <li class="precaution-item">${precaution}</li>
-                                    `).join('')}
-                                </ul>
-                            </div>
+const container = document.getElementById('yogaAsanasContainer');
+
+wrapper.getYogaRecommendations(symptoms).then(result => {
+    const yogaData = result.yogaAsanas;
+    if (!yogaData || yogaData.length === 0) {
+        container.innerHTML = '<div class="alert alert-info">No yoga asanas found for your symptoms.</div>';
+        return;
+    }
+    let html = '';
+    yogaData.forEach(asana => {
+        html += `
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <img src="${asana.image}" class="card-img-top" alt="${asana.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${asana.name}</h5>
+                        <span class="badge duration-badge mb-3">${asana.duration}</span>
+                        <h6 class="section-title">Steps:</h6>
+                        <ol class="card-text">
+                            ${(asana.steps || []).map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                        <h6 class="section-title">Benefits:</h6>
+                        <div class="mb-3">
+                            ${(asana.benefits || []).map(benefit => `
+                                <span class="badge bg-success benefit-badge">${benefit}</span>
+                            `).join('')}
                         </div>
+                        <h6 class="section-title">Relieves:</h6>
+                        <div class="mb-3">
+                            ${(asana.relievesSymptoms || []).map(symptom => `
+                                <span class="badge bg-primary benefit-badge">${symptom}</span>
+                            `).join('')}
+                        </div>
+                        <h6 class="section-title">Precautions:</h6>
+                        <ul>
+                            ${(asana.precautions || []).map(precaution => `
+                                <li class="precaution-item">${precaution}</li>
+                            `).join('')}
+                        </ul>
                     </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-    </script>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}).catch(error => {
+    container.innerHTML = `<div class="alert alert-danger">Failed to load yoga data: ${error.message}</div>`;
+});
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
