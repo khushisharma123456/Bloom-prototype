@@ -11,14 +11,6 @@
     --graph-pink: #FFB8D1;
     --graph-lavender: #B8B3FF;
     --primary-purple: #6E5B9A;
-    
-    /* Global font family */
-    --primary-font: 'Poppins', 'Nunito', 'Segoe UI', 'Arial', sans-serif;
-}
-
-/* Global font override for consistent typography */
-*, *::before, *::after {
-    font-family: var(--primary-font) !important;
 }
 
 /* Sidebar Styles */
@@ -49,7 +41,7 @@
 }
 
 .logo {
-    font-family: var(--primary-font);
+    font-family: 'Nunito', sans-serif;
     font-size: 24px;
     font-weight: 700;
     color: var(--primary-purple);
@@ -98,7 +90,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: var(--primary-font);
+    font-family: 'Nunito', sans-serif;
     font-size: 16px;
     color: var(--text-dark);
 }
@@ -175,7 +167,7 @@
     padding: 12px 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: var(--primary-font);
+    font-family: 'Nunito', sans-serif;
     font-size: 14px;
     color: var(--text-dark);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -235,7 +227,7 @@
 }
 
 .profile-name {
-    font-family: var(--primary-font);
+    font-family: 'Nunito', sans-serif;
     font-weight: 600;
 }
 
@@ -264,7 +256,7 @@
 
 /* Body adjustment for sidebar layout */
 body.sidebar-layout {
-    font-family: var(--primary-font);
+    font-family: 'Poppins', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-dark);
     display: flex;
