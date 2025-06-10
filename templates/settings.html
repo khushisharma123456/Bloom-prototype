@@ -36,72 +36,11 @@
             color: var(--text-dark);
             display: flex;
             min-height: 100vh;
-        }
-        
-        /* Enhanced Gradient Sidebar */
-        .sidebar {
-            width: 220px;
-            background: linear-gradient(135deg, var(--sidebar-color) 0%, var(--accent-lavender) 100%);
-            padding: 24px 0;
-            box-shadow: var(--shadow-md);
-            position: fixed;
-            height: 100vh;
-            z-index: 10;
-            transition: var(--transition);
-        }
-        
-        .logo {
-            padding: 0 24px 20px;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-purple);
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            color: var(--graph-pink);
-            font-size: 28px;
-        }
-        
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            margin: 2px 0;
-            color: var(--text-light);
-            text-decoration: none;
-            transition: var(--transition);
-            border-left: 3px solid transparent;
-            font-size: 14px;
-        }
-        
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            color: var(--primary-purple);
-            border-left: 3px solid var(--graph-pink);
-        }
-        
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.5);
-            color: var(--primary-purple);
-            font-weight: 500;
-            border-left: 3px solid var(--primary-purple);
-        }
-        
-        .nav-item i {
-            margin-right: 12px;
-            width: 18px;
-            text-align: center;
-            color: var(--primary-purple);
-            font-size: 16px;
-        }
-        
+        }        
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            margin-left: 220px;
+            margin-left: 292px; /* Match dashboard margin: 250px sidebar + 42px total padding */
             padding: 40px;
             transition: var(--transition);
         }
@@ -716,16 +655,10 @@
             gap: 12px;
             margin-top: 24px;
         }
-        
-        /* Responsive */
+          /* Responsive */
         @media (max-width: 1024px) {
-            .sidebar {
-                width: 240px;
-                padding: 24px 0;
-            }
-            
             .main-content {
-                margin-left: 240px;
+                margin-left: 292px; /* Keep dashboard margin */
                 padding: 32px;
             }
         }

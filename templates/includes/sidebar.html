@@ -46,14 +46,41 @@
             <i class="fas fa-smile"></i>
             <span>Mood Tracker</span>
         </div>
-    </a>
-
-    <a href="/consultation" class="menu-link">
-        <div class="nav-item" data-nav="consultation">
-            <i class="fas fa-user-md"></i>
-            <span>Consultation</span>
+    </a>    <div class="menu-item-with-dropdown">
+        <a href="/consultation" class="menu-link">
+            <div class="nav-item" data-nav="consultation">
+                <i class="fas fa-user-md"></i>
+                <span>Consultation</span>
+                <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+        </a>
+        <div class="dropdown-content">
+            <div class="dropdown-item" data-section="all">
+                <i class="fas fa-star"></i>
+                <span>All Specialists</span>
+            </div>
+            <div class="dropdown-item" data-section="gynecologist">
+                <i class="fas fa-female"></i>
+                <span>Gynecologists</span>
+            </div>
+            <div class="dropdown-item" data-section="nutritionist">
+                <i class="fas fa-utensils"></i>
+                <span>Nutritionists</span>
+            </div>
+            <div class="dropdown-item" data-section="support">
+                <i class="fas fa-heart"></i>
+                <span>Therapists</span>
+            </div>
+            <div class="dropdown-item" data-section="ayurveda">
+                <i class="fas fa-leaf"></i>
+                <span>Ayurveda Experts</span>
+            </div>
+            <div class="dropdown-item" data-section="fitness">
+                <i class="fas fa-dumbbell"></i>
+                <span>Fitness Coaches</span>
+            </div>
         </div>
-    </a>    <a href="/chatbot" class="menu-link">
+    </div><a href="/chatbot" class="menu-link">
         <div class="nav-item" data-nav="chatbot">
             <i class="fas fa-comments"></i>
             <span>Chatbot</span>

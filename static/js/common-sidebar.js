@@ -9,8 +9,7 @@ function setActiveNavItem() {
     // Remove active class from all items
     navItems.forEach(item => item.classList.remove('active'));
     dropdownItems.forEach(item => item.classList.remove('active'));
-    
-    // Map of paths to nav items
+      // Map of paths to nav items
     const pathMap = {
         '/': 'dashboard',  // Root still maps to dashboard for fallback
         '/dashboard': 'dashboard',
@@ -38,6 +37,11 @@ function setActiveNavItem() {
             if (activeSection === 'nutrition') {
                 handleNutritionDropdownState();
             }
+            
+            // If consultation page, also handle dropdown state based on URL parameters or section
+            if (activeSection === 'consultation') {
+                handleConsultationDropdownState();
+            }
         }
     } else {
         // Default to dashboard if no match
@@ -61,6 +65,25 @@ function handleNutritionDropdownState() {
         
         // Set active dropdown item
         const activeDropdownItem = document.querySelector(`[data-section="${section}"]`);
+        if (activeDropdownItem) {
+            activeDropdownItem.classList.add('active');
+        }
+    }
+}
+
+// Function to handle consultation dropdown state
+function handleConsultationDropdownState() {
+    const consultationDropdown = document.querySelector('.nav-item[data-nav="consultation"]').closest('.menu-item-with-dropdown');
+    if (consultationDropdown && window.location.pathname === '/consultation') {
+        // Check if we're on consultation page and should open dropdown
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category') || 'all'; // default category
+        
+        // Open dropdown if on consultation page
+        consultationDropdown.classList.add('open');
+        
+        // Set active dropdown item
+        const activeDropdownItem = consultationDropdown.querySelector(`[data-section="${category}"]`);
         if (activeDropdownItem) {
             activeDropdownItem.classList.add('active');
         }
@@ -98,14 +121,13 @@ document.addEventListener('DOMContentLoaded', function() {
     handleResponsiveSidebar();
     
     // Add click handlers for nav items
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
+    const navItems = document.querySelectorAll('.nav-item');    navItems.forEach(item => {
         item.addEventListener('click', function(e) {
             // Check if this is a nutrition dropdown
             const dropdownContainer = this.closest('.menu-item-with-dropdown');
             if (dropdownContainer) {
-                // If we're on nutrition page, toggle dropdown instead of navigating
-                if (window.location.pathname === '/nutrition') {
+                // If we're on nutrition or consultation page, toggle dropdown instead of navigating
+                if (window.location.pathname === '/nutrition' || window.location.pathname === '/consultation') {
                     e.preventDefault();
                     toggleDropdown(dropdownContainer);
                     return;
@@ -118,16 +140,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // Add click handlers for dropdown items
+      // Add click handlers for dropdown items
     const dropdownItems = document.querySelectorAll('.dropdown-item');
     dropdownItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
-            // Remove active class from all dropdown items
-            dropdownItems.forEach(di => di.classList.remove('active'));
+            // Remove active class from all dropdown items in the same dropdown
+            const parentDropdown = this.closest('.dropdown-content');
+            parentDropdown.querySelectorAll('.dropdown-item').forEach(di => di.classList.remove('active'));
             
             // Add active class to clicked item
             this.classList.add('active');
@@ -135,12 +157,26 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get the section to show
             const section = this.getAttribute('data-section');
             
-            // If we're on nutrition page, trigger section change
-            if (window.location.pathname === '/nutrition' && window.nutritionApp) {
-                window.nutritionApp.showSection(section);
-            } else {
-                // Navigate to nutrition page with section parameter
-                window.location.href = `/nutrition?section=${section}`;
+            // Check if this is nutrition or consultation dropdown
+            const isNutritionDropdown = this.closest('.menu-item-with-dropdown').querySelector('[data-nav="nutrition"]');
+            const isConsultationDropdown = this.closest('.menu-item-with-dropdown').querySelector('[data-nav="consultation"]');
+            
+            if (isNutritionDropdown) {
+                // If we're on nutrition page, trigger section change
+                if (window.location.pathname === '/nutrition' && window.nutritionApp) {
+                    window.nutritionApp.showSection(section);
+                } else {
+                    // Navigate to nutrition page with section parameter
+                    window.location.href = `/nutrition?section=${section}`;
+                }
+            } else if (isConsultationDropdown) {
+                // If we're on consultation page, trigger category change
+                if (window.location.pathname === '/consultation' && window.consultationApp) {
+                    window.consultationApp.filterByCategory(section);
+                } else {
+                    // Navigate to consultation page with category parameter
+                    window.location.href = `/consultation?category=${section}`;
+                }
             }
         });
     });
@@ -165,5 +201,6 @@ window.BloomSidebar = {
     toggleMobileMenu,
     handleResponsiveSidebar,
     toggleDropdown,
-    handleNutritionDropdownState
+    handleNutritionDropdownState,
+    handleConsultationDropdownState
 };

@@ -946,15 +946,15 @@ def get_ayurvedic_recommendations():
             normalized_badge = badge.strip().lower()
             
             print(f"Remedy: {remedy.get('name', 'Unknown')} | Badge: {normalized_badge} | Categories: {normalized_categories}")
-            
-            # Match if any symptom matches category or badge
+              # Match if any symptom matches category or badge
             if any(symptom in normalized_categories for symptom in normalized_symptoms) or \
                any(symptom == normalized_badge for symptom in normalized_symptoms):
                 recommendations.append(remedy)
                 print(f"MATCHED: {remedy.get('name', 'Unknown')}")
         
         print(f"Total recommendations: {len(recommendations)}")
-          return jsonify({
+        
+        return jsonify({
             'success': True,
             'recommendations': {
                 'ayurvedicRemedies': recommendations
