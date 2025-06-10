@@ -1,13 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     console.log('DOM Content Loaded');
-    
-    const elements = {
+      const elements = {
         professionalsContainer: document.getElementById('professionalsContainer'),
         doctorSearch: document.getElementById('doctorSearch'),
         searchBtn: document.getElementById('searchBtn'),
         filterTags: document.querySelectorAll('.filter-tag'),
-        topicItems: document.querySelectorAll('.topics-list li'),
         consultationModal: document.getElementById('consultationModal'),
         modalOverlay: document.getElementById('modalOverlay'),
         closeModalBtn: document.getElementById('closeModal'),
@@ -38,9 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         messageCount: {},
         appointments: [], // Array to store booked appointments
         contactedDoctors: new Set() // Set to store IDs of doctors you've messaged
-    };
-
-    // Initialize the application
+    };    // Initialize the application
     function init() {
         console.log('Initializing application');
         setupEventListeners();
@@ -49,7 +45,25 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeMessages();
         setupMessageEventListeners();
         loadUserData();
+        checkURLParameters();
         console.log('Application initialized');
+    }
+
+    // Check URL parameters and set initial category
+    function checkURLParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        if (category && category !== 'all') {
+            filterByCategory(category);
+        }
+    }    // Function to filter by category (exposed for sidebar dropdown)
+    function filterByCategory(category) {
+        // Update URL without page refresh
+        const newUrl = category === 'all' ? '/consultation' : `/consultation?category=${category}`;
+        window.history.replaceState({}, '', newUrl);
+        
+        // Trigger filtering
+        filterProfessionals();
     }
 
     // Set minimum date for appointment (today)
@@ -75,15 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.filter-tag').forEach(tag => {
             tag.addEventListener('click', function() {
                 document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                filterProfessionals();
-            });
-        });
-
-        // Sidebar topics (categories)
-        elements.topicItems.forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.topics-list li').forEach(i => i.classList.remove('active'));
                 this.classList.add('active');
                 filterProfessionals();
             });
@@ -284,12 +289,13 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.category = professional.category;
         card.dataset.available = professional.availableToday;
         card.dataset.gender = professional.gender;
-        card.dataset.video = professional.videoConsult;
-
-        // Create badges array
+        card.dataset.video = professional.videoConsult;        // Create badges array
         const badges = [];
         if (professional.availableToday) {
-            badges.push('<span class="professional-badge">Available Today</span>');
+            badges.push('<span class="professional-badge"><i class="fas fa-clock"></i> Available Today</span>');
+        }
+        if (professional.gender && professional.gender.toLowerCase() === 'female') {
+            badges.push('<span class="professional-badge female-badge"><i class="fas fa-venus"></i> Female Doctor</span>');
         }
         if (state.appointments.some(apt => apt.doctorId === professional.id)) {
             badges.push('<span class="professional-badge appointment-badge"><i class="fas fa-calendar-check"></i> Upcoming Appointment</span>');
@@ -298,24 +304,29 @@ document.addEventListener('DOMContentLoaded', function() {
             badges.push('<span class="professional-badge contacted-badge"><i class="fas fa-envelope"></i> Contacted</span>');
         }
 
+        // Sort badges by text length in descending order
+        badges.sort((a, b) => {
+            const textA = a.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags to get text content
+            const textB = b.replace(/<[^>]*>/g, '').trim();
+            return textB.length - textA.length; // Descending order
+        });
+
         // Check if image URL exists, otherwise use default profile emoji
         const imageStyle = professional.image 
             ? `background-image: url('${professional.image}')`
-            : `background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 48px;`;
-
-        card.innerHTML = `
+            : `background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 48px;`;        card.innerHTML = `
             <div class="professional-image" style="${imageStyle}">
                 ${!professional.image ? '<i class="fas fa-user-circle"></i>' : ''}
-                <div class="badge-container">${badges.join('')}</div>
             </div>
             <div class="professional-info">
+                <div class="badge-container">${badges.join('')}</div>
                 <h3 class="professional-name">${professional.name}</h3>
                 <span class="professional-specialty">${professional.specialty} • ${professional.location}</span>
                 <span class="professional-education">${professional.education}</span>
                 <div class="professional-stars">
                     ${renderStars(professional.rating)}
                     <span>(${professional.reviews} reviews)</span>
-                </div>                <div class="professional-meta">
+                </div><div class="professional-meta">
                     <span class="professional-price">${professional.price}/consultation</span>
                     <a href="https://www.justdial.com/search?q=${encodeURIComponent(professional.name + ' ' + professional.specialty + ' ' + professional.location)}" target="_blank" class="justdial-link">📞</a>
                 </div>
@@ -341,14 +352,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         return card;
-    }
-
-    // Filter professionals based on current state
+    }    // Filter professionals based on current state
     function filterProfessionals() {
-        const activeCategoryItem = document.querySelector('.topics-list li.active');
+        // Get current category from URL parameter if available, otherwise default to 'all'
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeCategory = urlParams.get('category') || 'all';
+        
         const activeFilterTag = document.querySelector('.filter-tag.active');
         const searchTerm = elements.doctorSearch.value.toLowerCase().trim();
-        const activeCategory = activeCategoryItem ? activeCategoryItem.getAttribute('data-category') : 'all';
         const activeFilter = activeFilterTag ? activeFilterTag.getAttribute('data-filter') : 'all';
         
         let filtered = state.professionals.filter(professional => {
@@ -951,12 +962,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedContacts) {
             state.contactedDoctors = new Set(JSON.parse(savedContacts));
         }
-    }
-
-    function saveUserData() {
+    }    function saveUserData() {
         localStorage.setItem('userAppointments', JSON.stringify(state.appointments));
         localStorage.setItem('contactedDoctors', JSON.stringify([...state.contactedDoctors]));
     }
+
+    // Expose consultation app globally for sidebar integration
+    window.consultationApp = {
+        filterByCategory: filterByCategory,
+        filterProfessionals: filterProfessionals,
+        state: state
+    };
 
     // Call init() to start the application
     init();

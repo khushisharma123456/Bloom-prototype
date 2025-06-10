@@ -9,23 +9,9 @@
 </head>
 <body class="sidebar-layout">
     <!-- Common Sidebar -->
-    {% include 'includes/sidebar.html' %}
-
-    <div class="main-content">
-        <!-- Converted sidebar to horizontal nav -->
-        <nav class="consultation-nav">
-            <ul>
-                <li data-category="all" class="active"><i class="fas fa-star"></i> All Specialists</li>
-                <li data-category="gynecologist"><i class="fas fa-female"></i> Gynecologists</li>
-                <li data-category="nutritionist"><i class="fas fa-utensils"></i> Nutritionists</li>                
-                <li data-category="support"><i class="fas fa-heart"></i> Therapists</li>
-                <li data-category="ayurveda"><i class="fas fa-leaf"></i> Ayurveda Experts</li>
-                <li data-category="fitness"><i class="fas fa-dumbbell"></i> Fitness Coaches</li>
-            </ul>
-        </nav>
-
-            <section class="consultation-content">
-                <div class="search-container">
+    {% include 'includes/sidebar.html' %}    <div class="main-content">
+        <section class="consultation-content">
+            <div class="search-container">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="doctorSearch" placeholder="Search for specialists...">

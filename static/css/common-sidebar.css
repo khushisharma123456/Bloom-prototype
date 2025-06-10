@@ -32,6 +32,8 @@
     position: fixed;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
+    overflow-y: auto; /* Allow scrolling if needed */
+    overflow-x: hidden; /* Hide horizontal overflow */
 }
 
 /* Remove all underlines from sidebar links */
@@ -130,6 +132,7 @@
 /* Dropdown Styles for Sidebar */
 .menu-item-with-dropdown {
     position: relative;
+    margin-bottom: 8px;
 }
 
 .dropdown-arrow {
@@ -146,12 +149,20 @@
 
 .dropdown-content {
     display: none;
-    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     margin-top: 5px;
-    margin-left: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
+    z-index: 1001;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .menu-item-with-dropdown.open .dropdown-content {
@@ -161,12 +172,17 @@
 .dropdown-item {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
+    padding: 12px 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: var(--primary-font);
     font-size: 14px;
     color: var(--text-dark);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
 }
 
 .dropdown-item i {
@@ -221,6 +237,22 @@
 .profile-name {
     font-family: var(--primary-font);
     font-weight: 600;
+}
+
+/* Navigation container to organize sidebar content */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 20px;
+}
+
+/* Ensure sidebar content is properly contained */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
 }
 
 /* Main Content Adjustment */
@@ -314,4 +346,21 @@ body.sidebar-layout {
         margin-left: 0;
         width: 100%;
     }
+}
+
+/* Emoji icon styling */
+.emoji-icon {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+    display: inline-block;
+}
+
+/* Ensure dropdown items have proper emoji styling */
+.dropdown-item .emoji-icon {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    font-size: 14px;
 }
