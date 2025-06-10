@@ -1031,14 +1031,17 @@
         
         <!-- Mood and Spotify Section -->
         <div class="mood-spotify-section">
-            <h2>How are you feeling today?</h2>
+            <h2 style="text-align:center; font-size:2rem; margin-bottom:10px; letter-spacing:1px;">Your mood, our song</h2>
             <div class="mood-selector">
-                <div class="mood-option" data-mood="happy">😃</div>
-                <div class="mood-option" data-mood="sad">😞</div>
-                <div class="mood-option" data-mood="angry">😡</div>
-                <div class="mood-option" data-mood="energetic">⚡</div>
+                <div class="mood-option" data-mood="happy">😃<div class="mood-name">Happy</div></div>
+                <div class="mood-option" data-mood="sad">😞<div class="mood-name">Sad</div></div>
+                <div class="mood-option" data-mood="angry">😡<div class="mood-name">Angry</div></div>
+                <div class="mood-option" data-mood="energetic">⚡<div class="mood-name">Energetic</div></div>
+                <div class="mood-option" data-mood="relaxed">🧘<div class="mood-name">Relaxed</div></div>
+                <div class="mood-option" data-mood="stressed">😣<div class="mood-name">Stressed</div></div>
+                <div class="mood-option" data-mood="motivated">🚀<div class="mood-name">Motivated</div></div>
+                <div class="mood-option" data-mood="anxious">😬<div class="mood-name">Anxious</div></div>
             </div>
-
             <div class="star-rating">
                 <span class="star" data-rating="1">★</span>
                 <span class="star" data-rating="2">★</span>
@@ -1046,12 +1049,13 @@
                 <span class="star" data-rating="4">★</span>
                 <span class="star" data-rating="5">★</span>
             </div>
-
-            <div class="spotify-section">
-                <button id="spotify-login" class="spotify-login-btn">
-                    Connect with Spotify
-                </button>
+            <div class="spotify-section" style="background:transparent; color:inherit; box-shadow:none; text-align:center;">
                 <div id="playlistDisplay" class="playlist-display"></div>
+                <div id="spotifyPlaceholder" style="margin-top:30px; padding:24px; border-radius:16px; background:linear-gradient(90deg,#ffe8f0 60%,#e8e0ff 100%); color:#6E5B9A; font-size:1.1rem; font-family:'Nunito',sans-serif; display:flex; flex-direction:column; align-items:center; gap:10px;">
+                    <i class="fab fa-spotify" style="font-size:2.5rem; color:#1DB954;"></i>
+                    <span style="font-weight:600; font-size:1.2rem;">🎵 Spotify Integration: "Soundtrack Your Mood"</span>
+                    <span style="font-size:1rem; color:#8A7FAA;">Choose your vibe, and we’ll handpick the perfect playlist for you.</span>
+                </div>
             </div>
         </div>
     </div>
@@ -1188,48 +1192,106 @@
             };
         }
         
-        // Mood selection
+        // Mood selection and playlist logic
+        const moodPlaylists = {
+            happy: {
+                1: {title: "Gentle Happy", id: "37i9dQZF1DX3rxVfibe1L0"},
+                2: {title: "Chill Happy", id: "37i9dQZF1DXdPec7aLTmlC"},
+                3: {title: "Upbeat Happy", id: "37i9dQZF1DX1BzILRveYHb"},
+                4: {title: "Party Happy", id: "37i9dQZF1DX0UrRvztWcAU"},
+                5: {title: "Euphoric Happy", id: "37i9dQZF1DX7KNKjOK0o75"}
+            },
+            sad: {
+                1: {title: "Gentle Sad", id: "37i9dQZF1DX7qK8ma5wgG1"},
+                2: {title: "Chill Sad", id: "37i9dQZF1DX7gIoKXt0gmx"},
+                3: {title: "Reflective Sad", id: "37i9dQZF1DX3YSRoSdA634"},
+                4: {title: "Deep Sad", id: "37i9dQZF1DX3YSRoSdA634"},
+                5: {title: "Heartfelt Sad", id: "37i9dQZF1DX7gIoKXt0gmx"}
+            },
+            angry: {
+                1: {title: "Calm Down", id: "37i9dQZF1DX3Ogo9pFvBkY"},
+                2: {title: "Release Anger", id: "37i9dQZF1DX1tyCD9QhIWF"},
+                3: {title: "Rock Out", id: "37i9dQZF1DX1rVvRgjX59F"},
+                4: {title: "Power Up", id: "37i9dQZF1DX1F430ihQKsD"},
+                5: {title: "Fierce Energy", id: "37i9dQZF1DX1F430ihQKsD"}
+            },
+            energetic: {
+                1: {title: "Gentle Energy", id: "37i9dQZF1DXdxcBWuJkbcy"},
+                2: {title: "Morning Boost", id: "37i9dQZF1DX8FwnYE6PRvL"},
+                3: {title: "Workout Energy", id: "37i9dQZF1DX70RN3TfWWJh"},
+                4: {title: "Dance Energy", id: "37i9dQZF1DX0BcQWzuB7ZO"},
+                5: {title: "Max Energy", id: "37i9dQZF1DX76Wlfdnj7AP"}
+            },
+            relaxed: {
+                1: {title: "Gentle Relax", id: "37i9dQZF1DX3PIPIT6lEg5"},
+                2: {title: "Chill Relax", id: "37i9dQZF1DX4WYpdgoIcn6"},
+                3: {title: "Deep Relax", id: "37i9dQZF1DWUZ5bk6qqDSy"},
+                4: {title: "Spa Relax", id: "37i9dQZF1DX4sWSpwq3LiO"},
+                5: {title: "Ultimate Relax", id: "37i9dQZF1DX4E3UdUs7fUx"}
+            },
+            stressed: {
+                1: {title: "Gentle Stress Relief", id: "37i9dQZF1DX3Ogo9pFvBkY"},
+                2: {title: "Chill Stress Relief", id: "37i9dQZF1DX4WYpdgoIcn6"},
+                3: {title: "Focus & Calm", id: "37i9dQZF1DWUZ5bk6qqDSy"},
+                4: {title: "Unwind Stress", id: "37i9dQZF1DX4sWSpwq3LiO"},
+                5: {title: "Ultimate Stress Relief", id: "37i9dQZF1DX4E3UdUs7fUx"}
+            },
+            motivated: {
+                1: {title: "Gentle Motivation", id: "37i9dQZF1DXdxcBWuJkbcy"},
+                2: {title: "Chill Motivation", id: "37i9dQZF1DX8FwnYE6PRvL"},
+                3: {title: "Get Moving", id: "37i9dQZF1DX70RN3TfWWJh"},
+                4: {title: "Power Motivation", id: "37i9dQZF1DX0BcQWzuB7ZO"},
+                5: {title: "Max Motivation", id: "37i9dQZF1DX76Wlfdnj7AP"}
+            },
+            anxious: {
+                1: {title: "Gentle Calm", id: "37i9dQZF1DX3PIPIT6lEg5"},
+                2: {title: "Chill Calm", id: "37i9dQZF1DX4WYpdgoIcn6"},
+                3: {title: "Deep Calm", id: "37i9dQZF1DWUZ5bk6qqDSy"},
+                4: {title: "Unwind Anxiety", id: "37i9dQZF1DX4sWSpwq3LiO"},
+                5: {title: "Ultimate Calm", id: "37i9dQZF1DX4E3UdUs7fUx"}
+            }
+        };
+
+        function showPlaylist(mood, rating) {
+            const playlistDisplay = document.getElementById('playlistDisplay');
+            const placeholder = document.getElementById('spotifyPlaceholder');
+            if (mood && rating && moodPlaylists[mood] && moodPlaylists[mood][rating]) {
+                const playlist = moodPlaylists[mood][rating];
+                playlistDisplay.innerHTML = `
+                    <h4 style="color:#6E5B9A; font-family:'Nunito',sans-serif;">${playlist.title} Playlist</h4>
+                    <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    <br>
+                    <a href="https://open.spotify.com/playlist/${playlist.id}" class="open-spotify-btn" target="_blank">Open in Spotify</a>
+                `;
+                placeholder.style.display = 'none';
+            } else {
+                playlistDisplay.innerHTML = '';
+                placeholder.style.display = 'flex';
+            }
+        }
+
+        let selectedMood = null;
+        let selectedRating = null;
+
         document.querySelectorAll('.mood-option').forEach(option => {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
                 this.classList.add('selected');
-                const mood = this.dataset.mood;
-                const rating = document.querySelectorAll('.star.active').length;
-                if (rating > 0) {
-                    generatePlaylist(mood, rating);
-                }
+                selectedMood = this.dataset.mood;
+                if (selectedRating) showPlaylist(selectedMood, selectedRating);
             });
         });
-
-        // Star rating
         document.querySelectorAll('.star').forEach(star => {
             star.addEventListener('click', function() {
                 const rating = this.dataset.rating;
                 document.querySelectorAll('.star').forEach(s => {
                     s.classList.toggle('active', s.dataset.rating <= rating);
                 });
-                
-                const selectedMood = document.querySelector('.mood-option.selected');
-                if (selectedMood) {
-                    generatePlaylist(selectedMood.dataset.mood, rating);
-                }
+                selectedRating = rating;
+                if (selectedMood) showPlaylist(selectedMood, selectedRating);
             });
         });
         
-        function generatePlaylist(mood, rating) {
-            // In a real app, this would connect to your backend to get mood-appropriate playlists
-            const playlistDisplay = document.getElementById('playlistDisplay');
-            playlistDisplay.innerHTML = `
-                <h4>Recommended Playlist for ${mood} mood (${rating} stars)</h4>
-                <p>Here's a playlist to match your current mood:</p>
-                <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DXdPec7aLTmlC" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                <br>
-                <a href="https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" class="open-spotify-btn" target="_blank">
-                    Open in Spotify
-                </a>
-            `;
-        }
-
         // Mobile Menu Toggle (for responsive design)
         function toggleMobileMenu() {
             const sidebar = document.querySelector('.sidebar');
