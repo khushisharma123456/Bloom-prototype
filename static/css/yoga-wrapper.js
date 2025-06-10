@@ -57,8 +57,13 @@ class YogaWrapper {
                 throw new Error(data.message || 'Failed to get yoga recommendations');
             }
 
+            // Extract recommended names from Gemini response
+            const recommendedNames = (data.recommendations.yogaAsanas || []).map(a => a.name && a.name.trim()).filter(Boolean);
+            // Filter original yogaData for these names
+            const filteredAsanas = yogaData.filter(asana => recommendedNames.includes(asana.name));
+
             return {
-                yogaAsanas: data.recommendations.yogaAsanas || []
+                yogaAsanas: filteredAsanas
             };
         } catch (error) {
             console.error('Error getting yoga recommendations:', error);

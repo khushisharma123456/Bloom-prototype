@@ -148,48 +148,42 @@ def survey():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
+        # Get the date string from the form (format: "d MMM yyyy" like "15 Jun 2023")
+        last_period_str = request.form.get('q2')
+        # Parse the date string into a date object
         try:
-            # Get the date string from the form (format: "d MMM yyyy" like "15 Jun 2023")
-            last_period_str = request.form.get('q2')
-            
-            # Parse the date string into a date object
+            last_period = datetime.strptime(last_period_str, '%d %b %Y').date()
+        except ValueError:
+            # Try alternative format if the first one fails
             try:
-                last_period = datetime.strptime(last_period_str, '%d %b %Y').date()
-            except ValueError:
-                # Try alternative format if the first one fails
-                try:
-                    last_period = datetime.strptime(last_period_str, '%Y-%m-%d').date()
-                except ValueError as e:
-                    flash(f'Invalid date format: {last_period_str}. Please use the calendar picker.', 'danger')
-                    return redirect(url_for('survey'))
-
-            # Debug print all form data
-            print("Form data received:", request.form)
-            
-            new_response = SurveyResponse(
-                user_id=session['user_id'],
-                q1_age=request.form.get('q1', type=int),
-                q2_last_period=last_period,
-                q3_period_duration=request.form.get('q3'),
-                q4_cycle_length=request.form.get('q4'),
-                q5_period_regularity=request.form.get('q5'),
-                q6_hair_growth=request.form.get('q6'),
-                q7_acne=request.form.get('q7'),  # FIXED: missing closing parenthesis
-                q8_hair_thinning=request.form.get('q8'),
-                q9_weight_gain=request.form.get('q9',
-                q10_sugar_craving=request.form.get('q10'),
-                q11_family_history=request.form.get('q11'),
-                q12_fertility=request.form.get('q12'),
-                q13_mood_swings=request.form.get('q13')
-            )
-
-            user.survey_completed = True
+                last_period = datetime.strptime(last_period_str, '%Y-%m-%d').date()
+            except ValueError as e:
+                flash(f'Invalid date format: {last_period_str}. Please use the calendar picker.', 'danger')
+                return redirect(url_for('survey'))
+        # Debug print all form data
+        print("Form data received:", request.form)
+        new_response = SurveyResponse(
+            user_id=session['user_id'],
+            q1_age=request.form.get('q1', type=int),
+            q2_last_period=last_period,
+            q3_period_duration=request.form.get('q3'),
+            q4_cycle_length=request.form.get('q4'),
+            q5_period_regularity=request.form.get('q5'),
+            q6_hair_growth=request.form.get('q6'),
+            q7_acne=request.form.get('q7'),
+            q8_hair_thinning=request.form.get('q8'),
+            q9_weight_gain=request.form.get('q9'),
+            q10_sugar_craving=request.form.get('q10'),
+            q11_family_history=request.form.get('q11'),
+            q12_fertility=request.form.get('q12'),
+            q13_mood_swings=request.form.get('q13')
+        )
+        user.survey_completed = True
+        try:
             db.session.add(new_response)
             db.session.commit()
-
             flash('Thank you for completing the survey!', 'success')
             return redirect(url_for('dashboard'))
-
         except Exception as e:
             db.session.rollback()
             flash(f'Error saving survey responses: {str(e)}. Please check all fields and try again.', 'danger')
@@ -256,10 +250,6 @@ def dashboard():
 # Period Tracker Page (Only for logged-in users)
 pain_mapping = {'No Pain': 0, 'Mild': 3, 'Moderate': 5, 'Severe': 10}
 flow_mapping = {'None': 0, 'Light': 2, 'Medium': 5, 'Heavy': 8}
-
-from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime, timedelta
-
 
 @app.route('/period_tracker', methods=['GET', 'POST'])
 def period_tracker():
@@ -882,3 +872,17 @@ def personalised_remdy():
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
     return render_template('personalised-remdy.html', user_name=session.get('user_name', 'User'))
+
+def predict_cycle(start_date, cycle_length):
+    from datetime import datetime, timedelta
+    # start_date: string in 'YYYY-MM-DD' format
+    try:
+        start = datetime.strptime(start_date, '%Y-%m-%d')
+    except Exception:
+        return {'error': 'Invalid start_date format'}
+    next_period = start + timedelta(days=cycle_length)
+    return {
+        'start_date': start_date,
+        'cycle_length': cycle_length,
+        'next_period': next_period.strftime('%Y-%m-%d')
+    }
