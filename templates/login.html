@@ -5,58 +5,300 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloom - Login</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/loginPg.css') }}">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(120deg, #fbeff2 0%, #e7eafc 100%);
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        .login-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            min-height: 100vh;
+            min-width: 100vw;
+            overflow: hidden;
+        }
+        .login-panel {
+            display: flex;
+            width: 1200px;
+            max-width: 98vw;
+            min-height: 600px;
+            height: 90vh;
+            background: #fff;
+            border-radius: 40px;
+            box-shadow: 0 12px 48px 0 rgba(160, 132, 202, 0.18), 0 2px 8px 0 rgba(200, 170, 220, 0.10);
+            overflow: hidden;
+            border: 2.5px solid #e7eafc;
+            align-items: center;
+        }
+        .panel-left {
+            flex: 1.1;
+            background: linear-gradient(135deg, #fbeff2 0%, #e7eafc 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 64px 48px;
+            color: #7d5c7b;
+            text-align: center;
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+            position: relative;
+            box-shadow: none;
+            border-right: 2.5px solid #e7eafc;
+        }
+        .panel-left-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+        }
+        .panel-left .welcome-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            background: #fffafd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 12px 0 rgba(200, 170, 220, 0.10);
+        }
+        .panel-left .welcome-icon img {
+            width: 56px;
+            height: 56px;
+        }
+        .panel-left h2 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #7d5c7b;
+            letter-spacing: 0.5px;
+        }
+        .panel-left p {
+            font-size: 1.25rem;
+            color: #a48fa9;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        .panel-left .tagline {
+            margin-top: 24px;
+            color: #b7a3d6;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        .panel-right {
+            flex: 1;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 64px 56px 48px 56px;
+            height: 100%;
+        }
+        .panel-right h2 {
+            color: #7d5c7b;
+            font-size: 2rem;
+            margin-bottom: 24px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .auth-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .form-group label {
+            color: #7d5c7b;
+            font-size: 1.05rem;
+            margin-bottom: 7px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e7eafc;
+            border-radius: 14px;
+            background: #fbeff2;
+            font-size: 1.05rem;
+            color: #7d5c7b;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 4px 0 rgba(200, 170, 220, 0.04);
+        }
+        .form-group input:focus {
+            border: 1.5px solid #b7a3d6;
+            background: #fffafd;
+            box-shadow: 0 2px 8px 0 rgba(200, 170, 220, 0.10);
+        }
+        .forgot-password {
+            color: #a48fa9;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-align: right;
+            text-decoration: underline;
+            display: block;
+            width: 100%;
+            transition: color 0.2s;
+        }
+        .forgot-password:hover {
+            color: #7d5c7b;
+        }
+        .submit-btn {
+            background: linear-gradient(90deg, #b7a3d6 0%, #fbeff2 100%);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 14px;
+            padding: 15px 0;
+            font-size: 1.15rem;
+            margin-top: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 12px 0 rgba(200, 170, 220, 0.13);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #a48fa9 0%, #b7a3d6 100%);
+            color: #fffafd;
+            box-shadow: 0 4px 16px 0 rgba(200, 170, 220, 0.18);
+        }
+        .auth-divider {
+            text-align: center;
+            margin: 22px 0 22px 0;
+            color: #a48fa9;
+            font-size: 1.05rem;
+            position: relative;
+            width: 100%;
+        }
+        .auth-divider span {
+            background: #fff;
+            padding: 0 18px;
+            position: relative;
+            z-index: 1;
+            border-radius: 14px;
+        }
+        .auth-divider:before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0; right: 0; top: 50%;
+            height: 1px;
+            background: #e7eafc;
+            z-index: 0;
+        }
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 22px;
+            width: 100%;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(90deg, #fbeff2 0%, #e7eafc 100%);
+            color: #7d5c7b;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 32px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 8px 0 rgba(200, 170, 220, 0.08);
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+            justify-content: center;
+        }
+        .social-btn:hover {
+            background: linear-gradient(90deg, #e7eafc 0%, #fbeff2 100%);
+            color: #a48fa9;
+        }
+        .panel-right p {
+            text-align: center;
+            color: #a48fa9;
+            margin-top: 22px;
+            font-size: 1.05rem;
+        }
+        .panel-right a {
+            color: #7d5c7b;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .panel-right a:hover {
+            color: #a48fa9;
+        }
+        @media (max-width: 1100px) {
+            .login-panel {
+                flex-direction: column;
+                min-width: 0;
+                width: 98vw;
+                height: auto;
+            }
+            .panel-left, .panel-right {
+                padding: 32px 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <a href="#" class="logo">
-            <img src="{{ url_for('static', filename='Images/logo1.png') }}" alt="Bloom Logo" width="40" height="40">
-            <span class="logo-text">Bloom</span>
-            <span class="tagline">From Crampy to Happy, We've Got You Covered.</span>
-        </a>
-        <div class="nav">
-            <a href="/">Home</a>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <div class="auth-container">
-            <div class="auth-image">
-                <div class="auth-image-content">
-                    <h2>Welcome Back!</h2>
-                    <p>Log in to continue your journey with Bloom.</p>
-                    <img src="{{ url_for('static', filename='Images/logo1.png') }}" alt="Bloom Logo" width="80" height="80">
+<div class="login-wrapper">
+    <div class="login-panel">
+        <div class="panel-left">
+            <div class="panel-left-inner">
+                <div class="welcome-icon">
+                    <img src="{{ url_for('static', filename='Images/logo1.png') }}" alt="Bloom Logo" />
                 </div>
-            </div>
-
-            <div class="auth-forms">
-                <h2>Login</h2>
-                <form class="auth-form" action="/login" method="POST">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                    </div>
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                    <button type="submit" class="submit-btn">Login</button>
-                </form>
-
-                <div class="auth-divider">
-                    <span>Or continue with</span>
-                </div>
-
-                <div class="social-login">
-                    <button class="social-btn">
-                        <img src="{{ url_for('static', filename='Images/google-icon.png') }}" width="24" height="24" alt="Google">
-                        Continue with Google
-                    </button>
-                </div>
-
-                <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+                <h2>Welcome Back!</h2>
+                <p>Log in to continue your journey with Bloom.<br>We're happy to see you again!</p>
+                <div class="tagline">From Crampy to Happy, We've Got You Covered.</div>
             </div>
         </div>
+        <div class="panel-right">
+            <h2>Login</h2>
+            <form class="auth-form" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <a href="#" class="forgot-password">Forgot password?</a>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+            
+            <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+        </div>
     </div>
+</div>
 </body>
 </html>

@@ -9,6 +9,10 @@ import requests
 from urllib.parse import urlencode
 import base64
 from datetime import datetime, timedelta
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+import secrets
 
 # Load environment variables (prioritize system env vars over .env file)
 import os
@@ -26,6 +30,13 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID = "your_google_client_id_here"  # Replace with your actual Google Client ID
+GOOGLE_CLIENT_SECRET = "your_google_client_secret_here"  # Replace with your actual Google Client Secret
+GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid_connect_json_web_keyset"
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Only for development
 
 db = SQLAlchemy(app)
 
@@ -170,6 +181,129 @@ def signup():
             return redirect(url_for('signup'))
 
     return render_template('signup.html')
+
+# Google OAuth Routes
+@app.route('/auth/google')
+def google_login():
+    """Initiate Google OAuth login"""
+    try:
+        # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps
+        flow = Flow.from_client_config(
+            {
+                "web": {
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                    "redirect_uris": ["http://localhost:5000/auth/google/callback"]
+                }
+            },
+            scopes=["openid", "email", "profile"]
+        )
+        
+        flow.redirect_uri = url_for('google_callback', _external=True)
+        
+        # Generate authorization URL
+        authorization_url, state = flow.authorization_url(
+            access_type='offline',
+            include_granted_scopes='true'
+        )
+        
+        # Store state in session for verification
+        session['state'] = state
+        
+        return redirect(authorization_url)
+        
+    except Exception as e:
+        flash(f'Error initiating Google login: {str(e)}', 'danger')
+        return redirect(url_for('login'))
+
+@app.route('/auth/google/callback')
+def google_callback():
+    """Handle Google OAuth callback"""
+    try:
+        # Verify state parameter
+        if request.args.get('state') != session.get('state'):
+            flash('Invalid state parameter', 'danger')
+            return redirect(url_for('login'))
+        
+        # Create flow instance
+        flow = Flow.from_client_config(
+            {
+                "web": {
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                    "redirect_uris": ["http://localhost:5000/auth/google/callback"]
+                }
+            },
+            scopes=["openid", "email", "profile"],
+            state=session['state']
+        )
+        
+        flow.redirect_uri = url_for('google_callback', _external=True)
+        
+        # Get authorization response
+        authorization_response = request.url
+        flow.fetch_token(authorization_response=authorization_response)
+        
+        # Get user info from Google
+        credentials = flow.credentials
+        request_session = google_requests.Request()
+        
+        # Verify the token and get user info
+        idinfo = id_token.verify_oauth2_token(
+            credentials.id_token, request_session, GOOGLE_CLIENT_ID
+        )
+        
+        # Extract user information
+        google_id = idinfo.get('sub')
+        email = idinfo.get('email')
+        name = idinfo.get('name')
+        picture = idinfo.get('picture')
+        
+        if not email:
+            flash('Unable to get email from Google account', 'danger')
+            return redirect(url_for('login'))
+        
+        # Check if user exists
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            # User exists, log them in
+            session['user_id'] = user.id
+            session['user_name'] = user.full_name
+            flash('Successfully logged in with Google!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            # Create new user
+            new_user = User(
+                full_name=name or 'Google User',
+                email=email,
+                password=generate_password_hash(secrets.token_urlsafe(32), method='pbkdf2:sha256'),  # Random password
+                survey_completed=False
+            )
+            
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                
+                # Log the user in automatically
+                session['user_id'] = new_user.id
+                session['user_name'] = new_user.full_name
+                
+                flash('Account created successfully with Google! Please complete our quick survey.', 'success')
+                return redirect(url_for('survey'))
+                
+            except Exception as e:
+                db.session.rollback()
+                flash('Error creating account. Email might already be registered.', 'danger')
+                return redirect(url_for('login'))
+        
+    except Exception as e:
+        flash(f'Error during Google authentication: {str(e)}', 'danger')
+        return redirect(url_for('login'))
 
 @app.route('/survey', methods=['GET', 'POST'])
 def survey():
@@ -934,26 +1068,55 @@ recipes = load_recipes()
 
 @app.route('/remedy/<path:remedy_name>')
 def remedy_details(remedy_name):
-    print(f"\n\n=== DEBUG: Received request for: {remedy_name} ===")  # Check terminal
-    decoded_name = unquote(remedy_name).lower()
-    print(f"Decoded name: {decoded_name}")
-    
-    recipe = recipes.get(decoded_name)
-    if not recipe:
-        recipe = recipes.get(remedy_name.replace('-', ' ').lower())
-    
-    if not recipe:
-        print("Recipe not found!")
-        abort(404)
-    
-    
-    return render_template('remedy.html', remedy=recipe)
-
+    try:
+        # Decode URL-encoded name
+        decoded_name = unquote(remedy_name)
+        
+        # Load recipes
+        json_path = os.path.join(app.static_folder, 'data', 'recipes.json')
+        if not os.path.exists(json_path):
+            abort(404, description="Recipes data not found")
+            
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+        
+        # Find matching remedy (case-insensitive)
+        found_remedy = None
+        for remedy in data.get('remedies', []):
+            if remedy.get('name', '').lower() == decoded_name.lower():
+                found_remedy = remedy
+                break
+        
+        if not found_remedy:
+            abort(404, description=f"Remedy '{decoded_name}' not found")
+            
+        # Ensure image path is correct
+        if 'image' in found_remedy and found_remedy['image'].startswith('/static/'):
+            found_remedy['image'] = found_remedy['image'][7:]  # Remove '/static' prefix
+            
+        return render_template('remedy.html', remedy=found_remedy)
+        
+    except json.JSONDecodeError:
+        abort(500, description="Invalid recipes data format")
+    except Exception as e:
+        abort(500, description=str(e))
+        
 @app.route('/remedies')
 def all_remedies():
-    # recipes is a dict: {title.lower(): recipe_dict}
-    all_recipes = list(recipes.values())
-    return render_template('remedy.html', remedies=all_recipes)
+    try:
+        # Load recipes data from the correct path
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(base_dir, 'static', 'data', 'recipes.json')
+        
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+            remedies = data.get('remedies', [])
+            
+        return render_template('remedy.html', remedies=remedies)
+        
+    except Exception as e:
+        print(f"Error loading all remedies: {str(e)}")
+        return render_template('remedy.html', remedies=[])
 
 @app.route('/api/get-yoga-recommendations', methods=['POST'])
 def get_yoga_recommendations():

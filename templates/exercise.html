@@ -389,20 +389,34 @@
                 <button class="return-yoga-btn" id="return-yoga-btn">Return to Yoga</button>
             </div>
         </div>
-    </div>
-
-    <!-- Audio Elements -->
-    <audio id="rain-audio" loop>
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-rain-ambience-1247.mp3" type="audio/mpeg">
+    </div>    <!-- Audio Elements -->
+    <audio id="rain-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
     </audio>
-    <audio id="forest-audio" loop>
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-forest-ambience-1681.mp3" type="audio/mpeg">
+    <audio id="forest-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrp.m4a" type="audio/mp4">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
     </audio>
-    <audio id="singing-bowl-audio" loop>
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-singing-bowl-2060.mp3" type="audio/mpeg">
+    <audio id="singing-bowl-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-demos/GalaxyInvaders/theme_01.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
     </audio>
-    <audio id="ocean-audio" loop>
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-ocean-waves-loop-1244.mp3" type="audio/mpeg">
+    <audio id="ocean-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg" type="audio/ogg">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
+    </audio>
+    <audio id="piano-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
+    </audio>
+    <audio id="flute-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-assets/Elanor-Danza_de_Oro.ogg" type="audio/ogg">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
+    </audio>
+    <audio id="meditation-audio" loop crossorigin="anonymous">
+        <source src="https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Headspin_-_02_-_Donnie_Disko_-_U_Got_That_Disko_Disko.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds-zip/beep-28.wav" type="audio/wav">
     </audio>
 
     <script>
@@ -421,17 +435,22 @@
             const returnYogaBtn = document.getElementById('return-yoga-btn');
             const musicButtons = document.querySelectorAll('.music-btn');
             const volumeSlider = document.getElementById('volume-slider');
-            
-            // Audio elements
+              // Audio elements
             const rainAudio = document.getElementById('rain-audio');
             const forestAudio = document.getElementById('forest-audio');
             const singingBowlAudio = document.getElementById('singing-bowl-audio');
             const oceanAudio = document.getElementById('ocean-audio');
+            const pianoAudio = document.getElementById('piano-audio');
+            const fluteAudio = document.getElementById('flute-audio');
+            const meditationAudio = document.getElementById('meditation-audio');
             const audioElements = {
                 'rain': rainAudio,
                 'forest': forestAudio,
                 'singing-bowl': singingBowlAudio,
-                'ocean': oceanAudio
+                'ocean': oceanAudio,
+                'piano': pianoAudio,
+                'flute': fluteAudio,
+                'meditation': meditationAudio
             };
 
             // State variables
@@ -554,9 +573,7 @@
                     playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
                     isPlaying = false;
                 }
-            }
-
-            // Play selected audio
+            }            // Play selected audio
             function playAudio(type) {
                 // Stop all audio first
                 Object.values(audioElements).forEach(audio => {
@@ -564,12 +581,63 @@
                     audio.currentTime = 0;
                 });
                 
-                if (type !== 'none') {
+                if (type !== 'none' && audioElements[type]) {
                     audioElements[type].volume = currentVolume;
-                    audioElements[type].play();
+                    
+                    // Try to play the audio
+                    const playPromise = audioElements[type].play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            console.log(`Playing ${type} audio successfully`);
+                        }).catch(error => {
+                            console.log(`Audio play failed for ${type}:`, error);
+                            // Fallback: Generate a simple tone or show message
+                            generateFallbackAudio(type);
+                        });
+                    }
                 }
                 
                 currentMusic = type;
+            }
+
+            // Generate fallback audio using Web Audio API
+            function generateFallbackAudio(type) {
+                if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                    const AudioContextClass = AudioContext || webkitAudioContext;
+                    const audioContext = new AudioContextClass();
+                    
+                    // Create a simple ambient tone based on type
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    // Different frequencies for different types
+                    const frequencies = {
+                        'rain': 150,
+                        'forest': 220,
+                        'singing-bowl': 432,
+                        'ocean': 110,
+                        'piano': 261,
+                        'flute': 523,
+                        'meditation': 174
+                    };
+                    
+                    oscillator.frequency.setValueAtTime(frequencies[type] || 200, audioContext.currentTime);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.1 * currentVolume, audioContext.currentTime);
+                    
+                    oscillator.start();
+                    
+                    // Stop after 10 seconds (you can adjust this)
+                    setTimeout(() => {
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+                        setTimeout(() => oscillator.stop(), 1000);
+                    }, 10000);
+                }
             }
 
             // Set volume for all audio

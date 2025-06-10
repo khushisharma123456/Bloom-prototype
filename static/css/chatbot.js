@@ -178,9 +178,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         chatMessages.style.display = 'block';
         renderMessages();
         renderChatHistory();
-    }
-
-    // Modify sendMessage to handle file uploads
+    }    // Modify sendMessage to handle file uploads
     sendMessage = async function() {
         if (isRecording) {
             stopRecording();
@@ -196,29 +194,42 @@ document.addEventListener('DOMContentLoaded', async function() {
             createNewChat();
         }
 
-        // Add user message to chat
-        addMessageToChat('user', message);
-        userInput.value = '';
-        
-        // Process attachments if any
+        // Collect attachment data from file previews
+        let attachments = [];
         if (filePreviews.length > 0) {
-            const attachments = Array.from(filePreviews).map(preview => {
-                const fileData = preview.querySelector('img, video, .preview-file');
-                return {
-                    type: fileData.tagName.toLowerCase(),
-                    data: fileData.tagName === 'IMG' ? fileData.src :
-                          fileData.tagName === 'VIDEO' ? fileData.querySelector('source').src :
-                          fileData.querySelector('.file-size').textContent,
-                    fileName: preview.querySelector('.preview-title').textContent
-                };
-            });
-            
-            // Add attachments to the message
-            chats[currentChatId].messages[chats[currentChatId].messages.length - 1].attachments = attachments;
-            saveChats();
+            // Get attachment data from stored chat attachments
+            if (chats[currentChatId].attachments) {
+                attachments = chats[currentChatId].attachments.slice(); // Copy the array
+                // Clear stored attachments after using them
+                chats[currentChatId].attachments = [];
+            }
             
             // Clear previews
             filePreviews.forEach(preview => preview.remove());
+        }        // Add user message to chat with attachments
+        const userMessage = {
+            sender: 'user',
+            text: message,
+            timestamp: new Date().toISOString(),
+            attachments: attachments
+        };
+        
+        chats[currentChatId].messages.push(userMessage);
+        saveChats();
+        
+        // Clear input
+        userInput.value = '';
+        
+        // Reset placeholder text
+        userInput.placeholder = 'Type a message...';
+          // Force refresh of messages to ensure proper rendering
+        setTimeout(() => {
+            forceRefreshChat();
+        }, 100);
+        
+        // Update chat title if it's the first user message
+        if (chats[currentChatId].messages.length === 1) {
+            updateChatTitle(message);
         }
         
         // Show typing indicator
@@ -229,9 +240,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             hideTypingIndicator();
             generateAIResponse(message);
         }, 1500);
-    };
-
-    // Add message to chat
+    };    // Add message to chat
     function addMessageToChat(sender, text) {
         const message = {
             sender,
@@ -241,17 +250,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         chats[currentChatId].messages.push(message);
         saveChats();
-        renderMessages();
+          // Force refresh of messages to ensure proper rendering
+        setTimeout(() => {
+            forceRefreshChat();
+        }, 50);
         
         // Update chat title if it's the first user message
         if (sender === 'user' && chats[currentChatId].messages.length === 1) {
             updateChatTitle(text);
         }
-    }
-
-    // Render all messages in current chat
+    }    // Render all messages in current chat
     function renderMessages() {
         if (!chatMessages) return;
+        
+        // Store current scroll position
+        const wasAtBottom = chatContainer.scrollTop >= (chatContainer.scrollHeight - chatContainer.clientHeight - 50);
         
         chatMessages.innerHTML = '';
         
@@ -263,10 +276,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
         
-        scrollToBottom();
-    }
-
-    // Create user message element with all functionality
+        // Scroll to bottom if we were already at bottom or if it's a new message
+        if (wasAtBottom) {
+            scrollToBottom();
+        }
+    }// Create user message element with all functionality
     function createUserMessageElement(text, timestamp, messageIndex) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'user-prompt';
@@ -276,15 +290,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         let attachmentsHtml = '';
         
         if (message.attachments && message.attachments.length > 0) {
-            attachmentsHtml = message.attachments.map(attachment => {
-                if (attachment.type === 'img') {
-                    return `<div class="message-attachment"><img src="${attachment.data}" alt="Attached image"></div>`;
+            attachmentsHtml = '<div class="message-attachments">';
+            attachmentsHtml += message.attachments.map(attachment => {
+                let iconClass = 'fa-file';
+                if (attachment.type === 'photo') {
+                    iconClass = 'fa-image';
                 } else if (attachment.type === 'video') {
-                    return `<div class="message-attachment"><video controls><source src="${attachment.data}" type="video/mp4"></video></div>`;
-                } else {
-                    return `<div class="message-attachment"><i class="fas fa-file"></i> ${attachment.data}</div>`;
+                    iconClass = 'fa-video';
+                } else if (attachment.mimeType === 'application/pdf') {
+                    iconClass = 'fa-file-pdf';
+                } else if (attachment.mimeType && attachment.mimeType.includes('word')) {
+                    iconClass = 'fa-file-word';
+                } else if (attachment.mimeType === 'text/plain') {
+                    iconClass = 'fa-file-text';
+                } else if (attachment.mimeType === 'application/json') {
+                    iconClass = 'fa-file-code';
+                } else if (attachment.mimeType === 'text/csv') {
+                    iconClass = 'fa-file-csv';
                 }
+                
+                return `<div class="message-attachment">
+                    <i class="fas ${iconClass}"></i>
+                    <span class="attachment-name">${attachment.fileName}</span>
+                    <span class="attachment-size">(${attachment.fileSize})</span>
+                </div>`;
             }).join('');
+            attachmentsHtml += '</div>';
         }
         
         messageDiv.innerHTML = `
@@ -613,11 +644,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (chatContainer) {
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-    }
-
-    // Generate chat ID
+    }    // Generate chat ID
     function generateChatId() {
         return 'chat-' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Force refresh the chat UI
+    function forceRefreshChat() {
+        if (!currentChatId) return;
+        
+        // Clear and re-render messages
+        if (chatMessages) {
+            chatMessages.innerHTML = '';
+            setTimeout(() => {
+                renderMessages();
+            }, 10);
+        }
+        
+        // Update chat history
+        setTimeout(() => {
+            renderChatHistory();
+        }, 20);
     }
 
     // Function to load API key from .env file
@@ -711,16 +758,54 @@ function formatPrompt(template, userQuery) {
         return `User Query: ${userQuery}\n\nResponse:`;
     }
     return template.replace('{USER_QUERY}', userQuery);
-}
-
-    // Modify the existing generateAIResponse function
+}    // Modify the existing generateAIResponse function
     async function generateAIResponse(userMessage) {
     try {
         // Load prompt template
         const template = await loadPromptTemplate();
         
-        // Format prompt with user message
-        const formattedPrompt = formatPrompt(template, userMessage);
+        // Get the current message with attachments
+        const currentMessage = chats[currentChatId].messages[chats[currentChatId].messages.length - 1];
+        let enhancedPrompt = userMessage;
+          // If there are attachments, include their content in the prompt
+        if (currentMessage.attachments && currentMessage.attachments.length > 0) {
+            let attachmentContext = '\n\nAttached Files:\n';
+            let hasProcessableText = false;
+            
+            for (const attachment of currentMessage.attachments) {
+                if (attachment.type === 'file') {
+                    try {
+                        // Extract text content from document files
+                        const textContent = await extractTextFromFile(attachment.fileData, attachment.mimeType);
+                        if (textContent) {
+                            attachmentContext += `\nFile: ${attachment.fileName}\nContent:\n${textContent}\n`;
+                            if (attachment.mimeType === 'text/plain' || attachment.mimeType === 'application/json' || attachment.mimeType === 'text/csv') {
+                                hasProcessableText = true;
+                            }
+                        } else {
+                            attachmentContext += `\nFile: ${attachment.fileName} (${attachment.fileSize}) - Unable to extract text content\n`;
+                        }
+                    } catch (error) {
+                        console.error('Error extracting text from file:', error);
+                        attachmentContext += `\nFile: ${attachment.fileName} (${attachment.fileSize}) - Error processing file\n`;
+                    }
+                } else if (attachment.type === 'photo') {
+                    attachmentContext += `\nImage: ${attachment.fileName} (${attachment.fileSize}) - Image file attached\n`;
+                } else if (attachment.type === 'video') {
+                    attachmentContext += `\nVideo: ${attachment.fileName} (${attachment.fileSize}) - Video file attached\n`;
+                }
+            }
+            
+            enhancedPrompt += attachmentContext;
+            
+            // If user didn't provide a specific question but uploaded processable text, provide guidance
+            if (hasProcessableText && (!userMessage || userMessage.trim().length < 10)) {
+                enhancedPrompt += '\n\nUser has uploaded a document with text content. Please acknowledge that you have received and can analyze the document, and ask what specific questions they have about the content or how they would like you to help with the document.';
+            }
+        }
+        
+        // Format prompt with enhanced message including attachments
+        const formattedPrompt = formatPrompt(template, enhancedPrompt);
         console.log('Formatted prompt:', formattedPrompt);
 
         // Call Gemini API
@@ -737,9 +822,47 @@ function formatPrompt(template, userQuery) {
     }
 }
 
-
-
-    // Handle attachment selection
+    // Function to extract text content from uploaded files
+    async function extractTextFromFile(base64Data, mimeType) {
+        try {
+            // For text files, extract content directly
+            if (mimeType === 'text/plain' || mimeType === 'text/csv') {
+                const base64Content = base64Data.split(',')[1];
+                const textContent = atob(base64Content);
+                return textContent;
+            }
+            
+            // For JSON files
+            if (mimeType === 'application/json') {
+                const base64Content = base64Data.split(',')[1];
+                const jsonContent = atob(base64Content);
+                try {
+                    const parsedJson = JSON.parse(jsonContent);
+                    return `JSON Content:\n${JSON.stringify(parsedJson, null, 2)}`;
+                } catch (e) {
+                    return jsonContent; // Return raw content if JSON parsing fails
+                }
+            }
+            
+            // For other document types, we'll provide basic file info
+            // In a production environment, you'd use libraries like pdf-lib for PDFs
+            // or mammoth.js for Word documents
+            if (mimeType === 'application/pdf') {
+                return `[PDF Document - To analyze the content of this PDF, please copy and paste the relevant text portions you'd like me to review. I can help with document analysis, summarization, and answering questions about the content once you provide the text.]`;
+            }
+            
+            if (mimeType.includes('word') || mimeType.includes('document')) {
+                return `[Word Document - To analyze the content of this document, please copy and paste the relevant text portions you'd like me to review. I can help with document analysis, editing suggestions, and answering questions about the content once you provide the text.]`;
+            }
+            
+            // For unsupported file types
+            return `[File type ${mimeType} - Content extraction not supported. Please describe the content or copy relevant text that you'd like me to analyze.]`;
+            
+        } catch (error) {
+            console.error('Error extracting text from file:', error);
+            return `[Error processing file - Please try uploading the file again or copy the text content manually.]`;
+        }
+    }// Handle attachment selection
     function handleAttachment(type) {
         // Set accept attribute based on type
         switch(type) {
@@ -750,7 +873,7 @@ function formatPrompt(template, userQuery) {
                 fileInput.accept = 'video/*';
                 break;
             case 'file':
-                fileInput.accept = '*/*';
+                fileInput.accept = '.txt,.pdf,.doc,.docx,.rtf,.csv,.json';
                 break;
         }
 
@@ -773,9 +896,7 @@ function formatPrompt(template, userQuery) {
                     // Add a message to the chat about the file size limit
                     addMessageToChat('assistant', 'I notice you tried to upload a file. Please make sure your file is less than 10MB in size. You can try compressing the file or choosing a smaller one.');
                     return;
-                }
-
-                // Validate file type before processing
+                }                // Validate file type before processing
                 const fileType = fileInput.accept;
                 if (fileType.includes('image') && !file.type.startsWith('image/')) {
                     showToast('Please select a valid image file (JPG, PNG, GIF)');
@@ -785,6 +906,14 @@ function formatPrompt(template, userQuery) {
                 if (fileType.includes('video') && !file.type.startsWith('video/')) {
                     showToast('Please select a valid video file (MP4, WebM)');
                     addMessageToChat('assistant', 'I can only process video files in MP4 or WebM format. Please try again with a supported video file.');
+                    return;
+                }
+                if (fileType.includes('.txt,.pdf,.doc,.docx') && 
+                    !['text/plain', 'application/pdf', 'application/msword', 
+                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                      'text/csv', 'application/json'].includes(file.type)) {
+                    showToast('Please select a valid document file (TXT, PDF, DOC, DOCX, CSV, JSON)');
+                    addMessageToChat('assistant', 'I can process text documents in TXT, PDF, DOC, DOCX, CSV, and JSON formats. Please try again with a supported document file.');
                     return;
                 }
 
@@ -806,9 +935,13 @@ function formatPrompt(template, userQuery) {
                     timestamp: new Date().toISOString(),
                     mimeType: file.type
                 };
-                
-                // Add preview to chat
+                  // Add preview to chat
                 addFilePreviewToChat(previewMessage);
+                
+                // Ensure we have a current chat to store the file
+                if (!currentChatId) {
+                    createNewChat();
+                }
                 
                 // Store file data in current chat
                 if (!chats[currentChatId].attachments) {
@@ -817,7 +950,16 @@ function formatPrompt(template, userQuery) {
                 chats[currentChatId].attachments.push(previewMessage);
                 saveChats();
                 
-                showToast('File ready to send');
+                // Show appropriate success message based on file type
+                if (previewMessage.type === 'file') {
+                    if (previewMessage.mimeType === 'text/plain' || previewMessage.mimeType === 'application/json' || previewMessage.mimeType === 'text/csv') {
+                        showToast('Document processed! Text content extracted successfully.');
+                    } else {
+                        showToast('Document uploaded! Please describe what you\'d like me to help you with.');
+                    }
+                } else {
+                    showToast('File ready to send');
+                }
             } catch (error) {
                 console.error('Error processing file:', error);
                 let errorMessage = 'Error processing file';
@@ -879,19 +1021,34 @@ function formatPrompt(template, userQuery) {
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    // Add file preview to chat
+    }    // Add file preview to chat
     function addFilePreviewToChat(fileData) {
         const previewDiv = document.createElement('div');
         previewDiv.className = 'file-preview';
         
+        // Determine icon based on file type
+        let iconClass = 'fa-file';
+        if (fileData.type === 'photo') {
+            iconClass = 'fa-image';
+        } else if (fileData.type === 'video') {
+            iconClass = 'fa-video';
+        } else if (fileData.mimeType === 'application/pdf') {
+            iconClass = 'fa-file-pdf';
+        } else if (fileData.mimeType.includes('word')) {
+            iconClass = 'fa-file-word';
+        } else if (fileData.mimeType === 'text/plain') {
+            iconClass = 'fa-file-text';
+        } else if (fileData.mimeType === 'application/json') {
+            iconClass = 'fa-file-code';
+        } else if (fileData.mimeType === 'text/csv') {
+            iconClass = 'fa-file-csv';
+        }
+        
         previewDiv.innerHTML = `
             <div class="preview-header">
-                <i class="fas ${fileData.type === 'photo' ? 'fa-image' : 
-                               fileData.type === 'video' ? 'fa-video' : 
-                               'fa-file'}"></i>
+                <i class="fas ${iconClass}"></i>
                 <span class="preview-title">${fileData.fileName}</span>
+                <span class="file-size">(${fileData.fileSize})</span>
                 <button class="remove-preview" onclick="removeFilePreview(this)">
                     <i class="fas fa-times"></i>
                 </button>
@@ -906,9 +1063,10 @@ function formatPrompt(template, userQuery) {
         // Enable input after adding preview
         userInput.disabled = false;
         userInput.focus();
-    }
-
-    // Function to remove file preview
+        
+        // Update placeholder text
+        userInput.placeholder = `File "${fileData.fileName}" ready to send. Type your message...`;
+    }    // Function to remove file preview
     window.removeFilePreview = function(button) {
         const previewDiv = button.closest('.file-preview');
         if (previewDiv) {
@@ -916,6 +1074,17 @@ function formatPrompt(template, userQuery) {
             // Re-enable input after removing preview
             userInput.disabled = false;
             userInput.focus();
+            // Reset placeholder text
+            userInput.placeholder = 'Type a message...';
+            
+            // Remove the file from stored attachments
+            if (currentChatId && chats[currentChatId].attachments) {
+                const fileName = previewDiv.querySelector('.preview-title').textContent;
+                chats[currentChatId].attachments = chats[currentChatId].attachments.filter(
+                    attachment => attachment.fileName !== fileName
+                );
+                saveChats();
+            }
         }
     };
 
