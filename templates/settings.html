@@ -35,17 +35,16 @@
             background-color: var(--bg-color);
             color: var(--text-dark);
             display: flex;
-            min-height: 100vh;
-        }        /* Settings Page Specific Sidebar Override */
+            min-height: 100vh;        }        /* Settings Page Specific Sidebar Override */
         .sidebar {
-            width: 210px !important;
-            padding: 25px 15px !important;
+            width: 240px !important;
+            padding: 25px 20px !important;
         }
         
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            margin-left: 230px; /* Match custom sidebar width */
+            margin-left: 240px; /* Match custom sidebar width */
             padding: 40px;
             transition: var(--transition);
         }
@@ -662,12 +661,12 @@
         }        /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
-                width: 160px !important;
-                padding: 20px 12px !important;
+                width: 220px !important;
+                padding: 20px 15px !important;
             }
             
             .main-content {
-                margin-left: 160px; /* Match responsive sidebar width */
+                margin-left: 240px; /* Match responsive sidebar width */
                 padding: 32px;
             }
         }

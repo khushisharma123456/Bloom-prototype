@@ -1,5 +1,54 @@
 // Common Sidebar JavaScript for Bloom Application
 
+// Function to handle dropdown toggle and smooth scrolling
+function handleDropdownToggle() {
+    const dropdownItems = document.querySelectorAll('.menu-item-with-dropdown');
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    
+    dropdownItems.forEach(item => {
+        const navItem = item.querySelector('.nav-item');
+        const dropdownContent = item.querySelector('.dropdown-content');
+        
+        if (navItem) {
+            navItem.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Close other dropdowns first
+                dropdownItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('open');
+                    }
+                });
+                
+                // Toggle current dropdown
+                item.classList.toggle('open');
+                
+                // Smooth scroll to keep dropdown in view if needed
+                if (item.classList.contains('open') && sidebarNav) {
+                    setTimeout(() => {
+                        const itemRect = item.getBoundingClientRect();
+                        const sidebarRect = sidebar.getBoundingClientRect();
+                        const sidebarNavRect = sidebarNav.getBoundingClientRect();
+                        
+                        // Check if dropdown extends beyond visible area
+                        const dropdownBottom = itemRect.bottom + dropdownContent.offsetHeight;
+                        const sidebarBottom = sidebarRect.bottom - 100; // Account for profile section
+                        
+                        if (dropdownBottom > sidebarBottom) {
+                            const scrollAmount = dropdownBottom - sidebarBottom + 20;
+                            sidebarNav.scrollBy({
+                                top: scrollAmount,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 50); // Small delay to allow dropdown to render
+                }
+            });
+        }
+    });
+}
+
 // Function to set active nav item based on current page
 function setActiveNavItem() {
     const currentPath = window.location.pathname;

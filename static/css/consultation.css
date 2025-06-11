@@ -157,14 +157,45 @@ a {
 .main-sidebar {
     width: 240px;
     background: linear-gradient(to bottom, #F9F5FF, white);
-    padding: 30px 20px;
+    padding: 30px 20px 20px 20px;
     display: flex;
     flex-direction: column;
     height: 100vh;
     position: fixed;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
+    overflow: hidden;
     border-right: none;
+}
+
+/* Sidebar navigation scrollable area */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+    margin-bottom: 20px;
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #E8E0FF transparent;
+}
+
+/* Custom scrollbar for webkit browsers */
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: #E8E0FF;
+    border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background-color: #6E5B9A;
 }
 
 .sidebar-header {
@@ -215,11 +246,33 @@ a {
     width: 100%;
 }
 
+/* Override common sidebar icon colors for consultation page */
+.nav-item i {
+    color: #6E5B9A !important;
+}
+
+.nav-item:hover i {
+    color: #6E5B9A !important;
+}
+
+.nav-item.active i {
+    color: #6E5B9A !important;
+}
+
+/* Dropdown icons */
+.dropdown-item i {
+    color: #6E5B9A !important;
+}
+
+.dropdown-item:hover i {
+    color: #6E5B9A !important;
+}
+
 .sidebar-menu li i {
     margin-right: 12px;
     width: 20px;
     text-align: center;
-    color: #8A7FAA;
+    color: #6E5B9A;
 }
 
 .sidebar-menu li:hover {
