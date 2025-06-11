@@ -7,8 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <style>
-        :root {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <style>        :root {
             --bg-color: #FFF9F9;
             --text-dark: #4A4A4A;
             --text-light: #8A7FAA;
@@ -19,6 +18,13 @@
             --primary-purple: #6E5B9A;
             --soft-shadow: 0 4px 20px rgba(110, 91, 154, 0.1);
             --gradient-primary: linear-gradient(135deg, #FFD6E0 0%, #E8E0FF 100%);
+            
+            /* Standardized sidebar font sizes - REQUIRED for consistent sidebar */
+            --sidebar-logo-size: 24px;
+            --sidebar-nav-size: 16px;
+            --sidebar-dropdown-size: 14px;
+            --sidebar-emoji-size: 16px;
+            --sidebar-dropdown-emoji-size: 14px;
             --gradient-secondary: linear-gradient(135deg, #C1EDE6 0%, #FFE8D6 100%);
         }
 
