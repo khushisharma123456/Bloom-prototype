@@ -430,8 +430,11 @@
                 if (!type || !musicSources[type]) return;
                 musicAudio = new Audio(musicSources[type]);
                 musicAudio.loop = true;
-                musicAudio.volume = 0.5;
-                musicAudio.play();
+                musicAudio.volume = currentVolume;
+                // Play only if timer is running
+                if (isPlaying) {
+                    musicAudio.play();
+                }
                 currentMusicType = type;
             }
             function pauseMusic() {
@@ -604,7 +607,11 @@
                 if (isPlaying) {
                     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     startTimer();
-                    resumeMusic();
+                    // Play music if a type is selected
+                    if (currentMusicType) {
+                        if (!musicAudio) playMusic(currentMusicType);
+                        else resumeMusic();
+                    }
                 } else {
                     playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                     pauseTimer();
