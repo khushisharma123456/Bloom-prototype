@@ -879,6 +879,259 @@
             .mood-option {
                 width: 100%;
             }
+        }        /* Compact Symptom Tracker Styles */
+        .compact-symptom-tracker {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent-pink);
+        }
+
+        .tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--accent-lavender);
+        }
+
+        .tracker-title h3 {
+            font-family: 'Nunito', sans-serif;
+            color: var(--primary-purple);
+            margin: 0 0 5px 0;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-title p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .tracker-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tracker-status.logged {
+            background-color: var(--accent-teal);
+            color: var(--primary-purple);
+        }
+
+        .tracker-status.not-logged {
+            background-color: var(--accent-peach);
+            color: var(--text-dark);
+        }
+
+        .compact-tracker-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tracker-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group-compact {
+            margin-bottom: 0;
+        }
+
+        .form-group-compact label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .radio-group-compact {
+            display: flex;
+            gap: 10px;
+        }
+
+        .radio-option-compact {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--accent-lavender);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 13px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .radio-option-compact:hover {
+            background: var(--accent-pink);
+        }
+
+        .radio-option-compact input:checked + span {
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
+
+        .radio-option-compact input {
+            accent-color: var(--primary-purple);
+            margin: 0;
+        }
+
+        .compact-select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--accent-lavender);
+            background-color: #fff;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .compact-select:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+        }
+
+        .pain-slider-group {
+            grid-column: 1 / -1;
+        }
+
+        .compact-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .compact-slider {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--accent-lavender);
+            outline: none;
+        }
+
+        .compact-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-purple);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .compact-slider-value {
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-purple);
+            font-size: 14px;
+        }
+
+        .form-group-compact textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--accent-lavender);
+            background-color: #fff;
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group-compact textarea:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+        }
+
+        .tracker-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .compact-tracker-button {
+            background: linear-gradient(90deg, var(--primary-purple), var(--graph-lavender));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compact-tracker-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(110, 91, 154, 0.3);
+        }
+
+        .compact-tracker-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .save-feedback {
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .save-feedback.success {
+            color: #4CAF50;
+            opacity: 1;
+        }
+
+        .save-feedback.error {
+            color: #f44336;
+            opacity: 1;
+        }
+
+        /* Responsive adjustments for compact tracker */
+        @media (max-width: 768px) {
+            .tracker-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tracker-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .radio-group-compact {
+                flex-wrap: wrap;
+            }
+            
+            .tracker-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
         }
 
         /* Phase Symptoms Tooltip */
@@ -1182,6 +1435,69 @@
                     <span id="lastLoginTime">Last login: Today</span>
                 </div>
             </div>
+        </div>
+        
+        <!-- Compact Symptom Tracker -->
+        <div class="compact-symptom-tracker">
+            <div class="tracker-header">
+                <div class="tracker-title">
+                    <h3><i class="fas fa-clipboard-list"></i> Today's Symptoms</h3>
+                    <p>Quick daily symptom tracking</p>
+                </div>
+                <div class="tracker-status" id="trackerStatus">
+                    <span class="status-text">Not logged today</span>
+                </div>
+            </div>
+            
+            <form id="compact-symptom-form" class="compact-tracker-form">
+                <div class="tracker-row">
+                    <div class="form-group-compact">
+                        <label for="compact-flow-level">Flow:</label>
+                        <div class="radio-group-compact">
+                            <label class="radio-option-compact">
+                                <input type="radio" name="flow-level" value="light"> 
+                                <span>Light</span>
+                            </label>
+                            <label class="radio-option-compact">
+                                <input type="radio" name="flow-level" value="medium"> 
+                                <span>Medium</span>
+                            </label>
+                            <label class="radio-option-compact">
+                                <input type="radio" name="flow-level" value="heavy"> 
+                                <span>Heavy</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-compact">
+                        <label for="compact-mood">Mood:</label>
+                        <select id="compact-mood" name="mood" class="compact-select">
+                            <option value="">Select mood</option>
+                            <option value="happy">😊 Happy</option>
+                            <option value="neutral">😐 Neutral</option>
+                            <option value="sad">😔 Sad</option>
+                            <option value="anxious">😰 Anxious</option>
+                            <option value="irritable">😠 Irritable</option>
+                        </select>
+                    </div>
+                </div>
+                  <div class="tracker-row">
+                    <div class="form-group-compact pain-slider-group">
+                        <label for="compact-pain-level">Pain Level (0-10):</label>
+                        <div class="compact-slider-container">
+                            <input type="range" min="0" max="10" value="0" class="compact-slider" id="compact-pain-level" name="pain-level">
+                            <span class="compact-slider-value" id="compact-pain-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tracker-actions">
+                    <button type="button" class="compact-tracker-button" id="saveCompactSymptoms">
+                        <i class="fas fa-save"></i> Save Today's Symptoms
+                    </button>
+                    <div class="save-feedback" id="saveFeedback"></div>
+                </div>
+            </form>
         </div>
         
         <!-- Symptoms Section -->
@@ -2125,12 +2441,158 @@
                 this.checkInToday();
             });
         }
+    }    // Compact Symptom Tracker Class
+    class CompactSymptomTracker {
+        constructor() {
+            this.initializeElements();
+            this.loadTodaysData();
+            this.setupEventListeners();
+        }        initializeElements() {
+            this.form = document.getElementById('compact-symptom-form');
+            this.statusIndicator = document.querySelector('.tracker-status');
+            this.statusText = document.querySelector('.status-text');
+            this.saveBtn = document.getElementById('saveCompactSymptoms');
+            this.painSlider = document.getElementById('compact-pain-level');
+            this.painValue = document.getElementById('compact-pain-value');
+            this.successMessage = document.getElementById('saveFeedback');
+            this.errorMessage = document.getElementById('saveFeedback');
+        }
+
+        async loadTodaysData() {
+            try {
+                const response = await fetch('/get_symptom_entry');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    // Update status to logged
+                    this.updateStatus(true);
+                    
+                    // Populate form with existing data
+                    const data = result.data;
+                    
+                    // Set flow level
+                    if (data.flow_level) {
+                        const flowRadio = document.querySelector(`input[name="flow-level"][value="${data.flow_level}"]`);
+                        if (flowRadio) flowRadio.checked = true;
+                    }
+                      // Set mood
+                    if (data.mood) {
+                        const moodSelect = document.getElementById('compact-mood');
+                        if (moodSelect) moodSelect.value = data.mood;
+                    }
+                      // Set pain level
+                    if (data.pain_level !== null && data.pain_level !== undefined) {
+                        this.painSlider.value = data.pain_level;
+                        this.painValue.textContent = data.pain_level;
+                    }
+                } else {
+                    // No data for today - show not logged status
+                    this.updateStatus(false);
+                }
+            } catch (error) {
+                console.error('Error loading symptom data:', error);
+                this.updateStatus(false);
+            }
+        }        updateStatus(isLogged) {
+            if (isLogged) {
+                this.statusIndicator.className = 'tracker-status logged';
+                this.statusText.textContent = 'Logged today';
+            } else {
+                this.statusIndicator.className = 'tracker-status not-logged';
+                this.statusText.textContent = 'Not logged today';
+            }
+        }
+
+        setupEventListeners() {
+            // Pain slider update
+            this.painSlider.addEventListener('input', (e) => {
+                this.painValue.textContent = e.target.value;
+            });
+
+            // Save button click
+            this.saveBtn.addEventListener('click', () => {
+                this.saveSymptoms();
+            });
+
+            // Form submit (Enter key)
+            this.form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveSymptoms();
+            });
+        }
+
+        async saveSymptoms() {
+            try {                // Collect form data
+                const formData = new FormData(this.form);
+                const data = {
+                    flow_level: formData.get('flow-level'),
+                    mood: formData.get('mood'),
+                    pain_level: parseInt(this.painSlider.value)
+                };
+
+                // Validate required fields
+                if (!data.flow_level) {
+                    this.showMessage('Please select a flow level', 'error');
+                    return;
+                }
+
+                if (!data.mood) {
+                    this.showMessage('Please select your mood', 'error');
+                    return;
+                }
+
+                // Show loading state
+                this.saveBtn.disabled = true;
+                this.saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                // Send data to backend
+                const response = await fetch('/save_symptom_entry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.showMessage('Symptoms saved successfully!', 'success');
+                    this.updateStatus(true);
+                } else {
+                    this.showMessage(result.message || 'Failed to save symptoms', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error saving symptoms:', error);
+                this.showMessage('Error saving symptoms. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                this.saveBtn.disabled = false;
+                this.saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Symptoms';
+            }
+        }        showMessage(text, type) {
+            const messageElement = this.successMessage;
+            
+            // Set the appropriate class for styling
+            messageElement.className = `save-feedback ${type}`;
+            
+            // Show current message
+            messageElement.textContent = text;
+            messageElement.style.display = 'block';
+            
+            // Hide message after 4 seconds
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 4000);
+        }
     }
 
-    // Initialize Daily Check-in when page loads
+    // Initialize Daily Check-in and Symptom Tracker when page loads
     document.addEventListener('DOMContentLoaded', function() {
         new DailyCheckIn();
-    });    </script>
+        new CompactSymptomTracker();
+    });</script>
     <script src="{{ url_for('static', filename='js/mood-data-initializer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
