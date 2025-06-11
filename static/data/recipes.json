@@ -784,11 +784,347 @@
         "Boil ginger in water for 10 min.",
         "Strain, add jaggery, stir to dissolve.",
         "Drink warm."
-      ],
-      "benefits": [
+      ],      "benefits": [
         "Reduces cramps.",
         "Anti-inflammatory.",
         "Boosts circulation."
+      ]
+    },
+    {
+      "name": "Quinoa Upma",
+      "badge": "Iron-rich",
+      "description": "High-protein breakfast with quinoa and vegetables",
+      "calories": "320 cal",
+      "time": "25 min",
+      "image": "Images/1h.png",
+      "ingredients": [
+        "1 cup quinoa",
+        "2 cups water",
+        "1 onion, chopped",
+        "1 carrot, diced",
+        "1/2 cup green peas",
+        "1 tsp mustard seeds",
+        "1 tsp cumin seeds",
+        "2 green chilies, chopped",
+        "1 inch ginger, minced",
+        "Salt to taste",
+        "2 tbsp oil",
+        "Fresh coriander for garnish"
+      ],
+      "steps": [
+        "Rinse quinoa thoroughly and soak for 15 minutes.",
+        "Heat oil in a pan, add mustard and cumin seeds.",
+        "Add onions, ginger, and green chilies. Sauté until golden.",
+        "Add carrots and peas, cook for 3-4 minutes.",
+        "Add drained quinoa and stir for 2 minutes.",
+        "Add water and salt, bring to boil.",
+        "Cover and simmer for 15 minutes until quinoa is cooked.",
+        "Garnish with fresh coriander and serve hot."
+      ],
+      "benefits": [
+        "High in protein and iron",
+        "Rich in essential amino acids",
+        "Supports energy levels"
+      ]
+    },
+    {
+      "name": "Palak Tofu Curry",
+      "badge": "Iron Boost",
+      "description": "Iron-rich spinach with protein-packed tofu",
+      "calories": "310 cal",
+      "time": "25 min",
+      "image": "Images/6h.png",
+      "ingredients": [
+        "200g firm tofu, cubed",
+        "2 bunches fresh spinach",
+        "1 onion, chopped",
+        "3 garlic cloves, minced",
+        "1 inch ginger, minced",
+        "2 tomatoes, chopped",
+        "1 tsp cumin seeds",
+        "1 tsp coriander powder",
+        "1/2 tsp turmeric",
+        "1 tsp garam masala",
+        "Salt to taste",
+        "2 tbsp oil",
+        "1/2 cup coconut milk"
+      ],
+      "steps": [
+        "Blanch spinach in boiling water for 2 minutes, then blend to a puree.",
+        "Heat oil in a pan, add cumin seeds.",
+        "Add onions, garlic, and ginger. Sauté until golden.",
+        "Add tomatoes and cook until soft.",
+        "Add spices and cook for 1 minute.",
+        "Add spinach puree and cook for 5 minutes.",
+        "Add tofu cubes and coconut milk.",
+        "Simmer for 8-10 minutes until flavors blend.",
+        "Serve hot with rice or roti."
+      ],
+      "benefits": [
+        "High in iron and protein",
+        "Rich in folate and vitamins",
+        "Supports blood health"
+      ]
+    },
+    {
+      "name": "Spinach & Paneer Paratha",
+      "badge": "High Calcium",
+      "description": "Iron and calcium rich stuffed flatbread",
+      "calories": "280 cal",
+      "time": "30 min",
+      "image": "Images/2h.png",
+      "ingredients": [
+        "1 cup whole wheat flour",
+        "1 cup spinach, finely chopped",
+        "1/2 cup paneer, crumbled",
+        "1 green chili, minced",
+        "1 tsp ginger-garlic paste",
+        "1/2 tsp cumin seeds",
+        "1/2 tsp garam masala",
+        "Salt to taste",
+        "2 tbsp oil",
+        "Water as needed"
+      ],
+      "steps": [
+        "Make dough with flour, salt, and water. Rest for 15 minutes.",
+        "Mix spinach, paneer, spices, and 1 tsp oil for filling.",
+        "Divide dough into portions and roll into circles.",
+        "Place filling in center, seal edges, and roll gently.",
+        "Heat a pan and cook paratha with oil on both sides.",
+        "Press gently while cooking until golden spots appear.",
+        "Serve hot with yogurt or pickle."
+      ],
+      "benefits": [
+        "High in iron and calcium",
+        "Rich in protein",
+        "Supports bone health"
+      ]
+    },
+    {
+      "name": "Moong Dal Chilla",
+      "badge": "Energy Boost",
+      "description": "Protein-packed lentil pancakes with spices",
+      "calories": "220 cal",
+      "time": "20 min",
+      "image": "Images/3h.png",
+      "ingredients": [
+        "1 cup yellow moong dal, soaked",
+        "1/4 cup onion, finely chopped",
+        "1 green chili, minced",
+        "1 tsp ginger, minced",
+        "1/4 cup coriander leaves",
+        "1/2 tsp cumin seeds",
+        "1/4 tsp turmeric",
+        "Salt to taste",
+        "2 tbsp oil",
+        "Water as needed"
+      ],
+      "steps": [
+        "Soak moong dal for 2-3 hours, then grind to a smooth batter.",
+        "Add all ingredients except oil to the batter.",
+        "Mix well and adjust consistency with water.",
+        "Heat a non-stick pan and spread batter like a pancake.",
+        "Drizzle oil around edges and cook until golden.",
+        "Flip and cook the other side until crispy.",
+        "Serve hot with chutney or yogurt."
+      ],
+      "benefits": [
+        "High in plant protein",
+        "Easy to digest",
+        "Provides sustained energy"
+      ]
+    },
+    {
+      "name": "Chana Chaat Salad",
+      "badge": "Protein Rich",
+      "description": "Protein-packed chickpea salad with veggies",
+      "calories": "290 cal",
+      "time": "15 min",
+      "image": "Images/8h.png",
+      "ingredients": [
+        "1 cup boiled chickpeas",
+        "1 cucumber, diced",
+        "1 tomato, diced",
+        "1/4 cup red onion, finely chopped",
+        "1/4 cup mint leaves, chopped",
+        "2 tbsp lemon juice",
+        "1 tsp chaat masala",
+        "1/2 tsp cumin powder",
+        "1/4 tsp black pepper",
+        "Salt to taste",
+        "1 tbsp olive oil"
+      ],
+      "steps": [
+        "Drain and rinse boiled chickpeas.",
+        "Mix chickpeas with diced vegetables.",
+        "Add mint leaves and mix gently.",
+        "Whisk together lemon juice, oil, and spices.",
+        "Pour dressing over salad and toss well.",
+        "Let it marinate for 5 minutes.",
+        "Serve chilled or at room temperature."
+      ],
+      "benefits": [
+        "High in protein and fiber",
+        "Rich in folate",
+        "Supports heart health"
+      ]
+    },
+    {
+      "name": "Sprouted Moong Salad",
+      "badge": "Protein Packed",
+      "description": "High-protein sprouted lentils with veggies",
+      "calories": "210 cal",
+      "time": "15 min",
+      "image": "Images/16h.png",
+      "ingredients": [
+        "1 cup sprouted moong beans",
+        "1/2 cup chopped cucumber",
+        "1/4 cup chopped carrots",
+        "1/4 cup chopped bell pepper",
+        "2 tbsp lemon juice",
+        "1 tsp ginger, minced",
+        "1 green chili, minced",
+        "1/4 cup coriander leaves",
+        "1/2 tsp chaat masala",
+        "Salt to taste",
+        "1 tsp olive oil"
+      ],
+      "steps": [
+        "Steam sprouted moong beans for 3-4 minutes until tender.",
+        "Let them cool completely.",
+        "Mix with all chopped vegetables.",
+        "Add ginger, green chili, and coriander.",
+        "Whisk lemon juice, oil, chaat masala, and salt.",
+        "Pour dressing over salad and mix well.",
+        "Serve fresh or chill for 10 minutes."
+      ],
+      "benefits": [
+        "Rich in complete proteins",
+        "High in enzymes",
+        "Boosts metabolism"
+      ]
+    },
+    {
+      "name": "Iron-Rich Palak Paratha",
+      "badge": "Menstrual • Lunch",
+      "description": "Iron and calcium rich stuffed flatbread, ideal for lunch during the menstrual phase",
+      "calories": "280 cal",
+      "time": "30 min",
+      "image": "Images/3h.png",
+      "ingredients": [
+        "1 cup whole wheat flour",
+        "1.5 cups spinach, blanched and puree",
+        "1 tsp ginger-garlic paste",
+        "1 green chili, minced",
+        "1/2 tsp cumin seeds",
+        "1/4 tsp ajwain seeds",
+        "Salt to taste",
+        "2 tbsp oil",
+        "Water as needed"
+      ],
+      "steps": [
+        "Mix flour with spinach puree, spices, and salt.",
+        "Add water gradually to make soft dough.",
+        "Rest the dough for 20 minutes.",
+        "Divide into portions and roll into circles.",
+        "Cook on a hot pan with oil until golden spots appear.",
+        "Press gently while cooking for even cooking.",
+        "Serve hot with yogurt and pickle."
+      ],
+      "benefits": [
+        "Extremely high in iron",
+        "Rich in folate",
+        "Perfect for menstrual phase nutrition"
+      ]
+    },
+    {
+      "name": "Quinoa & Veggie Bowl",
+      "badge": "Ovulation • Dinner",
+      "description": "Protein-packed bowl to support energy and hormone balance for ovulation dinner",
+      "calories": "320 cal",
+      "time": "25 min",
+      "image": "Images/6h.png",
+      "ingredients": [
+        "1/2 cup quinoa",
+        "1 cup mixed vegetables (broccoli, bell peppers, zucchini)",
+        "1/4 cup chickpeas, cooked",
+        "2 tbsp olive oil",
+        "1 tbsp lemon juice",
+        "1 tsp herbs (oregano, basil)",
+        "1/4 avocado, sliced",
+        "2 tbsp pumpkin seeds",
+        "Salt and pepper to taste"
+      ],
+      "steps": [
+        "Cook quinoa according to package instructions.",
+        "Roast mixed vegetables with olive oil and herbs.",
+        "Season with salt and pepper.",
+        "Arrange quinoa in a bowl as base.",
+        "Top with roasted vegetables and chickpeas.",
+        "Add avocado slices and pumpkin seeds.",
+        "Drizzle with lemon juice and serve."
+      ],
+      "benefits": [
+        "Complete protein source",
+        "Supports hormone production",
+        "Rich in healthy fats"
+      ]
+    },
+    {
+      "name": "Methi Seed Water",
+      "badge": "Hormonal Balance",
+      "description": "Soaked fenugreek seeds regulate blood sugar and support hormonal balance",
+      "calories": "N/A",
+      "time": "Soak Overnight",
+      "image": "Images/methi-seed-water.png",
+      "ingredients": [
+        "1 tsp fenugreek seeds",
+        "1 cup water",
+        "Optional: 1/4 tsp honey",
+        "Optional: few drops lemon juice"
+      ],
+      "steps": [
+        "Soak fenugreek seeds in water overnight (8-10 hours).",
+        "Strain the water in the morning.",
+        "Add honey or lemon juice if desired.",
+        "Drink on empty stomach for best results.",
+        "You can also chew the softened seeds.",
+        "Continue for 2-3 weeks for best results."
+      ],
+      "benefits": [
+        "Regulates blood sugar levels",
+        "Supports hormonal balance",
+        "Aids in weight management"
+      ]
+    },
+    {
+      "name": "Ashwagandha with Warm Milk",
+      "badge": "Energy Boost",
+      "description": "Reduces cortisol and boosts stamina, great for stress and hormone support",
+      "calories": "N/A",
+      "time": "5 min",
+      "image": "Images/ashwagandha-milk.png",
+      "ingredients": [
+        "1 cup warm milk (dairy or plant-based)",
+        "1/2 tsp ashwagandha powder",
+        "1 tsp honey or jaggery",
+        "Pinch of cardamom powder",
+        "Pinch of cinnamon powder",
+        "Few saffron strands (optional)"
+      ],
+      "steps": [
+        "Warm the milk in a saucepan (don't boil).",
+        "Add ashwagandha powder and whisk well.",
+        "Add honey, cardamom, and cinnamon.",
+        "Stir until well combined.",
+        "Add saffron if using.",
+        "Serve warm before bedtime.",
+        "Consume regularly for 2-4 weeks."
+      ],
+      "benefits": [
+        "Reduces stress and cortisol levels",
+        "Improves energy and stamina",
+        "Supports better sleep quality"
       ]
     }
   ]
