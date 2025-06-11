@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Font Test - Bloom</title>
+    <link rel="stylesheet" href="../static/css/common-sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="sidebar-layout">
+    <!-- Include the common sidebar -->
+    <div class="sidebar">
+        <a href="/dashboard" class="logo">
+            <i class="fas fa-spa"></i>
+            <span>Bloom</span>
+        </a>
+        
+        <div class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </div>
+        
+        <div class="nav-item active">
+            <i class="fas fa-yin-yang"></i>
+            <span>Yoga (Active)</span>
+        </div>
+        
+        <div class="menu-item-with-dropdown open">
+            <div class="nav-item">
+                <i class="fas fa-utensils"></i>
+                <span>Nutrition</span>
+                <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            <div class="dropdown-content">
+                <div class="dropdown-item">
+                    <i class="fas fa-tint"></i>
+                    <span>Water Tracker</span>
+                </div>
+                <div class="dropdown-item active">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Recipe (Active)</span>
+                </div>
+                <div class="dropdown-item">
+                    <span class="emoji-icon">🥗</span>
+                    <span>Meal Plans</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile">
+            <div class="profile-avatar">SU</div>
+            <div class="profile-name">Suhan User</div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div style="padding: 20px;">
+            <h1>Font Size Test Results</h1>
+            <p>This page tests the standardized sidebar font sizes:</p>
+            <ul>
+                <li><strong>Logo:</strong> Uses --sidebar-logo-size (24px)</li>
+                <li><strong>Navigation items:</strong> Uses --sidebar-nav-size (16px)</li>
+                <li><strong>Dropdown items:</strong> Uses --sidebar-dropdown-size (14px)</li>
+                <li><strong>Emoji icons:</strong> Uses --sidebar-emoji-size (16px)</li>
+                <li><strong>Dropdown emojis:</strong> Uses --sidebar-dropdown-emoji-size (14px)</li>
+            </ul>
+            <p>All font sizes are now consistently applied using CSS variables and respond to different screen sizes.</p>
+        </div>
+    </div>
+</body>
+</html>
