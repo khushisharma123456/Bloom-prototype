@@ -20,65 +20,44 @@
             --text-light: #8A7FAA;
             --white: #fff;
         }
-        
-        body {
+          body {
             font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             color: var(--text-dark);
             background-color: var(--bg-color);
         }
+          /* Override sidebar text to thinner weight */
+        .nav-item {
+            font-weight: 150 !important;
+        }
         
-        .container {
+        .nav-item span {
+            font-weight: 159 !important;
+        }
+        
+        .dropdown-item {
+            font-weight: 150 !important;
+        }
+        
+        .dropdown-item span {
+            font-weight: 150 !important;
+        }
+        
+        .profile-name {
+            font-weight: 150 !important;
+        }
+        
+        /* Make logo text thinner too */
+        .logo span {
+            font-weight: 700 !important;
+        }
+          .container {
             display: flex;
             min-height: 100vh;
         }
-          .sidebar {
-            width: 210px;
-            background: linear-gradient(to bottom, var(--sidebar-color), white);
-            padding: 25px 15px;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: fixed;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-        }
         
-        .sidebar h1 {
-            color: var(--primary-purple);
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            font-family: 'Nunito', sans-serif;
-        }
-        
-        .sidebar h3 {
-            color: var(--text-light);
-            font-size: 16px;
-            margin-bottom: 10px;
-            font-family: 'Nunito', sans-serif;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar li {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-size: 16px;
-            color: var(--text-dark);
-            transition: all 0.3s;
-        }
-        
-        .sidebar li:hover {
-            background-color: var(--accent-lavender);
-            color: var(--primary-purple);
-        }          .main-content {
+        .main-content {
             margin-left: 220px;
             padding: 30px 40px;
             width: calc(100% - 220px);

@@ -17,15 +17,15 @@
 .sidebar {
     width: 240px;
     background: linear-gradient(to bottom, var(--sidebar-color), white);
-    padding: 30px 20px;
+    padding: 30px 20px 20px 20px;
     display: flex;
     flex-direction: column;
     height: 100vh;
     position: fixed;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
-    overflow-y: auto; /* Allow scrolling if needed */
-    overflow-x: hidden; /* Hide horizontal overflow */
+    overflow: hidden; /* Hide overflow on main container */
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
 /* Remove all underlines from sidebar links */
@@ -127,6 +127,11 @@
     margin-bottom: 8px;
 }
 
+/* Ensure smooth expansion when dropdown opens */
+.menu-item-with-dropdown.open {
+    margin-bottom: 8px;
+}
+
 .dropdown-arrow {
     margin-left: auto !important;
     margin-right: 0 !important;
@@ -141,20 +146,33 @@
 
 .dropdown-content {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: relative; /* Changed from absolute to relative for better flow */
+    top: 0;
     left: 0;
     right: 0;
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     margin-top: 5px;
+    margin-bottom: 8px; /* Add bottom margin to prevent overlap */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     z-index: 1001;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: none; /* Remove max-height restriction */
+    animation: dropdownSlide 0.3s ease-out;
+}
+
+/* Dropdown slide animation */
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .menu-item-with-dropdown.open .dropdown-content {
@@ -211,6 +229,8 @@
     padding: 15px 10px;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.7);
+    flex-shrink: 0; /* Prevent profile from shrinking */
+    min-height: 70px; /* Ensure minimum height for profile */
 }
 
 .profile-avatar {
@@ -229,14 +249,41 @@
 .profile-name {
     font-family: 'Nunito', sans-serif;
     font-weight: 600;
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for long names */
+    white-space: nowrap; /* Prevent text wrapping */
+    max-width: 120px; /* Limit width to prevent overflow */
 }
 
 /* Navigation container to organize sidebar content */
 .sidebar-nav {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding-right: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced from 20px to provide more space */
+    min-height: 0; /* Allow flex item to shrink */
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-lavender) transparent;
+}
+
+/* Custom scrollbar for webkit browsers */
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: var(--accent-lavender);
+    border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-purple);
 }
 
 /* Ensure sidebar content is properly contained */
@@ -296,14 +343,16 @@ body.sidebar-layout {
     .dropdown-arrow {
         display: none;
     }
-    
-    .dropdown-content {
+      .dropdown-content {
         position: absolute;
         left: 70px;
         top: 0;
         width: 200px;
         margin-left: 0;
+        margin-top: 0;
         z-index: 1001;
+        max-height: 250px; /* Limit height on mobile */
+        overflow-y: auto;
     }
     
     .dropdown-item {
