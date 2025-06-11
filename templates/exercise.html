@@ -683,15 +683,23 @@
                     updateTimerDisplay();
                     renderExerciseList();
                 }
-                
                 isPlaying = !isPlaying;
-                
                 if (isPlaying) {
                     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     startTimer();
+                    // Resume music if not 'none'
+                    if (currentMusic && currentMusic !== 'none' && audioElements[currentMusic]) {
+                        audioElements[currentMusic].volume = currentVolume;
+                        audioElements[currentMusic].play();
+                    }
                 } else {
                     playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                     pauseTimer();
+                    // Stop all audio when paused
+                    Object.values(audioElements).forEach(audio => {
+                        audio.pause();
+                        // Do NOT reset currentTime, so it resumes from where it left off
+                    });
                 }
             });
 
