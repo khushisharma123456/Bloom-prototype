@@ -1248,8 +1248,7 @@ def get_gemini_recommendations():
             
         # Gemini API URL
         url = f'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key={api_key}'
-        
-        # Request payload
+          # Request payload
         payload = {
             'contents': [{'parts': [{'text': prompt}]}],
             'generationConfig': {
@@ -1257,7 +1256,8 @@ def get_gemini_recommendations():
                 'topK': 40,
                 'topP': 0.95,
                 'maxOutputTokens': 2048,
-            }        }
+            }
+        }
         
         # Make request to Gemini API
         print(f"Making request to Gemini API...")
@@ -1295,24 +1295,38 @@ def get_gemini_recommendations():
         if not result.get('candidates') or not result['candidates'][0].get('content'):
             return jsonify({
                 'success': False,
-                'message': 'Invalid response from Gemini API'            }), 500
+                'message': 'Invalid response from Gemini API'
+            }), 500
             
         gemini_response = result['candidates'][0]['content']['parts'][0]['text']
+        
+        # Debug: Print the raw Gemini response
+        print("=== RAW GEMINI RESPONSE ===")
+        print(gemini_response)
+        print("=== END RAW RESPONSE ===")
         
         # Try to parse as JSON
         try:
             parsed_response = json.loads(gemini_response)
+            print("=== PARSED JSON RESPONSE ===")
+            print(json.dumps(parsed_response, indent=2))
+            print("=== END PARSED RESPONSE ===")
             return jsonify({
                 'success': True,
                 'recommendations': parsed_response
             })
-        except json.JSONDecodeError:
-            # If not valid JSON, return as text
+        except json.JSONDecodeError as e:
+            print(f"=== JSON DECODE ERROR ===")
+            print(f"Error: {e}")
+            print("=== USING MOCK DATA INSTEAD ===")
+            # If JSON parsing fails, use mock data
+            if 'ayurvedic' in prompt.lower() or 'ayurveda' in prompt.lower():
+                mock_response = get_symptom_specific_ayurveda(symptoms)
+            else:
+                mock_response = get_symptom_specific_yoga(symptoms)
             return jsonify({
                 'success': True,
-                'recommendations': {
-                    'text': gemini_response
-                }
+                'recommendations': mock_response
             })
             
     except requests.exceptions.Timeout:

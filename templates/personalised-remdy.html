@@ -7,43 +7,206 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <style>
+        :root {
+            --bg-color: #FFF9F9;
+            --text-dark: #4A4A4A;
+            --text-light: #8A7FAA;
+            --accent-pink: #FFD6E0;
+            --accent-peach: #FFE8D6;
+            --accent-teal: #C1EDE6;
+            --accent-lavender: #E8E0FF;
+            --primary-purple: #6E5B9A;
+            --soft-shadow: 0 4px 20px rgba(110, 91, 154, 0.1);
+            --gradient-primary: linear-gradient(135deg, #FFD6E0 0%, #E8E0FF 100%);
+            --gradient-secondary: linear-gradient(135deg, #C1EDE6 0%, #FFE8D6 100%);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+        }        .main-content {
+            background: linear-gradient(135deg, #FFF9F9 0%, #F9F5FF 50%, #FFF9F9 100%);
+            min-height: 100vh;
+            padding-top: 2rem;
+        }
+
+        .page-header {
+            background: var(--gradient-primary);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            box-shadow: var(--soft-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .page-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 0;
+            position: relative;
+            z-index: 2;
+        }
+
         .card {
             margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            box-shadow: var(--soft-shadow);
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            border: 2px solid #f0f0f0;
+            background: white;
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(110, 91, 154, 0.2);
+            border-color: var(--accent-lavender);
         }
         .card-img-top {
             height: 250px;
             object-fit: cover;
         }
         .benefit-badge {
-            margin-right: 5px;
-            margin-bottom: 5px;
+            background: var(--gradient-secondary);
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            border: none;
         }
         .section-title {
-            color: #2c7873;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin: 1.5rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .precaution-item {
             color: #dc3545;
         }
         .time-badge {
-            background-color: #6c757d;
-        }
-        .loading-spinner {
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }        .loading-spinner {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--soft-shadow);
+            margin: 2rem auto;
+            max-width: 400px;
         }
-        .symptoms-container {
+
+        .loading-spinner .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3rem;
+            color: var(--primary-purple);
+        }        .loading-spinner p {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .error-container, .alert-danger {
+            background: linear-gradient(135deg, #ffe6e6 0%, #fff0f0 100%);
+            border: 2px solid #dc3545;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            color: #dc3545;
+            margin: 2rem 0;
+            box-shadow: var(--soft-shadow);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-peach) 100%);
+            border: 2px solid var(--primary-purple);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            color: var(--primary-purple);
+            margin: 2rem 0;
+            box-shadow: var(--soft-shadow);
+        }
+
+        .precautions-list {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 0;
+        }
+
+        .precautions-list li {
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }.symptoms-container {
             margin-bottom: 30px;
         }
+
+        .symptoms-display {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--soft-shadow);
+            border: 2px solid var(--accent-lavender);
+        }
+
+        .symptoms-display .card-title {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+
         .selected-symptoms {
             margin-top: 15px;
         }
@@ -57,26 +220,34 @@
             transition: all 0.3s;
         }
         .symptom-chip.selected {
-            background-color: #2c7873;
+            background: var(--primary-purple);
             color: white;
-        }
-        .ingredients-list {
+        }.ingredients-list {
+            background: var(--accent-lavender);
+            border-radius: 15px;
+            padding: 1.5rem;
             list-style-type: none;
-            padding-left: 0;
+            padding-left: 1.5rem;
         }
         .ingredients-list li {
             padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(110, 91, 154, 0.1);
         }
         .steps-list {
+            background: var(--accent-lavender);
+            border-radius: 15px;
+            padding: 1.5rem;
             counter-reset: step-counter;
             list-style-type: none;
-            padding-left: 0;
+            padding-left: 1.5rem;
         }
         .steps-list li {
             position: relative;
             padding: 10px 0 10px 40px;
-            border-bottom: 1px solid #eee;        }
+            border-bottom: 1px solid rgba(110, 91, 154, 0.1);
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
         .steps-list li:before {
             counter-increment: step-counter;
             content: counter(step-counter);
@@ -86,106 +257,152 @@
             transform: translateY(-50%);
             width: 30px;
             height: 30px;
-            background-color: #2c7873;
+            background: var(--primary-purple);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
-        
-        /* Card-based remedy display */
+          /* Card-based remedy display */
         .remedy-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 20px;
             margin: 15px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--soft-shadow);
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 2px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .remedy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 20px 20px 0 0;
+        }
+
         .remedy-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border-color: #2c7873;
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(110, 91, 154, 0.2);
+            border-color: var(--accent-lavender);
         }
-        
-        .remedy-card-header {
+
+        .remedy-card:active {
+            transform: translateY(-2px);
+        }
+          .remedy-card-header {
             display: flex;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
             gap: 15px;
             margin-bottom: 10px;
-        }
-        
-        .remedy-emoji {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #e8f5f3, #d1ebe8);
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
+        }        .remedy-emoji {
+            font-size: 4rem;
+            width: 100px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: float 3s ease-in-out infinite;
+            margin: 0 auto 15px auto;
         }
-        
-        .remedy-title {
-            flex: 1;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2c7873;
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+          .remedy-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-purple);
             margin: 0;
+            line-height: 1.3;
+            text-align: center;
         }
         
         .remedy-brief {
-            color: #666;
-            font-size: 0.95rem;
-            margin: 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 10px 0 0 0;
+            line-height: 1.4;
+            text-align: center;
         }
-        
-        /* Modal styles */
+          /* Modal styles */
         .remedy-modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 2000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.8);
             overflow-y: auto;
+            backdrop-filter: blur(5px);
+            animation: modalFadeIn 0.3s ease-out;
         }
-        
-        .remedy-modal-content {
-            background-color: white;
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+          .remedy-modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
             margin: 2% auto;
             padding: 0;
-            border-radius: 15px;
+            border-radius: 25px;
             width: 90%;
             max-width: 800px;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
             position: relative;
+            box-shadow: 0 20px 60px rgba(110, 91, 154, 0.3);
+            animation: modalSlideIn 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         
         .modal-header {
-            background: linear-gradient(135deg, #2c7873, #1e5f5a);
-            color: white;
+            background: var(--gradient-primary);
+            color: var(--primary-purple);
             padding: 20px;
-            border-radius: 15px 15px 0 0;
+            border-radius: 25px 25px 0 0;
             position: relative;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
         }
-        
-        .modal-close {
+          .modal-close {
             position: absolute;
             top: 15px;
             right: 20px;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            color: white;
-            background: none;
+            color: var(--primary-purple);
+            background: rgba(255, 255, 255, 0.9);
             border: none;
             padding: 0;
             width: 35px;
@@ -194,45 +411,154 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
         }
         
         .modal-close:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
         }
-        
-        .modal-body {
+          .modal-body {
             padding: 25px;
+            overflow-y: auto;
+            max-height: calc(90vh - 120px);
+            flex: 1;
         }
         
         .modal-section {
             margin-bottom: 20px;
-        }
-        
-        .modal-section h6 {
-            color: #2c7873;
+        }        .modal-section h6 {
+            font-family: 'Nunito', sans-serif;
+            color: var(--primary-purple);
             font-weight: 600;
             margin-bottom: 10px;
             font-size: 1.1rem;
+        }
+
+        .modal-section h6 i {
+            margin-right: 8px;
+            color: var(--primary-purple);
+        }
+
+        .modal-section {
+            padding: 15px;
+            border-bottom: 1px solid rgba(110, 91, 154, 0.1);
+        }
+
+        .modal-section:last-child {
+            border-bottom: none;
+        }
+
+        /* Enhanced modal styles */
+        .remedy-modal {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .remedy-modal-content {
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from { 
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }        /* Responsive design */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .page-header {
+                padding: 2rem 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .remedy-modal-content {
+                width: 95%;
+                margin: 5% auto;
+                border-radius: 20px;
+            }
+            
+            .remedy-card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .remedy-emoji {
+                margin: 0 auto;
+                font-size: 2.5rem;
+                width: 60px;
+                height: 60px;
+            }
+            
+            .remedy-title {
+                font-size: 1.1rem;
+                text-align: center;
+            }
+            
+            .remedy-brief {
+                text-align: center;
+                font-size: 0.85rem;
+            }
+            
+            .modal-header {
+                padding: 15px;
+                border-radius: 20px 20px 0 0;
+            }
+            
+            .modal-body {
+                padding: 20px 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .symptoms-display {
+                padding: 1rem;
+            }
+            
+            .remedy-card {
+                padding: 15px;
+                margin: 10px 0;
+            }
         }</style>
 </head>
 <body class="sidebar-layout">
     <!-- Common Sidebar -->
-    {% include 'includes/sidebar.html' %}
-      <div class="main-content">
+    {% include 'includes/sidebar.html' %}      <div class="main-content">
         <div class="container py-5">
-        <h1 class="text-center mb-5">Personalized Ayurvedic Remedies</h1>
-        
-        <!-- Selected Symptoms Display -->
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Personalized Ayurvedic Remedies</h1>
+            <p class="page-subtitle">Natural healing solutions tailored for your wellness journey</p>
+        </div>
+          <!-- Selected Symptoms Display -->
         <div class="symptoms-container" id="symptomsDisplay" style="display: none;">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title text-center">
-                        <i class="fas fa-stethoscope"></i> Symptoms Being Addressed
-                    </h5>
-                    <div class="selected-symptoms text-center" id="symptomTags">
-                        <!-- Symptom tags will be inserted here -->
-                    </div>
+            <div class="symptoms-display">
+                <h5 class="card-title text-center">
+                    <i class="fas fa-stethoscope"></i> Symptoms Being Addressed
+                </h5>
+                <div class="selected-symptoms text-center" id="symptomTags">
+                    <!-- Symptom tags will be inserted here -->
                 </div>
             </div>
         </div>
@@ -261,12 +587,31 @@
             </div>
         </div>
     </div><script type="module">
-        import AyurvedicGeminiWrapper from '../static/css/ayurvedic-gemini-wrapper.js';
-
-        const remediesContainer = document.getElementById('remediesContainer');
+        import AyurvedicGeminiWrapper from '../static/css/ayurvedic-gemini-wrapper.js';        const remediesContainer = document.getElementById('remediesContainer');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const selectedSymptoms = JSON.parse(localStorage.getItem('selectedSymptoms') || '[]');
-        const wrapper = new AyurvedicGeminiWrapper();        console.log('Selected symptoms:', selectedSymptoms);
+        const wrapper = new AyurvedicGeminiWrapper();
+
+        // Function to format remedy title as "English Name (Transliteration)"
+        const formatRemedyTitle = (title) => {
+            // Expected format: "हींग पानी (Hing Pani) - Asafoetida Water"
+            // We want: "Asafoetida Water (Hing Pani)"
+            
+            const parts = title.split(' - ');
+            if (parts.length < 2) return title; // Return as-is if format is unexpected
+            
+            const englishName = parts[parts.length - 1]; // Last part is English name
+            const hindiPart = parts[0]; // First part contains Hindi and transliteration
+            
+            // Extract transliteration from parentheses in Hindi part
+            const transliterationMatch = hindiPart.match(/\(([^)]+)\)/);
+            const transliteration = transliterationMatch ? transliterationMatch[1] : '';
+            
+            // Format as "English Name (Transliteration)" if transliteration exists
+            return transliteration ? `${englishName} (${transliteration})` : englishName;
+        };
+
+        console.log('Selected symptoms:', selectedSymptoms);
 
         // Display selected symptoms in the header
         function displaySymptoms(symptoms) {
@@ -303,52 +648,128 @@
             if (!remedies || remedies.length === 0) {
                 remediesContainer.innerHTML = '<div class="alert alert-info">No ayurvedic remedies found for your symptoms.</div>';
                 return;
-            }
-            let html = '';
-            remedies.forEach(remedy => {
-                html += `
+            }            let html = '';
+            remedies.forEach((remedy, index) => {
+                // Function to get emoji based on remedy name/type
+                const getRemedyEmoji = (title) => {
+                    const name = title.toLowerCase();
+                    if (name.includes('tea') || name.includes('chai')) return '🍵';
+                    if (name.includes('juice') || name.includes('drink')) return '🥤';
+                    if (name.includes('oil') || name.includes('massage')) return '🫗';
+                    if (name.includes('ginger') || name.includes('adrak')) return '🫚';
+                    if (name.includes('turmeric') || name.includes('haldi')) return '🟡';
+                    if (name.includes('honey') || name.includes('shahad')) return '🍯';
+                    if (name.includes('water') || name.includes('pani')) return '💧';
+                    if (name.includes('powder') || name.includes('churna')) return '🥄';
+                    if (name.includes('milk') || name.includes('doodh')) return '🥛';
+                    if (name.includes('kadha') || name.includes('decoction')) return '☕';
+                    if (name.includes('paste') || name.includes('pack')) return '🌿';
+                    if (name.includes('seed') || name.includes('beej')) return '🌱';                    return '🌿'; // Default herb emoji
+                };                html += `
                     <div class="col-md-6 col-lg-4">
-                        <div class="card">
-                            <img src="${remedy.image || 'static/Images/default-remedy.jpg'}" class="card-img-top" alt="${remedy.title}">
-                            <div class="card-body">
-                                <h5 class="card-title">${remedy.title}</h5>
-                                <span class="badge time-badge mb-3">${remedy.time}</span>
-                                <p class="card-text">${remedy.description}</p>
-                                <h6 class="section-title">Ingredients:</h6>
-                                <ul class="ingredients-list">
-                                    ${(remedy.ingredients || []).map(ingredient => `<li>${ingredient}</li>`).join('')}
-                                </ul>
-                                <h6 class="section-title">Preparation Steps:</h6>
-                                <ol class="steps-list">
-                                    ${(remedy.steps || []).map(step => `<li>${step}</li>`).join('')}
-                                </ol>
-                                <h6 class="section-title">Benefits:</h6>
-                                <div class="mb-3">
-                                    ${(remedy.benefits || '').split(',').map(benefit => `
-                                        <span class="badge bg-success benefit-badge">${benefit.trim()}</span>
-                                    `).join('')}
-                                </div>
-                                <h6 class="section-title">Best Time to Consume:</h6>
-                                <p>${remedy.bestTimeToConsume || ''}</p>
-                                <h6 class="section-title">Precautions:</h6>
-                                <ul>
-                                    ${(remedy.precautions || []).map(precaution => `
-                                        <li class="precaution-item">${precaution}</li>
-                                    `).join('')}
-                                </ul>
-                                <h6 class="section-title">Storage Instructions:</h6>
-                                <p>${remedy.storageInstructions || ''}</p>
-                                <h6 class="section-title">Shelf Life:</h6>
-                                <p>${remedy.shelfLife || ''}</p>
+                        <div class="remedy-card" onclick="openRemedyModal(${index})">
+                            <div class="remedy-card-header">
+                                <div class="remedy-emoji">${getRemedyEmoji(remedy.title)}</div>
+                                <h3 class="remedy-title">${formatRemedyTitle(remedy.title)}</h3>
+                                <p class="remedy-brief">${remedy.description || 'Natural Ayurvedic remedy'}</p>
                             </div>
                         </div>
                     </div>
-                `;            });
+                `;});
             remediesContainer.innerHTML = html;
+            
+            // Store remedies data globally for modal use
+            window.remediesData = remedies;
         }).catch(error => {
             // Hide loading spinner
             loadingSpinner.style.display = 'none';
-            remediesContainer.innerHTML = `<div class="alert alert-danger">Failed to load ayurvedic recommendations: ${error.message}</div>`;        });
+            remediesContainer.innerHTML = `<div class="alert alert-danger">Failed to load ayurvedic recommendations: ${error.message}</div>`;
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('remedyModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');        // Function to open modal with remedy details
+        window.openRemedyModal = function(index) {
+            const remedy = window.remediesData[index];
+            if (!remedy) return;
+
+            modalTitle.textContent = formatRemedyTitle(remedy.title);
+            
+            modalBody.innerHTML = `
+                <div class="modal-section">
+                    <h6><i class="fas fa-clock"></i> Preparation Time</h6>
+                    <p><span class="badge time-badge">${remedy.time || 'Not specified'}</span></p>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-leaf"></i> Ingredients</h6>
+                    <ul class="ingredients-list">
+                        ${(remedy.ingredients || []).map(ingredient => `<li>${ingredient}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-list-ol"></i> Preparation Steps</h6>
+                    <ol class="steps-list">
+                        ${(remedy.steps || []).map(step => `<li>${step}</li>`).join('')}
+                    </ol>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-heart"></i> Benefits</h6>
+                    <div class="mb-3">
+                        ${(remedy.benefits || '').split(',').map(benefit => `
+                            <span class="badge bg-success benefit-badge">${benefit.trim()}</span>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-sun"></i> Best Time to Consume</h6>
+                    <p>${remedy.bestTimeToConsume || 'As per need'}</p>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Precautions</h6>
+                    <ul>
+                        ${(remedy.precautions || []).map(precaution => `
+                            <li class="precaution-item">${precaution}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-archive"></i> Storage Instructions</h6>
+                    <p>${remedy.storageInstructions || 'Store in a cool, dry place'}</p>
+                </div>
+
+                <div class="modal-section">
+                    <h6><i class="fas fa-calendar-alt"></i> Shelf Life</h6>
+                    <p>${remedy.shelfLife || 'Use fresh preparation'}</p>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+        };
+
+        // Close modal when clicking the close button
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        };        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
     </script>
 
         </div>
