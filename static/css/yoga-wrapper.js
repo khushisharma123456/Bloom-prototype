@@ -58,6 +58,58 @@ IMPORTANT GUIDELINES:
 Make sure every recommended pose is specifically chosen because it helps with: ${symptomsText}`;
     }
 
+    // Normalize and fix duration formatting issues
+    normalizeDuration(duration) {
+        if (!duration || typeof duration !== 'string') {
+            return '5-10 minutes';
+        }
+        
+        // Fix common formatting issues
+        let normalized = duration
+            .replace(/1-''3/g, '1-3 minutes')
+            .replace(/(\d+)-''(\d+)/g, '$1-$2 minutes')
+            .replace(/'''/g, '')
+            .replace(/''/g, '')
+            .replace(/'/g, '')
+            .replace(/"/g, '')
+            .trim();
+        
+        // Add 'minutes' if missing
+        if (normalized && !normalized.includes('minute') && !normalized.includes('min')) {
+            // Check if it's just numbers and dashes
+            if (/^\d+(-\d+)?$/.test(normalized)) {
+                normalized += ' minutes';
+            }
+        }
+        
+        // Default fallback if still problematic
+        if (!normalized || normalized.length < 3) {
+            normalized = '5-10 minutes';
+        }
+        
+        return normalized;
+    }
+
+    // Normalize yoga asana data to fix formatting issues
+    normalizeYogaAsanas(asanas) {
+        if (!Array.isArray(asanas)) {
+            return [];
+        }
+        
+        return asanas.map(asana => ({
+            ...asana,
+            duration: this.normalizeDuration(asana.duration),
+            // Also ensure other fields are properly formatted
+            name: asana.name || 'Unknown Pose',
+            steps: Array.isArray(asana.steps) ? asana.steps : [],
+            benefits: Array.isArray(asana.benefits) ? asana.benefits : [],
+            relievesSymptoms: Array.isArray(asana.relievesSymptoms) ? asana.relievesSymptoms : [],
+            precautions: Array.isArray(asana.precautions) ? asana.precautions : [],
+            difficultyLevel: asana.difficultyLevel || 'Beginner',
+            image: asana.image || ''
+        }));
+    }
+
     async getYogaRecommendations(symptoms) {
         try {
             console.log('Getting personalized yoga recommendations for symptoms:', symptoms);
@@ -75,15 +127,14 @@ Make sure every recommended pose is specifically chosen because it helps with: $
                     prompt: prompt,
                     symptoms: symptoms
                 })
-            });
-
-            if (response.ok) {
+            });            if (response.ok) {
                 const data = await response.json();
                 
                 if (data.success && data.recommendations) {
                     console.log('Successfully received personalized recommendations from Gemini API');
+                    const normalizedAsanas = this.normalizeYogaAsanas(data.recommendations.yogaAsanas || []);
                     return {
-                        yogaAsanas: data.recommendations.yogaAsanas || []
+                        yogaAsanas: normalizedAsanas
                     };
                 }
             }
@@ -136,11 +187,9 @@ Make sure every recommended pose is specifically chosen because it helps with: $
             
             if (!data.success) {
                 throw new Error(data.message || 'Failed to get fallback yoga recommendations');
-            }
-
-            // Return the recommendations directly from the API
+            }            // Return the recommendations directly from the API
             return {
-                yogaAsanas: data.recommendations.yogaAsanas || []
+                yogaAsanas: this.normalizeYogaAsanas(data.recommendations.yogaAsanas || [])
             };
         } catch (error) {
             console.error('Error getting fallback yoga recommendations:', error);
