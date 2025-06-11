@@ -1638,11 +1638,14 @@ function logout() {
     .then(response => {
         if (response.redirected) {
             window.location.href = response.url;
+        } else if (response.ok) {
+            window.location.href = '/login';
+        } else {
+            showToast('Logout failed', 'error');
         }
     })
     .catch(error => {
-        console.error('Error logging out:', error);
-        showToast('Failed to logout', 'error');
+        showToast('Logout failed', 'error');
     });
 }
 
@@ -1761,7 +1764,46 @@ function updatePassword() {
     });
 }
 
-// ==================== HELPER FUNCTIONS ====================
+// ==================== LOGOUT FUNCTION ====================
+function logout() {
+    fetch('/logout', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else if (response.ok) {
+            window.location.href = '/login';
+        } else {
+            showToast('Logout failed', 'error');
+        }
+    })
+    .catch(error => {
+        showToast('Logout failed', 'error');
+    });
+}
+
+// ==================== CLEAR SELECTION FUNCTION ====================
+function clearSelection() {
+    selectedStartDate = null;
+    selectedEndDate = null;
+    lastPeriodStart = null;
+    periodDays = [];
+    document.getElementById('mark-start').classList.remove('active');
+    document.getElementById('mark-end').classList.remove('active');
+    generateCalendar();
+    updatePeriodStats();
+    showToast('Selection cleared', 'success');
+}
+
+// Attach clearSelection to button
+if (document.getElementById('clear-selection')) {
+    document.getElementById('clear-selection').onclick = clearSelection;
+}
+
 function setupEventListeners() {
     // Profile save button
     document.getElementById('save-profile-btn').addEventListener('click', saveProfile);
@@ -1881,10 +1923,15 @@ function addDateCellListeners() {
 }
 
 function clearSelection() {
-    const cells = document.querySelectorAll('#calendar-body td');
-    cells.forEach(cell => {
-        cell.classList.remove('selected');
-    });
+    selectedStartDate = null;
+    selectedEndDate = null;
+    lastPeriodStart = null;
+    periodDays = [];
+    document.getElementById('mark-start').classList.remove('active');
+    document.getElementById('mark-end').classList.remove('active');
+    generateCalendar();
+    updatePeriodStats();
+    showToast('Selection cleared', 'success');
 }
 
 function showToast(message, type = 'info') {
