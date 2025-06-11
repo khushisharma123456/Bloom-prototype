@@ -354,13 +354,12 @@
             <div class="music-controls">
                 <div class="music-title">Background Music</div>
                 <div class="music-options">
-                    <button class="music-btn">None</button>
-                    <button class="music-btn active" data-spotify="https://open.spotify.com/track/5MTVGdHPWhpCj3wKp1Fyk1">Rain</button>
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/1uTkgOcBEBSDds99QDYDNl">Forest</button>
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/4MuuGvZf7vNEJyMxDjvL31">Singing Bowl</button>
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/3a6Rz4rjSBMyOlOVDZjknb">Ocean</button>
+                    <button class="music-btn" data-spotify="https://open.spotify.com/track/5MTVGdHPWhpCj3wKp1Fyk1" data-type="rain">Rain</button>
+                    <button class="music-btn" data-spotify="https://open.spotify.com/track/1uTkgOcBEBSDds99QDYDNl" data-type="forest">Forest</button>
+                    <button class="music-btn" data-spotify="https://open.spotify.com/track/4MuuGvZf7vNEJyMxDjvL31" data-type="singing-bowl">Singing Bowl</button>
+                    <button class="music-btn" data-spotify="https://open.spotify.com/track/3a6Rz4rjSBMyOlOVDZjknb" data-type="ocean">Ocean</button>
                 </div>
-                <div id="spotify-player-container" style="margin-top: 16px;"></div>
+                <!-- Removed Spotify player container -->
             </div>
         </div>
 
@@ -415,6 +414,39 @@
             let isPlaying = false;
             let currentMusic = 'rain';
             let currentVolume = 0.5;
+
+            // --- Music System using HTMLAudioElement and direct mp3 links ---
+            const musicSources = {
+                'rain': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5e2.mp3',
+                'forest': 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b1b7e2.mp3',
+                'singing-bowl': 'https://cdn.pixabay.com/audio/2022/03/15/audio_115b1b7e2.mp3',
+                'ocean': 'https://cdn.pixabay.com/audio/2022/03/15/audio_115b1b7e2.mp3'
+            };
+            let musicAudio = null;
+            let currentMusicType = null;
+
+            function playMusic(type) {
+                stopMusic();
+                if (!type || !musicSources[type]) return;
+                musicAudio = new Audio(musicSources[type]);
+                musicAudio.loop = true;
+                musicAudio.volume = 0.5;
+                musicAudio.play();
+                currentMusicType = type;
+            }
+            function pauseMusic() {
+                if (musicAudio) musicAudio.pause();
+            }
+            function resumeMusic() {
+                if (musicAudio) musicAudio.play();
+            }
+            function stopMusic() {
+                if (musicAudio) {
+                    musicAudio.pause();
+                    musicAudio.currentTime = 0;
+                    musicAudio = null;
+                }
+            }
 
             // Initialize the page
             function init() {
@@ -500,6 +532,7 @@
                     if (timeRemaining <= 0) {
                         clearInterval(timerInterval);
                         nextExercise();
+                        stopMusic(); // Stop music when timer ends
                     }
                 }, 1000);
             }
@@ -528,6 +561,7 @@
                     updateExerciseDisplay();
                     playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
                     isPlaying = false;
+                    stopMusic();
                 }
             }            // Load Spotify player function
             function loadSpotifyPlayer(spotifyUrl) {
@@ -551,14 +585,32 @@
                 button.addEventListener('click', () => {
                     musicButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    // Load Spotify player for selected music
-                    const spotifyUrl = button.dataset.spotify;
-                    loadSpotifyPlayer(spotifyUrl);
+                    const type = button.dataset.type;
+                    playMusic(type);
                 });
             });
 
-            // On page load, load the default (Rain) Spotify player
-            loadSpotifyPlayer('https://open.spotify.com/track/3Zwu2K0Qa5sT6teCCHPShP');
+            // Play/Pause button click handler
+            playPauseBtn.addEventListener('click', () => {
+                if (currentExerciseIndex >= exercises.length) {
+                    // Restart routine if completed
+                    currentExerciseIndex = 0;
+                    timeRemaining = exercises[0].duration;
+                    updateExerciseDisplay();
+                    updateTimerDisplay();
+                    renderExerciseList();
+                }
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    startTimer();
+                    resumeMusic();
+                } else {
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    pauseTimer();
+                    pauseMusic();
+                }
+            });
 
             // Restart button click handler
             restartBtn.addEventListener('click', () => {
