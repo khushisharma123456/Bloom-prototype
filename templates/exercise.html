@@ -354,12 +354,12 @@
             <div class="music-controls">
                 <div class="music-title">Background Music</div>
                 <div class="music-options">
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/5MTVGdHPWhpCj3wKp1Fyk1" data-type="rain">Rain</button>
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/1uTkgOcBEBSDds99QDYDNl" data-type="forest">Forest</button>
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/4MuuGvZf7vNEJyMxDjvL31" data-type="singing-bowl">Singing Bowl</button>
-                    <button class="music-btn" data-spotify="https://open.spotify.com/track/3a6Rz4rjSBMyOlOVDZjknb" data-type="ocean">Ocean</button>
+                    <button class="music-btn" data-spotify="5MTVGdHPWhpCj3wKp1Fyk1">Rain</button>
+                    <button class="music-btn" data-spotify="1uTkgOcBEBSDds99QDYDNl">Forest</button>
+                    <button class="music-btn" data-spotify="4MuuGvZf7vNEJyMxDjvL31">Singing Bowl</button>
+                    <button class="music-btn" data-spotify="3a6Rz4rjSBMyOlOVDZjknb">Ocean</button>
                 </div>
-                <!-- Removed Spotify player container -->
+                <div id="spotify-player-container" style="margin-top: 16px;"></div>
             </div>
         </div>
 
@@ -414,58 +414,76 @@
             let isPlaying = false;
             let currentMusic = 'rain';
             let currentVolume = 0.5;
+            let currentSpotifyTrack = '5MTVGdHPWhpCj3wKp1Fyk1';
+            let spotifyIframe = null;
 
-            // --- Music System using HTMLAudioElement and direct mp3 links ---
-            const musicSources = {
-                'rain': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5e2.mp3',
-                'forest': 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b1b7e2.mp3',
-                'singing-bowl': 'https://cdn.pixabay.com/audio/2022/03/15/audio_115b1b7e2.mp3',
-                'ocean': 'https://cdn.pixabay.com/audio/2022/03/15/audio_115b1b7e2.mp3'
-            };
-            let musicAudio = null;
-            let currentMusicType = null;
-
-            function playMusic(type) {
-                stopMusic();
-                if (!type || !musicSources[type]) return;
-                musicAudio = new Audio(musicSources[type]);
-                musicAudio.loop = true;
-                musicAudio.volume = currentVolume;
-                currentMusicType = type;
-                // Play only if timer is running
-                if (isPlaying) {
-                    // Try to play and catch any errors (autoplay policy)
-                    musicAudio.play().catch(() => {
-                        // Show a message if needed
-                    });
+            function loadSpotifyPlayer(trackId) {
+                const container = document.getElementById('spotify-player-container');
+                if (!trackId) {
+                    container.innerHTML = '';
+                    spotifyIframe = null;
+                    return;
                 }
-            }
-            function pauseMusic() {
-                if (musicAudio) musicAudio.pause();
-            }
-            function resumeMusic() {
-                if (musicAudio) {
-                    musicAudio.play().catch(() => {});
-                }
-            }
-            function stopMusic() {
-                if (musicAudio) {
-                    musicAudio.pause();
-                    musicAudio.currentTime = 0;
-                    musicAudio = null;
-                }
-            }
-            function setVolume(vol) {
-                currentVolume = vol;
-                if (musicAudio) musicAudio.volume = vol;
+                container.innerHTML = `<iframe id="spotify-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
+                spotifyIframe = document.getElementById('spotify-iframe');
             }
 
-            // Add volume slider event
-            if (volumeSlider) {
-                volumeSlider.addEventListener('input', (e) => {
-                    setVolume(parseFloat(e.target.value));
+            // Music selection buttons
+            musicButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    musicButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const trackId = button.dataset.spotify;
+                    currentSpotifyTrack = trackId;
+                    loadSpotifyPlayer(trackId);
                 });
-            }
+            });
+
+            // Play/Pause button click handler
+            playPauseBtn.addEventListener('click', () => {
+                if (currentExerciseIndex >= exercises.length) {
+                    // Restart routine if completed
+                    currentExerciseIndex = 0;
+                    timeRemaining = exercises[0].duration;
+                    updateExerciseDisplay();
+                    updateTimerDisplay();
+                    renderExerciseList();
+                }
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    startTimer();
+                    // Try to play Spotify (user must interact with iframe)
+                    // No programmatic play possible due to browser security
+                } else {
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    pauseTimer();
+                    // Pause Spotify by removing and re-adding the iframe (forces stop)
+                    if (spotifyIframe) {
+                        const container = document.getElementById('spotify-player-container');
+                        container.innerHTML = '';
+                        setTimeout(() => loadSpotifyPlayer(currentSpotifyTrack), 100);
+                    }
+                }
+            });
+
+            // Restart button click handler
+            restartBtn.addEventListener('click', () => {
+                currentExerciseIndex = 0;
+                timeRemaining = exercises[0].duration;
+                isPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                updateExerciseDisplay();
+                updateTimerDisplay();
+                renderExerciseList();
+                pauseTimer();
+            });
+
+            // Return to Yoga button click handler
+            returnYogaBtn.addEventListener('click', () => {
+                // Navigate back to yoga page
+                window.location.href = '/yoga';
+            });
 
             // Initialize the page
             function init() {
@@ -551,7 +569,12 @@
                     if (timeRemaining <= 0) {
                         clearInterval(timerInterval);
                         nextExercise();
-                        stopMusic(); // Stop music when timer ends
+                        // Stop Spotify
+                        if (spotifyIframe) {
+                            const container = document.getElementById('spotify-player-container');
+                            container.innerHTML = '';
+                            setTimeout(() => loadSpotifyPlayer(currentSpotifyTrack), 100);
+                        }
                     }
                 }, 1000);
             }
@@ -580,78 +603,14 @@
                     updateExerciseDisplay();
                     playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
                     isPlaying = false;
-                    stopMusic();
-                }
-            }            // Load Spotify player function
-            function loadSpotifyPlayer(spotifyUrl) {
-                const container = document.getElementById('spotify-player-container');
-                if (!spotifyUrl || spotifyUrl.includes('None')) {
-                    container.innerHTML = '';
-                    return;
-                }
-                // Extract Spotify track ID
-                const match = spotifyUrl.match(/track\/([a-zA-Z0-9]+)/);
-                if (match) {
-                    const trackId = match[1];
-                    container.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
-                } else {
-                    container.innerHTML = '';
+                    // Stop Spotify
+                    if (spotifyIframe) {
+                        const container = document.getElementById('spotify-player-container');
+                        container.innerHTML = '';
+                        setTimeout(() => loadSpotifyPlayer(currentSpotifyTrack), 100);
+                    }
                 }
             }
-
-            // Music selection buttons
-            musicButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    musicButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    const type = button.dataset.type;
-                    playMusic(type);
-                });
-            });
-
-            // Play/Pause button click handler
-            playPauseBtn.addEventListener('click', () => {
-                if (currentExerciseIndex >= exercises.length) {
-                    // Restart routine if completed
-                    currentExerciseIndex = 0;
-                    timeRemaining = exercises[0].duration;
-                    updateExerciseDisplay();
-                    updateTimerDisplay();
-                    renderExerciseList();
-                }
-                isPlaying = !isPlaying;
-                if (isPlaying) {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    startTimer();
-                    // Play music if a type is selected
-                    if (currentMusicType) {
-                        if (!musicAudio) playMusic(currentMusicType);
-                        else resumeMusic();
-                    }
-                } else {
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    pauseTimer();
-                    pauseMusic();
-                }
-            });
-
-            // Restart button click handler
-            restartBtn.addEventListener('click', () => {
-                currentExerciseIndex = 0;
-                timeRemaining = exercises[0].duration;
-                isPlaying = false;
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                updateExerciseDisplay();
-                updateTimerDisplay();
-                renderExerciseList();
-                pauseTimer();
-            });
-
-            // Return to Yoga button click handler
-            returnYogaBtn.addEventListener('click', () => {
-                // Navigate back to yoga page
-                window.location.href = '/yoga';
-            });
 
             // Initialize the app
             init();
