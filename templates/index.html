@@ -630,6 +630,34 @@
                 width: 100%;
             }
         }
+
+        .mood-option.selected {
+            background: linear-gradient(90deg, #b7a3d6 0%, #fbeff2 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px 0 rgba(200, 170, 220, 0.18);
+            border: 2px solid #b7a3d6;
+        }
+        .mood-option.selected .mood-name {
+            color: #fff;
+        }
+        .star {
+            font-size: 28px;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.3s, transform 0.2s;
+            margin: 0 2px;
+        }
+        .star.active,
+        .star.selected {
+            color: #FFD700;
+            transform: scale(1.2);
+            text-shadow: 0 2px 8px #ffe8a0;
+        }
+        .star:hover,
+        .star:hover ~ .star {
+            color: #FFD700;
+            transform: scale(1.15);
+        }
     </style>
 </head>
 <body>
@@ -995,6 +1023,7 @@
         let selectedMood = null;
         let selectedRating = null;
 
+        // Mood option selection
         document.querySelectorAll('.mood-option').forEach(option => {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
@@ -1003,13 +1032,34 @@
                 if (selectedRating) showPlaylist(selectedMood, selectedRating);
             });
         });
-        document.querySelectorAll('.star').forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = this.dataset.rating;
-                document.querySelectorAll('.star').forEach(s => {
-                    s.classList.toggle('active', s.dataset.rating <= rating);
+
+        // Star rating interactivity
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.dataset.rating);
+                stars.forEach(s => {
+                    s.classList.toggle('selected', parseInt(s.dataset.rating) <= rating);
                 });
+            });
+            star.addEventListener('mouseleave', function() {
+                stars.forEach(s => {
+                    s.classList.remove('selected');
+                });
+                if (selectedRating) {
+                    stars.forEach(s => {
+                        s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating);
+                    });
+                } else {
+                    stars.forEach(s => s.classList.remove('active'));
+                }
+            });
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
                 selectedRating = rating;
+                stars.forEach(s => {
+                    s.classList.toggle('active', parseInt(s.dataset.rating) <= rating);
+                });
                 if (selectedMood) showPlaylist(selectedMood, selectedRating);
             });
         });
