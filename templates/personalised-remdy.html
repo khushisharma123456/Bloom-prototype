@@ -75,12 +75,10 @@
             margin-bottom: 1rem;
             position: relative;
             z-index: 2;
-        }
-
-        .page-subtitle {
+        }        .page-subtitle {
             font-size: 1.2rem;
             color: var(--text-light);
-            margin-bottom: 0;
+            margin-bottom: 2rem;
             position: relative;
             z-index: 2;
         }
@@ -182,46 +180,35 @@
             border-radius: 8px;
             padding: 1rem 1.5rem;
             margin: 0;
-        }
-
-        .precautions-list li {
+        }        .precautions-list li {
             color: #dc3545;
             margin-bottom: 0.5rem;
             line-height: 1.5;
-        }.symptoms-container {
-            margin-bottom: 30px;
         }
 
         .symptoms-display {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: var(--soft-shadow);
-            border: 2px solid var(--accent-lavender);
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 1rem;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
         }
 
-        .symptoms-display .card-title {
+        .symptom-tag {
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            display: inline-block;
+        }        .symptoms-display .card-title {
             font-family: 'Nunito', sans-serif;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 1rem;
-        }
-
-        .selected-symptoms {
-            margin-top: 15px;
-        }
-        .symptom-chip {
-            display: inline-block;
-            padding: 8px 15px;
-            margin: 5px;
-            background-color: #e9ecef;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .symptom-chip.selected {
-            background: var(--primary-purple);
-            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
         }.ingredients-list {
             background: var(--accent-lavender);
             border-radius: 15px;
@@ -545,21 +532,12 @@
 <body class="sidebar-layout">
     <!-- Common Sidebar -->
     {% include 'includes/sidebar.html' %}      <div class="main-content">
-        <div class="container py-5">
-        <!-- Page Header -->
+        <div class="container py-5">        <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">Personalized Ayurvedic Remedies</h1>
-            <p class="page-subtitle">Natural healing solutions tailored for your wellness journey</p>
-        </div>
-          <!-- Selected Symptoms Display -->
-        <div class="symptoms-container" id="symptomsDisplay" style="display: none;">
-            <div class="symptoms-display">
-                <h5 class="card-title text-center">
-                    <i class="fas fa-stethoscope"></i> Symptoms Being Addressed
-                </h5>
-                <div class="selected-symptoms text-center" id="symptomTags">
-                    <!-- Symptom tags will be inserted here -->
-                </div>
+            <h1 class="page-title">Personalized Ayurvedic Remedies</h1>            <p class="page-subtitle">Natural healing solutions tailored for your wellness journey</p>
+            <div class="symptoms-display" id="symptomsDisplay">
+                <small class="text-muted">Addressing your symptoms:</small>
+                <div id="symptomTags"></div>
             </div>
         </div>
         
@@ -611,20 +589,16 @@
             return transliteration ? `${englishName} (${transliteration})` : englishName;
         };
 
-        console.log('Selected symptoms:', selectedSymptoms);
-
-        // Display selected symptoms in the header
+        console.log('Selected symptoms:', selectedSymptoms);        // Display selected symptoms in the header
         function displaySymptoms(symptoms) {
             const symptomTagsContainer = document.getElementById('symptomTags');
-            const symptomsDisplay = document.getElementById('symptomsDisplay');
             
             if (symptoms.length > 0) {
                 symptomTagsContainer.innerHTML = symptoms.map(symptom => 
-                    `<span class="symptom-chip selected">${symptom}</span>`
+                    `<span class="symptom-tag">${symptom}</span>`
                 ).join('');
-                symptomsDisplay.style.display = 'block';
             } else {
-                symptomsDisplay.style.display = 'none';
+                document.getElementById('symptomsDisplay').style.display = 'none';
             }
         }
 
