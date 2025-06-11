@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom - Menstrual Wellness Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Bloom - Menstrual Wellness Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
+    <style>        :root {
             --bg-color: #FFF9F9;
             --sidebar-color: #F9F5FF;
             --text-dark: #4A4A4A;
@@ -20,15 +19,20 @@
             --graph-pink: #FFB8D1;
             --graph-lavender: #B8B3FF;
             --primary-purple: #6E5B9A;
+            
+            /* Standardized sidebar font sizes - REQUIRED for consistent sidebar */
+            --sidebar-logo-size: 24px;
+            --sidebar-nav-size: 16px;
+            --sidebar-dropdown-size: 14px;
+            --sidebar-emoji-size: 16px;
+            --sidebar-dropdown-emoji-size: 14px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body {
+        }        body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-dark);
@@ -36,103 +40,11 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 240px;
-            background: linear-gradient(to bottom, var(--sidebar-color), white);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: fixed;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .logo {
-            font-family: 'Nunito', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-purple);
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
-            margin-right: 10px;
-            color: var(--graph-pink);
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            font-size: 16px;
-        }
-
-        .nav-item i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-            color: var(--text-light);
-        }
-
-        .nav-item:hover {
-            background-color: var(--accent-lavender);
-            color: var(--primary-purple);
-        }
-
-        .nav-item:hover i {
-            color: var(--primary-purple);
-        }
-
-        .nav-item.active {
-            background-color: var(--accent-pink);
-            color: var(--primary-purple);
-            font-weight: 600;
-        }
-
-        .nav-item.active i {
-            color: var(--primary-purple);
-        }
-
-        .profile {
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            padding: 15px 10px;
-            border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.7);
-        }
-
-        .profile-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--accent-teal);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            margin-right: 12px;
-        }
-
-        .profile-name {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 600;
-        }
+        /* Sidebar styles removed - using common-sidebar.css instead */
 
         /* Main Content Styles */
         .main-content {
-            margin-left: 240px;
             padding: 30px 40px;
-            width: calc(100% - 240px);
         }
 
         .greeting {
@@ -235,6 +147,21 @@
             color: var(--primary-purple);
             font-weight: 600;
             font-family: 'Nunito', sans-serif;
+        }
+
+        .cycle-info {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent-lavender), var(--accent-peach));
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .cycle-info span {
+            color: var(--primary-purple);
+            font-weight: 600;
+            font-size: 14px;
         }
 
         /* Summary Card Styles */
@@ -432,11 +359,7 @@
         }
 
         .mood-option {
-            flex: 1 1 0;
-            min-width: 0;
-            max-width: 120px;
-            width: 100%;
-            padding: 15px 0;
+            padding: 15px 25px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -446,9 +369,6 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
-            text-align: center;
-            justify-content: center;
-            box-sizing: border-box;
         }
 
         .mood-option .mood-icon {
@@ -474,15 +394,217 @@
 
         .mood-option .star.active {
             color: #FFD700;
-        }
-
-        .mood-feedback {
+        }        .mood-feedback {
             margin-top: 20px;
             padding: 10px;
             background-color: var(--accent-peach);
             border-radius: 8px;
             text-align: center;
             display: none;
+        }        /* Daily Check-in Box Styles */
+        .checkin-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--accent-lavender);
+        }
+
+        .checkin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .checkin-title h3 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 3px 0;
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkin-title p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .checkin-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .weekly-calendar {
+            margin-bottom: 15px;
+        }
+
+        .week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .week-day {
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-light);
+            padding: 5px;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background-color: var(--accent-lavender);
+            color: var(--text-dark);
+            min-height: 28px;
+        }
+
+        .day-cell.today {
+            background-color: var(--primary-purple);
+            color: white;
+            box-shadow: 0 2px 6px rgba(110, 91, 154, 0.3);
+        }
+
+        .day-cell.checked-in {
+            background-color: var(--accent-teal);
+            color: white;
+        }
+
+        .day-cell.checked-in::after {
+            content: '✓';
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            font-size: 8px;
+            background-color: var(--primary-purple);
+            color: white;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-cell.other-month {
+            color: #ccc;
+            background-color: #f5f5f5;
+        }
+
+        .day-cell:hover:not(.other-month) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkin-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkin-btn {
+            background: linear-gradient(135deg, var(--accent-teal), var(--primary-purple));
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkin-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(110, 91, 154, 0.3);
+        }
+
+        .checkin-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-info {
+            font-size: 12px;
+            color: var(--text-light);
+        }/* Responsive design for check-in box */
+        @media (max-width: 768px) {
+            .checkin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .checkin-stats {
+                align-self: stretch;
+                justify-content: space-around;
+            }
+
+            .checkin-actions {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+        }
+
+        /* Animation for success message */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         /* Mood and Spotify Section */
@@ -507,97 +629,231 @@
         }
 
         .mood-option {
-            flex: 1 1 0;
-            min-width: 0;
-            max-width: 120px;
-            width: 100%;
-            padding: 15px 0;
+            padding: 15px 25px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 24px;
             background: var(--accent-lavender);
+        }
+
+        .mood-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .mood-option.selected {
+            background: var(--accent-pink);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .star-rating {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            text-align: center;
             justify-content: center;
-            box-sizing: border-box;
+            gap: 8px;
+            margin: 20px 0;
         }
 
-        .mood-selector .mood-option {
-            flex: 1 1 0;
-            min-width: 0;
-            max-width: none;
+        .star {
+            font-size: 28px;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.3s ease;
+        }
+
+        .star.active {
+            color: #FFD700;
+        }
+
+        .spotify-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #282828;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .spotify-login-btn {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .spotify-login-btn:hover {
+            background: #1ed760;
+        }
+
+        .playlist-display {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .playlist-display iframe {
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .open-spotify-btn {
+            display: inline-block;
+            background: #1DB954;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .open-spotify-btn:hover {
+            background: #1ed760;
+        }
+
+        .yoga-recommendations {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: var(--accent-lavender);
+            border-radius: 8px;
+        }
+
+        .yoga-recommendations h3 {
+            color: var(--primary-purple);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .yoga-recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .yoga-recommendations li {
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: white;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .yoga-recommendations .yoga-name {
+            font-weight: 600;
+            color: var(--primary-purple);
+        }        .yoga-recommendations .yoga-steps {
+            margin-top: 5px;
+            color: var(--text-light);
+        }
+        
+        /* Phase Symptoms Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 400px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            animation: modalSlideIn 0.3s ease-out;
+            overflow-y: auto;
         }
 
-        @media (max-width: 900px) {
-            .mood-selector {
-                flex-wrap: wrap;
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
             }
-            .mood-option {
-                flex: 1 1 40%;
-                min-width: 120px;
-                max-width: 100%;
-                margin-bottom: 10px;
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
-        }
-        @media (max-width: 768px) {
-            .mood-options {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-            .mood-option {
-                width: calc(50% - 15px);
-                max-width: 100%;
-            }
-        }
-        @media (max-width: 480px) {
-            .mood-option {
-                width: 100%;
-                max-width: 100%;
-            }
+        }        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--accent-lavender);
         }
 
-        /* Responsive Design */
+        .modal-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+
+        .close {
+            color: var(--text-light);
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: var(--primary-purple);
+        }        .symptoms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }        .symptoms-list li {
+            padding: 8px 12px;
+            margin: 0;
+            background: linear-gradient(135deg, var(--accent-lavender), var(--accent-peach));
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.3;
+        }
+
+        .symptoms-list li::before {
+            content: '•';
+            color: var(--primary-purple);
+            font-size: 16px;
+            font-weight: bold;
+        }        .phase-description {
+            background: var(--accent-lavender);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.5;
+        }/* Responsive Design */
         @media (max-width: 1024px) {
-            .sidebar {
-                width: 200px;
-                padding: 20px 15px;
-            }
-            
             .main-content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
                 padding: 25px 30px;
             }
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 20px 10px;
-                align-items: center;
-            }
-            
-            .nav-item span, .logo span, .profile-name {
-                display: none;
-            }
-            
-            .nav-item {
-                justify-content: center;
-                padding: 12px 0;
-            }
-            
-            .nav-item i {
-                margin-right: 0;
-            }
-            
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
                 padding: 20px;
             }
             
@@ -616,13 +872,460 @@
         }
 
         @media (max-width: 480px) {
-            .sidebar {
-                display: none;
+            .main-content {
+                padding: 15px;
             }
             
-            .main-content {
-                margin-left: 0;
+            .mood-option {
                 width: 100%;
+            }
+        }        /* Compact Symptom Tracker Styles */
+        .compact-symptom-tracker {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent-pink);
+        }
+
+        .tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--accent-lavender);
+        }
+
+        .tracker-title h3 {
+            font-family: 'Nunito', sans-serif;
+            color: var(--primary-purple);
+            margin: 0 0 5px 0;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-title p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .tracker-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tracker-status.logged {
+            background-color: var(--accent-teal);
+            color: var(--primary-purple);
+        }
+
+        .tracker-status.not-logged {
+            background-color: var(--accent-peach);
+            color: var(--text-dark);
+        }
+
+        .compact-tracker-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tracker-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group-compact {
+            margin-bottom: 0;
+        }
+
+        .form-group-compact label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .radio-group-compact {
+            display: flex;
+            gap: 10px;
+        }
+
+        .radio-option-compact {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--accent-lavender);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 13px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .radio-option-compact:hover {
+            background: var(--accent-pink);
+        }
+
+        .radio-option-compact input:checked + span {
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
+
+        .radio-option-compact input {
+            accent-color: var(--primary-purple);
+            margin: 0;
+        }
+
+        .compact-select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--accent-lavender);
+            background-color: #fff;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .compact-select:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+        }
+
+        .pain-slider-group {
+            grid-column: 1 / -1;
+        }
+
+        .compact-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .compact-slider {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--accent-lavender);
+            outline: none;
+        }
+
+        .compact-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-purple);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .compact-slider-value {
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-purple);
+            font-size: 14px;
+        }
+
+        .form-group-compact textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--accent-lavender);
+            background-color: #fff;
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group-compact textarea:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+        }
+
+        .tracker-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .compact-tracker-button {
+            background: linear-gradient(90deg, var(--primary-purple), var(--graph-lavender));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compact-tracker-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(110, 91, 154, 0.3);
+        }
+
+        .compact-tracker-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .save-feedback {
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .save-feedback.success {
+            color: #4CAF50;
+            opacity: 1;
+        }
+
+        .save-feedback.error {
+            color: #f44336;
+            opacity: 1;
+        }
+
+        /* Responsive adjustments for compact tracker */
+        @media (max-width: 768px) {
+            .tracker-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tracker-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .radio-group-compact {
+                flex-wrap: wrap;
+            }
+            
+            .tracker-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+        }
+
+        /* Phase Symptoms Tooltip */
+        .phase-tooltip {
+            display: none;
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            border: 2px solid var(--accent-lavender);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            max-width: 350px;
+            font-family: 'Nunito', sans-serif;
+            pointer-events: none;
+        }
+
+        .tooltip-header {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--accent-lavender);
+        }
+
+        .tooltip-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+
+        .tooltip-description {
+            background: var(--accent-lavender);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            font-style: italic;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .tooltip-symptoms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .tooltip-symptoms-list li {
+            padding: 6px 10px;
+            margin: 4px 0;
+            background: linear-gradient(135deg, var(--accent-lavender), var(--accent-peach));
+            border-radius: 6px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.3;
+        }
+
+        .tooltip-symptoms-list li::before {
+            content: '•';
+            color: var(--primary-purple);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Phase Symptoms Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 400px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            animation: modalSlideIn 0.3s ease-out;
+            overflow-y: auto;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--accent-lavender);
+        }
+
+        .modal-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+
+        .close {
+            color: var(--text-light);
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: var(--primary-purple);
+        }        .symptoms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }        .symptoms-list li {
+            padding: 8px 12px;
+            margin: 0;
+            background: linear-gradient(135deg, var(--accent-lavender), var(--accent-peach));
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.3;
+        }
+
+        .symptoms-list li::before {
+            content: '•';
+            color: var(--primary-purple);
+            font-size: 16px;
+            font-weight: bold;
+        }        .phase-description {
+            background: var(--accent-lavender);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.5;
+        }/* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 25px 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .cards-container {
+                flex-direction: column;
+            }
+            
+            .mood-options {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .mood-option {
+                width: calc(50% - 15px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
                 padding: 15px;
             }
             
@@ -630,102 +1333,14 @@
                 width: 100%;
             }
         }
-
-        .mood-option.selected {
-            background: linear-gradient(90deg, #b7a3d6 0%, #fbeff2 100%);
-            color: #fff;
-            box-shadow: 0 4px 16px 0 rgba(200, 170, 220, 0.18);
-            border: 2px solid #b7a3d6;
-        }
-        .mood-option.selected .mood-name {
-            color: #fff;
-        }
-        .star {
-            font-size: 28px;
-            cursor: pointer;
-            color: #ddd;
-            transition: color 0.3s, transform 0.2s;
-            margin: 0 2px;
-        }
-        .star.active,
-        .star.selected {
-            color: #FFD700;
-            transform: scale(1.2);
-            text-shadow: 0 2px 8px #ffe8a0;
-        }
-        .star:hover,
-        .star:hover ~ .star {
-            color: #FFD700;
-            transform: scale(1.15);
-        }
     </style>
 </head>
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-spa"></i>
-            <span>Bloom</span>
-        </div>
-        
-        <a href="/chatbot" class="menu-link">
-        <div class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </div>
-        </a>
-
-        <a href="/yoga" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-yin-yang"></i>
-            <span>Yoga</span>
-        </div>
-        </a>
-
-        <a href="/nutrition" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-utensils"></i>
-            <span>Nutrition</span>
-        </div>
-        </a>
-
-        <a href="/store" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-smile"></i>
-            <span>Store</span>
-        </div>
-        </a>
-
-        <a href="/consultation" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-book-open"></i>
-            <span>Consultation</span>
-        </div>
-        </a>
-
-        <a href="/chatbot" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-lightbulb"></i>
-            <span>Chatbot</span>
-        </div>
-        </a>
-
-        <a href="/settings" class="menu-link">
-        <div class="nav-item">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </div>
-        </a>
-        
-        <div class="profile">
-            <div class="profile-avatar">M</div>
-            <div class="profile-name">{{ user_name }}</div>
-        </div>
-    </div>
+<body class="sidebar-layout">
+    <!-- Common Sidebar -->
+    {% include 'includes/sidebar.html' %}
     
     <!-- Main Content -->
-    <div class="main-content">
-        <div class="greeting">
+    <div class="main-content">        <div class="greeting">
             <h1>Welcome, {{ user_name }}!</h1>
             {% if current_day > 0 %}
                 <p>You're on Day {{ current_day }} of your {{ current_phase }} Phase</p>
@@ -733,17 +1348,156 @@
                 <p>Track your period to see where you are in your cycle</p>
             {% endif %}
         </div>
-        
-        <!-- Cycle Sync Graph -->
+          <!-- Mood Cycle Chart -->
         <div class="graph-container">
             <div class="graph-header">
                 <div class="graph-encouragement">
-                    Understanding PCOS patterns <i class="fas fa-chart-line"></i>
+                    Your Mood & Cycle Journey <i class="fas fa-chart-line"></i>
                 </div>
             </div>
-            <div class="chart-title">Your PCOS Symptoms vs General Trends</div>
-            <div id="chartsContainer" style="display:none;"></div>
-            <canvas id="comparisonChart" width="900" height="270" style="margin-top: 40px; max-width:100%; max-height:270px; width:100%; height:270px; border:none;"></canvas>
+            <div class="chart-title">Mood Fluctuations Throughout Your Menstrual Cycle</div>
+            <div class="cycle-info">
+                <span id="currentCycleDay">Day {{ current_day if current_day > 0 else 1 }} of {{ current_phase if current_phase else 'Menstrual' }} Phase</span>
+            </div>            <canvas id="moodCycleChart" width="1600" height="400" style="margin-top: 20px; max-width:100%; max-height:400px; width:100%; height:400px; border:none;"></canvas>
+            
+            <!-- Chart Legend -->
+            <div class="chart-legend" style="margin-top: 15px; text-align: center;">
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 12px;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 12px; height: 12px; background: rgba(255, 182, 193, 0.6); border-radius: 3px;"></div>
+                        <span>Menstrual (Days 1-5)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 12px; height: 12px; background: rgba(152, 251, 152, 0.6); border-radius: 3px;"></div>
+                        <span>Follicular (Days 6-14)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 12px; height: 12px; background: rgba(255, 215, 0, 0.6); border-radius: 3px;"></div>
+                        <span>Ovulation (Days 15-16)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="width: 12px; height: 12px; background: rgba(221, 160, 221, 0.6); border-radius: 3px;"></div>
+                        <span>Luteal (Days 17-28)</span>
+                    </div>
+                </div>                <p style="margin-top: 10px; font-size: 13px; color: var(--text-light); font-style: italic;">
+                    Track your daily moods to see how they align with your cycle phases. Hover over any phase area to see common symptoms for that phase.
+                </p>
+            </div>        </div>
+          <!-- Phase Symptoms Tooltip -->
+        <div id="phaseTooltip" class="phase-tooltip">
+            <div class="tooltip-header">
+                <h3 class="tooltip-title" id="tooltipTitle">Phase Symptoms</h3>
+            </div>
+            <div class="tooltip-description" id="tooltipDescription"></div>
+            <ul class="tooltip-symptoms-list" id="tooltipSymptomsList"></ul>
+        </div>
+        
+        <!-- Daily Check-in Box -->
+        <div class="checkin-container">
+            <div class="checkin-header">
+                <div class="checkin-title">
+                    <h3><i class="fas fa-calendar-check"></i> Daily Check-in</h3>
+                    <p>Keep track of your wellness journey</p>
+                </div>
+                <div class="checkin-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="currentStreak">0</span>
+                        <span class="stat-label">Current Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalLogins">0</span>
+                        <span class="stat-label">Total Logins</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="weekly-calendar">
+                <div class="week-header">
+                    <span class="week-day">Sun</span>
+                    <span class="week-day">Mon</span>
+                    <span class="week-day">Tue</span>
+                    <span class="week-day">Wed</span>
+                    <span class="week-day">Thu</span>
+                    <span class="week-day">Fri</span>
+                    <span class="week-day">Sat</span>
+                </div>
+                <div class="week-grid" id="weekGrid">
+                    <!-- Week days will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="checkin-actions">
+                <button class="checkin-btn" id="checkinBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Check In Today
+                </button>
+                <div class="login-info">
+                    <span id="lastLoginTime">Last login: Today</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Compact Symptom Tracker -->
+        <div class="compact-symptom-tracker">
+            <div class="tracker-header">
+                <div class="tracker-title">
+                    <h3><i class="fas fa-clipboard-list"></i> Today's Symptoms</h3>
+                    <p>Quick daily symptom tracking</p>
+                </div>
+                <div class="tracker-status" id="trackerStatus">
+                    <span class="status-text">Not logged today</span>
+                </div>
+            </div>
+            
+            <form id="compact-symptom-form" class="compact-tracker-form">
+                <div class="tracker-row">
+                    <div class="form-group-compact">
+                        <label for="compact-flow-level">Flow:</label>
+                        <div class="radio-group-compact">
+                            <label class="radio-option-compact">
+                                <input type="radio" name="flow-level" value="light"> 
+                                <span>Light</span>
+                            </label>
+                            <label class="radio-option-compact">
+                                <input type="radio" name="flow-level" value="medium"> 
+                                <span>Medium</span>
+                            </label>
+                            <label class="radio-option-compact">
+                                <input type="radio" name="flow-level" value="heavy"> 
+                                <span>Heavy</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-compact">
+                        <label for="compact-mood">Mood:</label>
+                        <select id="compact-mood" name="mood" class="compact-select">
+                            <option value="">Select mood</option>
+                            <option value="happy">😊 Happy</option>
+                            <option value="neutral">😐 Neutral</option>
+                            <option value="sad">😔 Sad</option>
+                            <option value="anxious">😰 Anxious</option>
+                            <option value="irritable">😠 Irritable</option>
+                        </select>
+                    </div>
+                </div>
+                  <div class="tracker-row">
+                    <div class="form-group-compact pain-slider-group">
+                        <label for="compact-pain-level">Pain Level (0-10):</label>
+                        <div class="compact-slider-container">
+                            <input type="range" min="0" max="10" value="0" class="compact-slider" id="compact-pain-level" name="pain-level">
+                            <span class="compact-slider-value" id="compact-pain-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tracker-actions">
+                    <button type="button" class="compact-tracker-button" id="saveCompactSymptoms">
+                        <i class="fas fa-save"></i> Save Today's Symptoms
+                    </button>
+                    <div class="save-feedback" id="saveFeedback"></div>
+                </div>
+            </form>
         </div>
         
         <!-- Symptoms Section -->
@@ -836,8 +1590,7 @@
                     if (idx > -1) selectedSymptoms.splice(idx, 1);
                 };
                 chip.appendChild(delBtn);
-            }
-            chip.addEventListener('click', () => {
+            }            chip.addEventListener('click', () => {
                 chip.classList.toggle('selected');
                 const symptom = name;
                 if (chip.classList.contains('selected')) {
@@ -848,6 +1601,8 @@
                     const index = selectedSymptoms.indexOf(symptom);
                     if (index > -1) selectedSymptoms.splice(index, 1);
                 }
+                // Update localStorage immediately when symptoms change
+                updateSelectedSymptomsDisplay();
             });
             return chip;
         }
@@ -897,8 +1652,7 @@
 
         // Remove 'selected' class from all symptom chips on load
         document.querySelectorAll('.symptom-chip.selected').forEach(function(chip) { chip.classList.remove('selected'); });
-        
-        // Add click handlers to existing symptom chips
+          // Add click handlers to existing symptom chips
         document.querySelectorAll('.symptom-chip:not(.add-symptom)').forEach(chip => {
             chip.addEventListener('click', () => {
                 chip.classList.toggle('selected');
@@ -911,20 +1665,15 @@
                     const index = selectedSymptoms.indexOf(symptom);
                     if (index > -1) selectedSymptoms.splice(index, 1);
                 }
+                // Update localStorage immediately when symptoms change
+                updateSelectedSymptomsDisplay();
             });
         });
-        
-        // Ensure selected symptoms are saved to localStorage on symptom selection
+          // Ensure selected symptoms are saved to localStorage on symptom selection
         function updateSelectedSymptomsDisplay() {
-            selectedSymptomsContainer.innerHTML = '';
-            selectedSymptoms.forEach(symptom => {
-                const badge = document.createElement('span');
-                badge.className = 'badge bg-primary m-1';
-                badge.textContent = symptom;
-                selectedSymptomsContainer.appendChild(badge);
-            });
             // Save to localStorage for personalized pages
             localStorage.setItem('selectedSymptoms', JSON.stringify(Array.from(selectedSymptoms)));
+            console.log('Symptoms saved to localStorage:', selectedSymptoms);
         }
 
         // Join Now button event listener
@@ -1023,7 +1772,6 @@
         let selectedMood = null;
         let selectedRating = null;
 
-        // Mood option selection
         document.querySelectorAll('.mood-option').forEach(option => {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
@@ -1032,34 +1780,13 @@
                 if (selectedRating) showPlaylist(selectedMood, selectedRating);
             });
         });
-
-        // Star rating interactivity
-        const stars = document.querySelectorAll('.star');
-        stars.forEach(star => {
-            star.addEventListener('mouseenter', function() {
-                const rating = parseInt(this.dataset.rating);
-                stars.forEach(s => {
-                    s.classList.toggle('selected', parseInt(s.dataset.rating) <= rating);
-                });
-            });
-            star.addEventListener('mouseleave', function() {
-                stars.forEach(s => {
-                    s.classList.remove('selected');
-                });
-                if (selectedRating) {
-                    stars.forEach(s => {
-                        s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating);
-                    });
-                } else {
-                    stars.forEach(s => s.classList.remove('active'));
-                }
-            });
+        document.querySelectorAll('.star').forEach(star => {
             star.addEventListener('click', function() {
-                const rating = parseInt(this.dataset.rating);
-                selectedRating = rating;
-                stars.forEach(s => {
-                    s.classList.toggle('active', parseInt(s.dataset.rating) <= rating);
+                const rating = this.dataset.rating;
+                document.querySelectorAll('.star').forEach(s => {
+                    s.classList.toggle('active', s.dataset.rating <= rating);
                 });
+                selectedRating = rating;
                 if (selectedMood) showPlaylist(selectedMood, selectedRating);
             });
         });
@@ -1096,130 +1823,777 @@
             chartError.textContent = 'Chart.js failed to load. Please check /static/js/chart.min.js on your server.';
             document.body.prepend(chartError);
             return;
+        }        if (document.getElementById('moodCycleChart')) {
+            createMoodCycleChart();
         }
-        if (document.getElementById('comparisonChart')) {
-            // Use userStats from backend if available
-            var userStats = {{ survey_stats|tojson|safe }};
-            // Reference population data
-            const populationStats = {
-                "Irregular Periods": 70,
-                "Excessive Hair": 60,
-                "Acne": 55,
-                "Hair Thinning": 45,
-                "Weight Gain": 65,
-                "Fatigue & Sugar Cravings": 50,
-                "Family History of PCOS/Diabetes": 40,
-                "Infertility": 35,
-                "Mood Swings/Anxiety": 60
+        
+        function initializeSampleMoodData() {
+            // Check if mood data already exists
+            const existingData = localStorage.getItem('moodEntries');
+            if (existingData && JSON.parse(existingData).length > 0) {
+                return; // Don't override existing data
+            }
+            
+            // Create sample mood data for the past 28 days
+            const today = new Date();
+            const sampleMoods = ['happy', 'content', 'neutral', 'sad', 'angry'];
+            const sampleEntries = [];
+            
+            for (let i = 0; i < 28; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                // Create realistic mood pattern based on cycle phase
+                let mood;
+                const cycleDay = (28 - i) % 28 + 1;
+                
+                if (cycleDay <= 5) {
+                    // Menstrual phase - lower moods
+                    mood = Math.random() < 0.6 ? (Math.random() < 0.5 ? 'sad' : 'neutral') : 'content';
+                } else if (cycleDay <= 14) {
+                    // Follicular phase - improving moods
+                    mood = Math.random() < 0.7 ? (Math.random() < 0.6 ? 'content' : 'happy') : 'neutral';
+                } else if (cycleDay <= 16) {
+                    // Ovulation - peak moods
+                    mood = Math.random() < 0.8 ? 'happy' : 'content';
+                } else {
+                    // Luteal phase - declining moods
+                    mood = Math.random() < 0.5 ? (Math.random() < 0.4 ? 'sad' : 'neutral') : (Math.random() < 0.7 ? 'content' : 'angry');
+                }
+                
+                sampleEntries.push({
+                    date: dateStr,
+                    mood: mood,
+                    note: `Sample entry for cycle day ${cycleDay}`
+                });
+            }
+            
+            localStorage.setItem('moodEntries', JSON.stringify(sampleEntries));
+        }        function createMoodCycleChart() {
+            // Initialize sample data if none exists
+            initializeSampleMoodData();
+            
+            // Get mood data from localStorage
+            const moodEntries = JSON.parse(localStorage.getItem('moodEntries') || '[]');            // Create 28-day cycle data (typical cycle length)
+            const cycleLength = 28;            // Get current day from backend template variable
+            const currentDay = {{ current_day or 1 }};
+            
+            // Generate cycle days (1-28)
+            const cycleDays = Array.from({length: cycleLength}, (_, i) => i + 1);
+            
+            // Map mood ratings to numerical values for chart
+            const moodToNumber = {
+                'happy': 5,
+                'content': 4,
+                'neutral': 3,
+                'sad': 2,
+                'angry': 1
             };
-            const labels = Object.keys(populationStats);
-            const popData = labels.map(label => populationStats[label]);
-            const userData = labels.map(label => userStats[label] ?? 0);
-            const ctx = document.getElementById('comparisonChart').getContext('2d');
-            let chartInstance = new Chart(ctx, {
-                type: 'bar',
+            
+            // Create typical mood pattern for menstrual cycle
+            const typicalMoodPattern = [
+                // Menstrual phase (days 1-5) - lower mood due to hormones
+                2.5, 2.8, 3.0, 3.2, 3.5,
+                // Follicular phase (days 6-14) - rising mood and energy
+                3.8, 4.0, 4.2, 4.5, 4.7, 4.8, 4.9, 5.0, 4.8,
+                // Ovulation (day 14-15) - peak mood
+                4.5, 4.2,
+                // Luteal phase (days 16-28) - gradual mood decline
+                4.0, 3.8, 3.6, 3.4, 3.2, 3.0, 2.8, 2.6, 2.4, 2.2, 2.0, 1.8
+            ];
+            
+            // Get user's actual mood data for the cycle
+            const userMoodData = cycleDays.map(day => {
+                const today = new Date();
+                const cycleDate = new Date(today);
+                cycleDate.setDate(today.getDate() - currentDay + day);
+                const dateStr = cycleDate.toISOString().split('T')[0];
+                
+                const entry = moodEntries.find(e => e.date === dateStr);
+                return entry ? moodToNumber[entry.mood] : null;
+            });
+            
+            const ctx = document.getElementById('moodCycleChart').getContext('2d');
+            
+            // Define phase boundaries and colors
+            const phaseColors = {
+                menstrual: 'rgba(255, 182, 193, 0.3)',     // Light pink
+                follicular: 'rgba(152, 251, 152, 0.3)',   // Light green
+                ovulation: 'rgba(255, 215, 0, 0.3)',      // Light gold
+                luteal: 'rgba(221, 160, 221, 0.3)'        // Light purple
+            };
+              const chart = new Chart(ctx, {
+                type: 'line',
                 data: {
-                    labels: labels,
+                    labels: cycleDays,
                     datasets: [
                         {
-                            label: 'Most Women (%)',
-                            data: popData,
-                            backgroundColor: function(context) {
-                                const base = 'rgba(186, 222, 255, 0.7)';
-                                const hover = 'rgba(186, 222, 255, 1)';
-                                return context.active ? hover : base;
-                            },
-                            borderRadius: 10,
-                            barPercentage: 0.7,
-                            categoryPercentage: 0.5,
-                            hoverBackgroundColor: 'rgba(186, 222, 255, 1)',
-                            borderSkipped: false
-                        },
-                        {
-                            label: 'You (%)',
-                            data: userData,
-                            backgroundColor: function(context) {
-                                const base = 'rgba(255, 194, 209, 0.7)';
-                                const hover = 'rgba(255, 194, 209, 1)';
-                                return context.active ? hover : base;
-                            },
-                            borderRadius: 10,
-                            barPercentage: 0.7,
-                            categoryPercentage: 0.5,
-                            hoverBackgroundColor: 'rgba(255, 194, 209, 1)',
-                            borderSkipped: false
+                            label: 'Typical Mood Pattern',
+                            data: typicalMoodPattern,
+                            borderColor: 'rgba(110, 91, 154, 0.6)',
+                            backgroundColor: 'rgba(110, 91, 154, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 6
                         }
                     ]
-                },
-                options: {
+                },options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: {
-                        duration: 1200,
-                        easing: 'easeOutQuart',
-                        animateScale: true,
-                        animateRotate: true
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true,
-                        animationDuration: 400
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            min: 0,
-                            ticks: {
-                                stepSize: 20,
-                                font: { size: 17, weight: 'bold', family: 'Nunito' },
-                                color: '#2a2347',
-                            },
-                            title: { display: false },
-                            grid: { display: false },
-                            border: { display: false }
-                        },
-                        x: {
-                            ticks: {
-                                display: false,
-                                font: { size: 15, weight: 600, style: 'normal', family: 'Nunito' },
-                                color: '#2a2347',
-                                maxRotation: 0,
-                                minRotation: 0,
-                                autoSkip: false,
-                            },
-                            title: { display: false },
-                            grid: { display: false },
-                            border: { display: false }
+                    layout: {
+                        padding: {
+                            top: 40,
+                            bottom: 20,
+                            left: 10,
+                            right: 10
                         }
                     },
-                    layout: { padding: { bottom: 32 } },
-                    plugins: {
-                        legend:{
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Cycle Day',
+                                font: { size: 14, weight: 'bold', family: 'Nunito' },
+                                color: '#6E5B9A'
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(110, 91, 154, 0.1)'
+                            },
+                            ticks: {
+                                font: { size: 12, family: 'Nunito' },
+                                color: '#4A4A4A'
+                            }
+                        },
+                        y: {
+                            min: 1,
+                            max: 5,
+                            title: {
+                                display: true,
+                                text: 'Mood Level',
+                                font: { size: 14, weight: 'bold', family: 'Nunito' },
+                                color: '#6E5B9A'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                font: { size: 12, family: 'Nunito' },
+                                color: '#4A4A4A',
+                                callback: function(value) {
+                                    const moodLabels = {1: '😡 Angry', 2: '😞 Sad', 3: '😐 Neutral', 4: '🙂 Content', 5: '😃 Happy'};
+                                    return moodLabels[value] || value;
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(110, 91, 154, 0.1)'
+                            }
+                        }
+                    },                    plugins: {
+                        legend: {
                             display: true,
                             position: 'top',
                             labels: {
                                 boxWidth: 12,
-                                padding: 15,
+                                padding: 20,
                                 font: { size: 14, family: 'Nunito', weight: 'bold' },
-                                color: '#2a2347'
+                                color: '#4A4A4A'
                             }
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
                             titleColor: '#6E5B9A',
                             bodyColor: '#4A4A4A',
                             borderColor: '#E8E0FF',
                             borderWidth: 1,
-                            padding: 10,
-                            caretPadding: 10,
+                            padding: 12,
                             cornerRadius: 8,
-                            displayColors: false
+                            callbacks: {
+                                title: function(context) {
+                                    const day = context[0].label;
+                                    let phase = '';
+                                    if (day <= 5) phase = 'Menstrual Phase';
+                                    else if (day <= 14) phase = 'Follicular Phase';
+                                    else if (day <= 16) phase = 'Ovulation';
+                                    else phase = 'Luteal Phase';
+                                    return `Day ${day} - ${phase}`;
+                                },                                label: function(context) {
+                                    return `Typical mood: ${context.parsed.y.toFixed(1)}`;
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            hoverBackgroundColor: '#FF6B8A'
                         }
                     }
+                },
+                plugins: [{
+                    beforeDraw: function(chart) {
+                        const ctx = chart.ctx;
+                        const chartArea = chart.chartArea;
+                        
+                        // Draw phase background colors
+                        const phases = [
+                            {start: 1, end: 5, color: phaseColors.menstrual, label: 'Menstrual'},
+                            {start: 6, end: 14, color: phaseColors.follicular, label: 'Follicular'},
+                            {start: 15, end: 16, color: phaseColors.ovulation, label: 'Ovulation'},
+                            {start: 17, end: 28, color: phaseColors.luteal, label: 'Luteal'}
+                        ];
+                        
+                        phases.forEach(phase => {
+                            const startX = chart.scales.x.getPixelForValue(phase.start);
+                            const endX = chart.scales.x.getPixelForValue(phase.end);
+                            
+                            ctx.fillStyle = phase.color;
+                            ctx.fillRect(startX, chartArea.top, endX - startX, chartArea.bottom - chartArea.top);
+                        });
+                          // Draw clickable phase divider lines with text
+                        const phaseLines = [
+                            {day: 5.5, label: 'Follicular', color: '#98FB98'},
+                            {day: 14.5, label: 'Ovulation', color: '#FFD700'},
+                            {day: 16.5, label: 'Luteal', color: '#DDA0DD'}
+                        ];
+                          phaseLines.forEach(line => {
+                            const lineX = chart.scales.x.getPixelForValue(line.day);
+                            
+                            // Draw vertical line
+                            ctx.strokeStyle = line.color;
+                            ctx.lineWidth = 2;
+                            ctx.setLineDash([]);
+                            ctx.beginPath();
+                            ctx.moveTo(lineX, chartArea.top);
+                            ctx.lineTo(lineX, chartArea.bottom);
+                            ctx.stroke();
+                            
+                            // Add phase label on the line
+                            ctx.fillStyle = line.color;
+                            ctx.font = 'bold 11px Nunito';
+                            ctx.textAlign = 'center';
+                            ctx.save();                            ctx.translate(lineX, chartArea.top + chartArea.height / 2);
+                            ctx.rotate(-Math.PI / 2);
+                            ctx.fillText(line.label, 0, -8);
+                            ctx.restore();
+                        });
+                          // Draw current day indicator line
+                        const currentDayX = chart.scales.x.getPixelForValue(currentDay);
+                        ctx.strokeStyle = '#FF4757'; // Red color for current day
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 5]); // Dotted line pattern
+                        ctx.beginPath();
+                        ctx.moveTo(currentDayX, chartArea.top);
+                        ctx.lineTo(currentDayX, chartArea.bottom);
+                        ctx.stroke();
+                        ctx.setLineDash([]); // Reset line dash
+                    }
+                }]
+            });
+              // Add hover event listeners for phase areas
+            const chartCanvas = document.getElementById('moodCycleChart');
+            const tooltip = document.getElementById('phaseTooltip');
+            
+            chartCanvas.addEventListener('mousemove', function(event) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const canvasPosition = Chart.helpers.getRelativePosition(event, chart);
+                const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+                
+                // Determine which phase is being hovered
+                let hoveredPhase = '';
+                if (dataX >= 1 && dataX <= 5) {
+                    hoveredPhase = 'menstrual';
+                } else if (dataX >= 6 && dataX <= 14) {
+                    hoveredPhase = 'follicular';
+                } else if (dataX >= 15 && dataX <= 16) {
+                    hoveredPhase = 'ovulation';
+                } else if (dataX >= 17 && dataX <= 28) {
+                    hoveredPhase = 'luteal';
+                }
+                
+                if (hoveredPhase) {
+                    showPhaseTooltip(event, hoveredPhase);
+                } else {
+                    hidePhaseTooltip();
                 }
             });
+            
+            chartCanvas.addEventListener('mouseleave', function() {
+                hidePhaseTooltip();
+            });
         }
-    });
-    </script>
+        
+        // Phase symptoms data
+        const phaseSymptoms = {
+            menstrual: {
+                title: 'Menstrual Phase (Days 1-5)',
+                description: 'The beginning of your cycle when the uterine lining sheds. Hormone levels are at their lowest.',
+                symptoms: [
+                    'Menstrual cramps',
+                    'Heavy bleeding initially, then lighter',
+                    'Lower back pain',
+                    'Bloating and water retention',
+                    'Mood swings and irritability',
+                    'Fatigue and low energy',
+                    'Headaches',
+                    'Breast tenderness',
+                    'Food cravings',
+                    'Difficulty concentrating'
+                ]
+            },
+            follicular: {
+                title: 'Follicular Phase (Days 6-14)',
+                description: 'Your body prepares for ovulation. Estrogen levels rise, often leading to increased energy and improved mood.',
+                symptoms: [
+                    'Increased energy levels',
+                    'Improved mood and confidence',
+                    'Better focus and concentration',
+                    'Clearer skin',
+                    'Reduced appetite',
+                    'Enhanced creativity',
+                    'Higher motivation',
+                    'Better sleep quality',
+                    'Reduced bloating',
+                    'Increased libido'
+                ]
+            },
+            ovulation: {
+                title: 'Ovulation Phase (Days 15-16)',
+                description: 'The egg is released from the ovary. You may feel at your peak physically and emotionally.',
+                symptoms: [
+                    'Peak energy and stamina',
+                    'Heightened mood and confidence',
+                    'Increased libido',
+                    'Mild pelvic pain (mittelschmerz)',
+                    'Clear, stretchy cervical mucus',
+                    'Slight increase in body temperature',
+                    'Breast tenderness',
+                    'Enhanced social feelings',
+                    'Glowing skin',
+                    'Increased appetite'
+                ]
+            },
+            luteal: {
+                title: 'Luteal Phase (Days 17-28)',
+                description: 'After ovulation, progesterone rises. You may experience PMS symptoms as your body prepares for the next cycle.',
+                symptoms: [
+                    'PMS symptoms begin',
+                    'Mood changes and irritability',
+                    'Bloating and water retention',
+                    'Breast tenderness and swelling',
+                    'Food cravings (especially sweet/salty)',
+                    'Fatigue and decreased energy',
+                    'Anxiety or depression',
+                    'Difficulty sleeping',
+                    'Acne breakouts',
+                    'Digestive issues'
+                ]
+            }
+        };
+          // Function to show phase symptoms tooltip
+        function showPhaseTooltip(event, phase) {
+            const tooltip = document.getElementById('phaseTooltip');
+            const tooltipTitle = document.getElementById('tooltipTitle');
+            const tooltipDescription = document.getElementById('tooltipDescription');
+            const tooltipSymptomsList = document.getElementById('tooltipSymptomsList');
+            
+            const phaseData = phaseSymptoms[phase];
+            
+            tooltipTitle.textContent = phaseData.title;
+            tooltipDescription.textContent = phaseData.description;
+            
+            // Clear and populate symptoms list (show only first 5 symptoms)
+            tooltipSymptomsList.innerHTML = '';
+            phaseData.symptoms.slice(0, 5).forEach(symptom => {
+                const li = document.createElement('li');
+                li.textContent = symptom;
+                tooltipSymptomsList.appendChild(li);
+            });
+            
+            // Add "and more..." if there are more symptoms
+            if (phaseData.symptoms.length > 5) {
+                const li = document.createElement('li');
+                li.textContent = `...and ${phaseData.symptoms.length - 5} more symptoms`;
+                li.style.fontStyle = 'italic';
+                li.style.opacity = '0.7';
+                tooltipSymptomsList.appendChild(li);
+            }
+            
+            // Position tooltip near mouse cursor
+            const rect = event.currentTarget.getBoundingClientRect();
+            const x = event.clientX;
+            const y = event.clientY;
+            
+            tooltip.style.left = (x + 10) + 'px';
+            tooltip.style.top = (y - 100) + 'px';
+            tooltip.style.display = 'block';
+        }
+          function hidePhaseTooltip() {
+            const tooltip = document.getElementById('phaseTooltip');
+            tooltip.style.display = 'none';
+        }
+    });// Daily Check-in Functionality
+    class DailyCheckIn {
+        constructor() {
+            this.checkinData = {
+                checkins: {},
+                totalLogins: 0,
+                currentStreak: 0
+            };
+            this.init();
+        }
+
+        async loadCheckinData() {
+            try {
+                const response = await fetch('/api/checkin/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    this.checkinData = data;
+                    return data;
+                } else {
+                    console.error('Failed to load check-in data');
+                    return this.checkinData;
+                }
+            } catch (error) {
+                console.error('Error loading check-in data:', error);
+                return this.checkinData;
+            }
+        }
+
+        async recordLogin() {
+            try {
+                const response = await fetch('/api/checkin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.isNewLogin) {
+                        console.log('New login recorded');
+                   
+                    }
+                    return data;
+                } else {
+                    console.error('Failed to record login');
+                }
+            } catch (error) {
+                console.error('Error recording login:', error);
+            }
+        }
+
+        async init() {
+            await this.recordLogin();
+            await this.loadCheckinData();
+            this.renderWeeklyCalendar();
+            this.updateStats();
+            this.setupEventListeners();
+            this.updateLastLoginTime();
+        }
+
+        renderWeeklyCalendar() {
+            const weekGrid = document.getElementById('weekGrid');
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+
+            weekGrid.innerHTML = '';
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                dayCell.textContent = date.getDate();
+                
+                const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+                const todayString = today.toISOString().split('T')[0];
+                
+                // Add today class
+                if (dateString === todayString) {
+                    dayCell.classList.add('today');
+                }
+                
+                // Add checked-in class if user has checked in
+                if (this.checkinData.checkins[dateString]?.checkedIn) {
+                    dayCell.classList.add('checked-in');
+                }
+                
+                // Add other month class for dates from other months
+                if (date.getMonth() !== today.getMonth()) {
+                    dayCell.classList.add('other-month');
+                }
+                
+                weekGrid.appendChild(dayCell);
+            }
+        }
+
+        updateStats() {
+            document.getElementById('currentStreak').textContent = this.checkinData.currentStreak || 0;
+            document.getElementById('totalLogins').textContent = this.checkinData.totalLogins || 0;
+        }
+
+        updateLastLoginTime() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayData = this.checkinData.checkins[today];
+            
+            if (todayData && todayData.loginTime) {
+                document.getElementById('lastLoginTime').textContent = 
+                    `Last login: Today at ${todayData.loginTime}`;
+            } else {
+                document.getElementById('lastLoginTime').textContent = 
+                    'Last login: Today';
+            }
+        }
+
+        async checkInToday() {
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            try {
+                const response = await fetch('/api/checkin/daily', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Update local data
+                        const today = new Date().toISOString().split('T')[0];
+                        if (!this.checkinData.checkins[today]) {
+                            this.checkinData.checkins[today] = {};
+                        }
+                        this.checkinData.checkins[today].checkedIn = true;
+                        this.checkinData.checkins[today].checkinTime = data.checkinTime;
+                        this.checkinData.currentStreak += 1;
+                        
+                        // Update UI
+                        this.renderWeeklyCalendar();
+                        this.updateStats();
+                        
+                        // Update button
+                        checkinBtn.innerHTML = '<i class="fas fa-check-double"></i> Checked In!';
+                        checkinBtn.disabled = true;
+                        
+                        // Show success message
+                        this.showCheckinSuccess();
+                    } else {
+                        // Already checked in
+                        checkinBtn.innerHTML = '<i class="fas fa-check-double"></i> Checked In!';
+                        checkinBtn.disabled = true;
+                    }
+                } else {
+                    console.error('Failed to check in');
+                    alert('Failed to check in. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during check-in:', error);
+                alert('Error during check-in. Please try again.');
+            }
+        }
+
+        showCheckinSuccess() {
+            const successMsg = document.createElement('div');
+            successMsg.className = 'checkin-success';
+            successMsg.innerHTML = '<i class="fas fa-star"></i> Great job! You\'ve checked in today!';
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--accent-teal), var(--primary-purple));
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+        }
+
+        setupEventListeners() {
+            const checkinBtn = document.getElementById('checkinBtn');
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Check if already checked in today
+            if (this.checkinData.checkins[today]?.checkedIn) {
+                checkinBtn.innerHTML = '<i class="fas fa-check-double"></i> Checked In!';
+                checkinBtn.disabled = true;
+            }
+            
+            checkinBtn.addEventListener('click', () => {
+                this.checkInToday();
+            });
+        }
+    }    // Compact Symptom Tracker Class
+    class CompactSymptomTracker {
+        constructor() {
+            this.initializeElements();
+            this.loadTodaysData();
+            this.setupEventListeners();
+        }        initializeElements() {
+            this.form = document.getElementById('compact-symptom-form');
+            this.statusIndicator = document.querySelector('.tracker-status');
+            this.statusText = document.querySelector('.status-text');
+            this.saveBtn = document.getElementById('saveCompactSymptoms');
+            this.painSlider = document.getElementById('compact-pain-level');
+            this.painValue = document.getElementById('compact-pain-value');
+            this.successMessage = document.getElementById('saveFeedback');
+            this.errorMessage = document.getElementById('saveFeedback');
+        }
+
+        async loadTodaysData() {
+            try {
+                const response = await fetch('/get_symptom_entry');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    // Update status to logged
+                    this.updateStatus(true);
+                    
+                    // Populate form with existing data
+                    const data = result.data;
+                    
+                    // Set flow level
+                    if (data.flow_level) {
+                        const flowRadio = document.querySelector(`input[name="flow-level"][value="${data.flow_level}"]`);
+                        if (flowRadio) flowRadio.checked = true;
+                    }
+                      // Set mood
+                    if (data.mood) {
+                        const moodSelect = document.getElementById('compact-mood');
+                        if (moodSelect) moodSelect.value = data.mood;
+                    }
+                      // Set pain level
+                    if (data.pain_level !== null && data.pain_level !== undefined) {
+                        this.painSlider.value = data.pain_level;
+                        this.painValue.textContent = data.pain_level;
+                    }
+                } else {
+                    // No data for today - show not logged status
+                    this.updateStatus(false);
+                }
+            } catch (error) {
+                console.error('Error loading symptom data:', error);
+                this.updateStatus(false);
+            }
+        }        updateStatus(isLogged) {
+            if (isLogged) {
+                this.statusIndicator.className = 'tracker-status logged';
+                this.statusText.textContent = 'Logged today';
+            } else {
+                this.statusIndicator.className = 'tracker-status not-logged';
+                this.statusText.textContent = 'Not logged today';
+            }
+        }
+
+        setupEventListeners() {
+            // Pain slider update
+            this.painSlider.addEventListener('input', (e) => {
+                this.painValue.textContent = e.target.value;
+            });
+
+            // Save button click
+            this.saveBtn.addEventListener('click', () => {
+                this.saveSymptoms();
+            });
+
+            // Form submit (Enter key)
+            this.form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveSymptoms();
+            });
+        }
+
+        async saveSymptoms() {
+            try {                // Collect form data
+                const formData = new FormData(this.form);
+                const data = {
+                    flow_level: formData.get('flow-level'),
+                    mood: formData.get('mood'),
+                    pain_level: parseInt(this.painSlider.value)
+                };
+
+                // Validate required fields
+                if (!data.flow_level) {
+                    this.showMessage('Please select a flow level', 'error');
+                    return;
+                }
+
+                if (!data.mood) {
+                    this.showMessage('Please select your mood', 'error');
+                    return;
+                }
+
+                // Show loading state
+                this.saveBtn.disabled = true;
+                this.saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                // Send data to backend
+                const response = await fetch('/save_symptom_entry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.showMessage('Symptoms saved successfully!', 'success');
+                    this.updateStatus(true);
+                } else {
+                    this.showMessage(result.message || 'Failed to save symptoms', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error saving symptoms:', error);
+                this.showMessage('Error saving symptoms. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                this.saveBtn.disabled = false;
+                this.saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Symptoms';
+            }
+        }        showMessage(text, type) {
+            const messageElement = this.successMessage;
+            
+            // Set the appropriate class for styling
+            messageElement.className = `save-feedback ${type}`;
+            
+            // Show current message
+            messageElement.textContent = text;
+            messageElement.style.display = 'block';
+            
+            // Hide message after 4 seconds
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 4000);
+        }
+    }
+
+    // Initialize Daily Check-in and Symptom Tracker when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        new DailyCheckIn();
+        new CompactSymptomTracker();
+    });</script>
+    <script src="{{ url_for('static', filename='js/mood-data-initializer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
