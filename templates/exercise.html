@@ -218,7 +218,7 @@
         }
 
         .animation-container {
-            height: 50%;
+            height: 70%; /* Increased from 50% for a larger video area */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -236,6 +236,12 @@
             justify-content: center;
             font-size: 24px;
             color: #888;
+        }
+
+        .animation-placeholder iframe {
+            height: 100% !important;
+            min-height: 420px;
+            max-height: 100vh;
         }
 
         .instructions-container {
@@ -535,7 +541,13 @@
                     const currentExercise = exercises[currentExerciseIndex];
                     exerciseTitle.textContent = currentExercise.name;
                     instructions.textContent = currentExercise.instructions;
-                    animationPlaceholder.textContent = currentExercise.name;
+
+                    // Show YouTube video if available, else show animation placeholder
+                    if (currentExercise.youtube_url) {
+                        animationPlaceholder.innerHTML = `<iframe width="100%" height="420" src="${currentExercise.youtube_url.replace('watch?v=', 'embed/')}" frameborder="0" allowfullscreen></iframe>`;
+                    } else {
+                        animationPlaceholder.textContent = currentExercise.name;
+                    }
                     
                     instructionsContainer.style.display = 'block';
                     completionMessage.style.display = 'none';
