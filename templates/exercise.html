@@ -431,17 +431,22 @@
                 musicAudio = new Audio(musicSources[type]);
                 musicAudio.loop = true;
                 musicAudio.volume = currentVolume;
+                currentMusicType = type;
                 // Play only if timer is running
                 if (isPlaying) {
-                    musicAudio.play();
+                    // Try to play and catch any errors (autoplay policy)
+                    musicAudio.play().catch(() => {
+                        // Show a message if needed
+                    });
                 }
-                currentMusicType = type;
             }
             function pauseMusic() {
                 if (musicAudio) musicAudio.pause();
             }
             function resumeMusic() {
-                if (musicAudio) musicAudio.play();
+                if (musicAudio) {
+                    musicAudio.play().catch(() => {});
+                }
             }
             function stopMusic() {
                 if (musicAudio) {
@@ -449,6 +454,17 @@
                     musicAudio.currentTime = 0;
                     musicAudio = null;
                 }
+            }
+            function setVolume(vol) {
+                currentVolume = vol;
+                if (musicAudio) musicAudio.volume = vol;
+            }
+
+            // Add volume slider event
+            if (volumeSlider) {
+                volumeSlider.addEventListener('input', (e) => {
+                    setVolume(parseFloat(e.target.value));
+                });
             }
 
             // Initialize the page
