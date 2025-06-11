@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Menstrual Health Education</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Menstrual Health Education</title>    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common-sidebar.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>        :root {
             --bg-color: #FFF9F9;
             --sidebar-color: #F9F5FF;
@@ -513,15 +513,154 @@
             .tracker-button {
                 grid-column: span 1;
             }
+        }        /* PCOS Section Styles */
+        .pcos-section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 25px;
         }
 
-        @media (max-width: 768px) {
+        .pcos-chart-container {
+            background: var(--purple-light);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .pcos-survey-container {
+            background: var(--pink-light);
+            border-radius: 16px;
+            padding: 24px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .pcos-survey-form {
+            margin-top: 15px;
+        }
+
+        .pcos-form-group {
+            margin-bottom: 15px;
+        }
+
+        .pcos-form-label {
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .pcos-form-control, .pcos-form-select {
+            border: 2px solid var(--purple-medium);
+            border-radius: 8px;
+            padding: 8px 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .pcos-form-control:focus, .pcos-form-select:focus {
+            border-color: var(--pink-dark);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 140, 199, 0.2);
+        }
+
+        .pcos-form-check {
+            margin-bottom: 8px;
+        }
+
+        .pcos-form-check-input {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--purple-medium);
+            margin-right: 8px;
+            accent-color: var(--pink-dark);
+        }
+
+        .pcos-form-check-label {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .pcos-submit-btn {
+            background: linear-gradient(90deg, var(--pink-dark), var(--purple-medium));
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .pcos-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 199, 0.3);
+        }
+
+        .survey-status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .survey-completed {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .survey-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #FF8F00;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .pcos-info-container {
+            background: var(--cream);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 30px;
+        }
+
+        .pcos-survey-link {
+            background: linear-gradient(90deg, var(--pink-dark), var(--purple-medium));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .pcos-survey-link:hover {
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }        @media (max-width: 768px) {
             .tracker-form {
                 grid-template-columns: 1fr;
             }
             
             .tracker-button {
                 grid-column: span 1;
+            }
+
+            .pcos-section-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .pcos-survey-container {
+                max-height: none;
+                overflow-y: visible;
             }
             
             .main-content {
@@ -771,6 +910,43 @@
                     </div>
                 </div>
             </div>
+
+            <div class="accordion-item" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>🩺 Understanding PCOS/PCOD</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p><b>What's the difference between PCOS and PCOD?</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">⚕️</span> <b>PCOD (Polycystic Ovarian Disease):</b> A condition where ovaries produce immature eggs that turn into cysts</li>
+                            <li><span class="emoji-large">🩺</span> <b>PCOS (Polycystic Ovary Syndrome):</b> A metabolic disorder affecting hormone production and insulin resistance</li>
+                        </ul>
+                        
+                        <p style="margin-top:15px;"><b>Common Signs to Watch For:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">📅</span> Irregular periods (longer than 35 days or fewer than 8 cycles per year)</li>
+                            <li><span class="emoji-large">⚖️</span> Unexplained weight gain, especially around the midsection</li>
+                            <li><span class="emoji-large">🦱</span> Excessive hair growth on face, chest, or back (hirsutism)</li>
+                            <li><span class="emoji-large">🧴</span> Thinning hair or male-pattern baldness</li>
+                            <li><span class="emoji-large">💊</span> Difficulty getting pregnant</li>
+                            <li><span class="emoji-large">🍬</span> Strong sugar cravings and fatigue after eating</li>
+                        </ul>
+                        
+                        <p style="margin-top:15px;"><b>Management Tips:</b></p>
+                        <ul style="padding-left: 18px;">
+                            <li><span class="emoji-large">🥗</span> Follow a low-glycemic diet rich in fiber</li>
+                            <li><span class="emoji-large">🏃‍♀️</span> Regular exercise, especially strength training and cardio</li>
+                            <li><span class="emoji-large">😴</span> Maintain good sleep hygiene (7-9 hours per night)</li>
+                            <li><span class="emoji-large">🧘‍♀️</span> Practice stress management techniques</li>
+                            <li><span class="emoji-large">💊</span> Consider supplements like inositol, vitamin D, and omega-3</li>
+                        </ul>
+                        
+                        <p style="color:var(--pink-dark);font-weight:600;margin-top:15px;">Remember: Early diagnosis and lifestyle changes can significantly improve symptoms and long-term health outcomes.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -871,6 +1047,174 @@
             <div class="summary-item">
                 <span class="summary-label">Notes:</span>
                 <span class="summary-value" id="summary-notes">-</span>
+            </div>
+        </div>
+    </div>    <div class="section">
+        <h2 class="section-title">🩺 PCOD/PCOS Awareness</h2>
+        <p style="color: var(--text-light); margin-bottom: 20px;">
+            Polycystic Ovary Syndrome (PCOS) affects 1 in 10 women of reproductive age. Learn about the common symptoms and take our screening if you're concerned.
+        </p>
+          <div class="pcos-section-grid">
+            <!-- PCOS Symptoms Chart -->
+            <div class="pcos-chart-container">
+                <h3 style="margin-bottom: 15px; color: var(--text-dark);">📊 Your PCOS Risk Assessment</h3>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="pcosChart" width="400" height="300"></canvas>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; color: var(--text-light);">
+                    {% if has_survey_data %}
+                        <p><em>Chart shows your personalized PCOS risk factors based on your survey responses</em></p>
+                    {% else %}
+                        <p><em>Complete the survey to see your personalized risk assessment</em></p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- PCOS Survey Form -->
+            <div class="pcos-survey-container">
+                <h3 style="margin-bottom: 15px; color: var(--text-dark);">🔍 PCOS Screening Survey</h3>
+                
+                {% if has_survey_data %}
+                    <div class="survey-status survey-completed">
+                        ✓ Survey Completed - Results shown in chart
+                    </div>
+                    <p style="font-size: 14px; color: var(--text-light); margin-bottom: 15px;">
+                        You can retake the survey anytime to update your assessment.
+                    </p>
+                {% else %}
+                    <div class="survey-status survey-pending">
+                        ⚠️ Survey Pending - Complete for personalized insights
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('survey') }}" class="pcos-survey-form">
+                    <!-- Quick Age Question -->
+                    <div class="pcos-form-group">
+                        <label class="pcos-form-label">Age:</label>
+                        <input type="number" class="pcos-form-control" name="q1" required min="10" max="60" 
+                               value="{{ survey.q1_age if survey else '' }}" placeholder="Enter your age">
+                    </div>
+
+                    <!-- Period Regularity -->
+                    <div class="pcos-form-group">
+                        <label class="pcos-form-label">Are your periods regular?</label>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q5" value="Regular" 
+                                   {{ 'checked' if survey and survey.q5_period_regularity == 'Regular' else '' }}>
+                            <label class="pcos-form-check-label">Regular (every 25–35 days)</label>
+                        </div>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q5" value="Irregular"
+                                   {{ 'checked' if survey and survey.q5_period_regularity == 'Irregular' else '' }}>
+                            <label class="pcos-form-check-label">Irregular (too early or late)</label>
+                        </div>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q5" value="Missed"
+                                   {{ 'checked' if survey and survey.q5_period_regularity == 'Missed' else '' }}>
+                            <label class="pcos-form-check-label">Missed periods for months</label>
+                        </div>
+                    </div>
+
+                    <!-- Hair Growth -->
+                    <div class="pcos-form-group">
+                        <label class="pcos-form-label">Excessive facial/body hair growth?</label>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q6" value="Yes"
+                                   {{ 'checked' if survey and survey.q6_hair_growth == 'Yes' else '' }}>
+                            <label class="pcos-form-check-label">Yes</label>
+                        </div>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q6" value="No"
+                                   {{ 'checked' if survey and survey.q6_hair_growth == 'No' else '' }}>
+                            <label class="pcos-form-check-label">No</label>
+                        </div>
+                    </div>
+
+                    <!-- Acne -->
+                    <div class="pcos-form-group">
+                        <label class="pcos-form-label">Frequent or severe acne?</label>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q7" value="Yes"
+                                   {{ 'checked' if survey and survey.q7_acne == 'Yes' else '' }}>
+                            <label class="pcos-form-check-label">Yes</label>
+                        </div>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q7" value="No"
+                                   {{ 'checked' if survey and survey.q7_acne == 'No' else '' }}>
+                            <label class="pcos-form-check-label">No</label>
+                        </div>
+                    </div>
+
+                    <!-- Weight Gain -->
+                    <div class="pcos-form-group">
+                        <label class="pcos-form-label">Unexplained weight gain?</label>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q9" value="Yes"
+                                   {{ 'checked' if survey and survey.q9_weight_gain == 'Yes' else '' }}>
+                            <label class="pcos-form-check-label">Yes</label>
+                        </div>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q9" value="No"
+                                   {{ 'checked' if survey and survey.q9_weight_gain == 'No' else '' }}>
+                            <label class="pcos-form-check-label">No</label>
+                        </div>
+                    </div>
+
+                    <!-- Sugar Cravings -->
+                    <div class="pcos-form-group">
+                        <label class="pcos-form-label">Extreme fatigue after eating or sugar cravings?</label>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q10" value="Yes"
+                                   {{ 'checked' if survey and survey.q10_sugar_craving == 'Yes' else '' }}>
+                            <label class="pcos-form-check-label">Yes</label>
+                        </div>
+                        <div class="pcos-form-check">
+                            <input class="pcos-form-check-input" type="radio" name="q10" value="No"
+                                   {{ 'checked' if survey and survey.q10_sugar_craving == 'No' else '' }}>
+                            <label class="pcos-form-check-label">No</label>
+                        </div>
+                    </div>
+
+                    <!-- Hidden fields for required survey questions -->
+                    <input type="hidden" name="q2" value="{{ 'today' if not survey else (survey.q2_last_period.strftime('%d %b %Y') if survey.q2_last_period else 'today') }}">
+                    <input type="hidden" name="q3" value="{{ survey.q3_period_duration if survey else '5-7 days' }}">
+                    <input type="hidden" name="q4" value="{{ survey.q4_cycle_length if survey else '21–35 days' }}">
+                    <input type="hidden" name="q8" value="{{ survey.q8_hair_thinning if survey else 'No' }}">
+                    <input type="hidden" name="q11" value="{{ survey.q11_family_history if survey else 'Not Sure' }}">
+                    <input type="hidden" name="q12" value="{{ survey.q12_fertility if survey else 'Not trying yet' }}">
+                    <input type="hidden" name="q13" value="{{ survey.q13_mood_swings if survey else 'Occasionally' }}">
+
+                    <button type="submit" class="pcos-submit-btn">
+                        {{ 'Update Assessment' if has_survey_data else 'Complete Assessment' }}
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="/survey" class="pcos-survey-link" style="font-size: 14px; padding: 8px 16px;">
+                        Take Full Detailed Survey 📋
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PCOS Information Panel -->
+        <div class="pcos-info-container">
+            <h3 style="margin-bottom: 15px; color: var(--text-dark);">🔍 What is PCOS?</h3>
+            <div style="color: var(--text-light); line-height: 1.6;">
+                <p><strong>PCOS</strong> is a hormonal disorder that affects ovaries and can cause:</p>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li>Irregular or missed periods</li>
+                    <li>Excess androgen (male hormone) levels</li>
+                    <li>Multiple cysts on ovaries</li>
+                    <li>Difficulty getting pregnant</li>
+                    <li>Weight gain or difficulty losing weight</li>
+                </ul>
+
+                <div style="background: white; border-radius: 12px; padding: 15px; margin-top: 20px; border-left: 4px solid var(--pink-dark);">
+                    <p style="margin: 0; font-weight: 600; color: var(--text-dark);">
+                        📝 Early detection is key! If you experience multiple symptoms, consider taking our PCOS screening survey.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -1079,7 +1423,129 @@
 
         function closePhaseModal() {
             document.getElementById('phase-modal-bg').classList.remove('active');
+        }        // Create PCOS Symptoms Chart
+        function createPCOSChart() {
+            const ctx = document.getElementById('pcosChart').getContext('2d');
+            
+            // Survey data from backend
+            const hasSurveyData = {{ 'true' if has_survey_data else 'false' }};
+            const surveyStats = {{ survey_stats | tojson if has_survey_data else '{}' }};
+            
+            let chartLabels, chartData, chartColors;
+            
+            if (hasSurveyData) {
+                // Filter out symptoms that the user doesn't have (value = 0)
+                const activeSymptoms = Object.entries(surveyStats).filter(([key, value]) => value > 0);
+                
+                if (activeSymptoms.length > 0) {
+                    chartLabels = activeSymptoms.map(([key, value]) => key);
+                    chartData = activeSymptoms.map(([key, value]) => value);
+                    chartColors = [
+                        'rgba(255, 140, 199, 0.8)',  // Pink
+                        'rgba(178, 140, 255, 0.8)',  // Purple
+                        'rgba(255, 182, 193, 0.8)',  // Light Pink
+                        'rgba(221, 160, 221, 0.8)',  // Plum
+                        'rgba(255, 215, 0, 0.8)',    // Gold
+                        'rgba(152, 251, 152, 0.8)',   // Light Green
+                        'rgba(255, 165, 0, 0.8)',    // Orange
+                        'rgba(173, 216, 230, 0.8)',  // Light Blue
+                        'rgba(240, 128, 128, 0.8)'   // Light Coral
+                    ].slice(0, activeSymptoms.length);
+                } else {
+                    // User has no PCOS symptoms - show positive message
+                    chartLabels = ['No Risk Factors Detected'];
+                    chartData = [100];
+                    chartColors = ['rgba(152, 251, 152, 0.8)']; // Green for good health
+                }
+            } else {
+                // Show generic PCOS prevalence data
+                chartLabels = [
+                    'Irregular Periods',
+                    'Weight Gain',
+                    'Excessive Hair',
+                    'Acne',
+                    'Hair Thinning',
+                    'Sugar Cravings'
+                ];
+                chartData = [85, 70, 60, 55, 45, 65];
+                chartColors = [
+                    'rgba(255, 140, 199, 0.8)',  // Pink
+                    'rgba(178, 140, 255, 0.8)',  // Purple
+                    'rgba(255, 182, 193, 0.8)',  // Light Pink
+                    'rgba(221, 160, 221, 0.8)',  // Plum
+                    'rgba(255, 215, 0, 0.8)',    // Gold
+                    'rgba(152, 251, 152, 0.8)'   // Light Green
+                ];
+            }
+            
+            const pcosData = {
+                labels: chartLabels,
+                datasets: [{
+                    label: hasSurveyData ? 'Your Risk Level (%)' : 'Prevalence (%)',
+                    data: chartData,
+                    backgroundColor: chartColors,
+                    borderColor: chartColors.map(color => color.replace('0.8', '1')),
+                    borderWidth: 2
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: pcosData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 11,
+                                    family: 'Poppins'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#6E5B9A',
+                            bodyColor: '#4A4A4A',
+                            borderColor: '#E8E0FF',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    if (hasSurveyData) {
+                                        if (context.label === 'No Risk Factors Detected') {
+                                            return 'Great news! No PCOS risk factors detected from your survey.';
+                                        }
+                                        return context.label + ': Risk level ' + context.parsed + '%';
+                                    } else {
+                                        return context.label + ': ' + context.parsed + '% of women with PCOS';
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        duration: 1500
+                    }
+                }
+            });
         }
+
+        // Initialize PCOS chart when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+            
+            if (document.getElementById('pcosChart')) {
+                createPCOSChart();
+            }
+        });
     </script>
     </div> <!-- End main-content -->
     

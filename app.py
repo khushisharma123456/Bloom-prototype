@@ -15,7 +15,6 @@ from google_auth_oauthlib.flow import Flow
 import secrets
 
 # Load environment variables (prioritize system env vars over .env file)
-import os
 try:
     from dotenv import load_dotenv
     # Only load .env if we're in development (not on Render)
@@ -113,6 +112,23 @@ class DailyCheckIn(db.Model):
     
     # Ensure one check-in per user per day
     __table_args__ = (db.UniqueConstraint('user_id', 'check_date', name='_user_date_checkin'),)
+
+class SymptomEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    entry_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
+    flow_level = db.Column(db.String(20))  # light, medium, heavy
+    mood = db.Column(db.String(20))  # happy, neutral, sad, anxious, irritable
+    pain_level = db.Column(db.Integer)  # 0-10 scale
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationship back to user
+    user = db.relationship('User', backref=db.backref('symptom_entries', lazy=True))
+    
+    # Ensure one symptom entry per user per day
+    __table_args__ = (db.UniqueConstraint('user_id', 'entry_date', name='_user_date_symptom'),)
 
 with app.app_context():
     db.create_all()
@@ -627,7 +643,32 @@ def education():
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
-    return render_template('education.html', user_name=session['user_name'])
+    
+    user = User.query.get(session['user_id'])
+    survey = SurveyResponse.query.filter_by(user_id=user.id).order_by(SurveyResponse.timestamp.desc()).first()
+    
+    # Generate survey stats for the chart
+    survey_stats = {}
+    has_survey_data = False
+    if survey:
+        has_survey_data = True
+        survey_stats = {
+            "Irregular Periods": 70 if survey.q5_period_regularity == 'Irregular' or survey.q5_period_regularity == 'Missed' else 0,
+            "Excessive Hair": 60 if survey.q6_hair_growth == 'Yes' else 0,
+            "Acne": 55 if survey.q7_acne == 'Yes' else 0,
+            "Hair Thinning": 45 if survey.q8_hair_thinning == 'Yes' else 0,
+            "Weight Gain": 50 if survey.q9_weight_gain == 'Yes' else 0,
+            "Sugar Cravings": 65 if survey.q10_sugar_craving == 'Yes' else 0,
+            "Family History": 40 if survey.q11_family_history == 'Yes' else 0,
+            "Fertility Issues": 35 if survey.q12_fertility == 'Yes' else 0,
+            "Mood Swings": 75 if survey.q13_mood_swings == 'Frequently' else 0
+        }
+    
+    return render_template('education.html', 
+                         user_name=session['user_name'],
+                         survey_stats=survey_stats,
+                         has_survey_data=has_survey_data,
+                         survey=survey)
 
 # Add this function to check Spotify token status
 def is_spotify_token_valid():
@@ -1017,8 +1058,7 @@ def update_survey_answers():
         if not survey:
             survey = SurveyResponse(user_id=user.id)
             db.session.add(survey)
-        
-        # Update fields based on form data
+          # Update fields based on form data
         if 'cycle_regularity' in request.form:
             survey.q5_period_regularity = request.form['cycle_regularity']
         
@@ -1044,6 +1084,79 @@ def update_survey_answers():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e), 'message': 'Failed to save changes'}), 500
+
+@app.route('/save_symptom_entry', methods=['POST'])
+def save_symptom_entry():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    try:
+        data = request.get_json()
+        user_id = session['user_id']
+        today = datetime.utcnow().date()
+        
+        # Check if entry already exists for today
+        existing_entry = SymptomEntry.query.filter_by(
+            user_id=user_id, 
+            entry_date=today
+        ).first()
+        
+        if existing_entry:
+            # Update existing entry
+            existing_entry.flow_level = data.get('flow_level')
+            existing_entry.mood = data.get('mood')
+            existing_entry.pain_level = data.get('pain_level')
+            existing_entry.notes = data.get('notes', '')
+            existing_entry.updated_at = datetime.utcnow()
+        else:
+            # Create new entry
+            new_entry = SymptomEntry(
+                user_id=user_id,
+                entry_date=today,
+                flow_level=data.get('flow_level'),
+                mood=data.get('mood'),
+                pain_level=data.get('pain_level'),
+                notes=data.get('notes', '')
+            )
+            db.session.add(new_entry)
+        
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Symptoms saved successfully'})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e), 'message': 'Failed to save symptoms'}), 500
+
+@app.route('/get_symptom_entry')
+def get_symptom_entry():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    try:
+        user_id = session['user_id']
+        today = datetime.utcnow().date()
+        
+        entry = SymptomEntry.query.filter_by(
+            user_id=user_id, 
+            entry_date=today
+        ).first()
+        
+        if entry:
+            return jsonify({
+                'success': True,
+                'data': {
+                    'flow_level': entry.flow_level,
+                    'mood': entry.mood,
+                    'pain_level': entry.pain_level,
+                    'notes': entry.notes,
+                    'date': entry.entry_date.isoformat()
+                }
+            })
+        else:
+            return jsonify({'success': True, 'data': None})
+            
+    except Exception as e:
+        return jsonify({'error': str(e), 'message': 'Failed to get symptoms'}), 500
 
 @app.route('/logout')
 def logout():

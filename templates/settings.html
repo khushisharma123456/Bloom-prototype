@@ -35,16 +35,12 @@
             background-color: var(--bg-color);
             color: var(--text-dark);
             display: flex;
-            min-height: 100vh;        }        /* Settings Page Specific Sidebar Override */
-        .sidebar {
-            width: 240px !important;
-            padding: 25px 20px !important;
-        }
-        
+            min-height: 100vh;
+        }        
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            margin-left: 240px; /* Match custom sidebar width */
+            margin-left: 292px; /* Match dashboard margin: 250px sidebar + 42px total padding */
             padding: 40px;
             transition: var(--transition);
         }
@@ -162,6 +158,7 @@
             justify-content: center;
             gap: 8px;
             font-size: 15px;
+            text-decoration: none; /* Prevent underline for all .btn elements */
         }
         
         .btn i {
@@ -658,15 +655,11 @@
             justify-content: flex-end;
             gap: 12px;
             margin-top: 24px;
-        }        /* Responsive */
+        }
+          /* Responsive */
         @media (max-width: 1024px) {
-            .sidebar {
-                width: 220px !important;
-                padding: 20px 15px !important;
-            }
-            
             .main-content {
-                margin-left: 240px; /* Match responsive sidebar width */
+                margin-left: 292px; /* Keep dashboard margin */
                 padding: 32px;
             }
         }
@@ -792,6 +785,13 @@
             pointer-events: none;
             opacity: 0.8;
         }
+
+        .btn:visited, .btn:active, .btn:focus {
+            text-decoration: none;
+        }
+        .no-underline {
+            text-decoration: none !important;
+        }
     </style>
     <!-- Add jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -897,7 +897,6 @@
                 <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
                     <button class="btn btn-primary" id="mark-start"><i class="fas fa-play"></i> Mark Start Date</button>
                     <button class="btn btn-primary" id="mark-end"><i class="fas fa-stop"></i> Mark End Date</button>
-                    <button class="btn btn-outline" id="clear-selection"><i class="fas fa-eraser"></i> Clear Selection</button>
                     <button class="btn btn-outline" id="predict-next"><i class="fas fa-magic"></i> Predict Next Period</button>
                 </div>
                 
@@ -1083,9 +1082,8 @@
         <!-- Account Management -->
         <div class="card">
             <h2 class="section-title"><i class="fas fa-user-cog"></i> Account Management</h2>
-            
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <button class="btn btn-outline" a href ="/logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <a href="/logout" class="btn btn-outline no-underline"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 <button class="btn btn-danger" onclick="deleteAccount()"><i class="fas fa-user-times"></i> Delete Account</button>
             </div>
         </div>
@@ -1791,14 +1789,6 @@ function setupEventListeners() {
         document.getElementById('mark-start').classList.remove('active');
     });
     
-    document.getElementById('clear-selection').addEventListener('click', function() {
-        selectedStartDate = null;
-        selectedEndDate = null;
-        document.getElementById('mark-start').classList.remove('active');
-        document.getElementById('mark-end').classList.remove('active');
-        generateCalendar();
-    });
-
     // Save cycle data button
     document.getElementById('save-cycle-data').addEventListener('click', saveCycleData);
 
@@ -2021,3 +2011,7 @@ function exportHealthData() {
     <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>
 </html>
+
+
+
+
