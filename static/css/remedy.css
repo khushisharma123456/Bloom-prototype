@@ -1,150 +1,550 @@
-/* remedy.css - Beautiful Remedy Detail Page */
-body, html {
-  background: #FAF6F1;
-  color: #3d2c29;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
+/* remedy.css - Beautiful Modern Remedy Page */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap');
+
+:root {
+    /* Nutrition Page Color Scheme - Soft Pastels */
+    --bloom-lavender: #e8dff5;
+    --bloom-blush: #f7e4ed;
+    --bloom-plum: #b28fb2;
+    --bloom-rose: #e0b8d0;
+    --bloom-cream: #f9f5f0;
+    --bloom-charcoal: #4a4a4a;
+    --bloom-brown: #7a6d6d;
+    --bloom-white: #ffffff;
+    --bloom-active: #9a7bb8;
+    
+    /* Extended Pastels */
+    --pastel-peach: #ffdfd3;
+    --pastel-mint: #d4f1f0;
+    --pastel-lilac: #dcd0ff;
+    --pastel-lavender: #eae4f5;
+    --pastel-blush: #f9eef2;
+    
+    /* Primary colors matching nutrition page */
+    --primary-color: var(--bloom-plum);
+    --primary-light: var(--bloom-lavender);
+    --primary-dark: #8a6aae;
+    --secondary-color: var(--bloom-blush);
+    --accent-color: #e8b5ce;
+    --text-primary: var(--bloom-charcoal);
+    --text-secondary: var(--bloom-brown);
+    --text-muted: #8B7B73;
+    --background: var(--bloom-cream);
+    --card-background: var(--bloom-white);
+    --border-light: rgba(178, 143, 178, 0.2);
+    --shadow-light: rgba(178, 143, 178, 0.08);
+    --shadow-medium: rgba(178, 143, 178, 0.15);
+    --shadow-strong: rgba(178, 143, 178, 0.25);
+    --gradient-primary: linear-gradient(135deg, var(--bloom-rose) 0%, var(--bloom-plum) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--bloom-blush) 100%);
 }
 
-.remedy-detail-container {
-  max-width: 700px;
-  margin: 2.5rem auto;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(140, 82, 123, 0.10);
-  padding: 2.5rem 2rem 2rem 2rem;
-  position: relative;
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    background: var(--background);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Hero Section */
+.remedy-hero {
+    position: relative;
+    background: var(--gradient-primary);
+    padding: 1.5rem 0 2rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="50" cy="10" r="0.8" fill="rgba(255,255,255,0.12)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+    opacity: 0.4;
+}
+
+.hero-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 0.3rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    font-weight: 300;
 }
 
 .back-btn {
-  background: #8B4E7D;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.3rem;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 1.5rem;
-  transition: background 0.2s;
-}
-.back-btn:hover {
-  background: #57304e;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 1rem;
+    left: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.back-btn i {
+    font-size: 0.9rem;
+}
+
+/* Container */
+.remedy-list-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+}
+
+/* Remedy Card */
+.remedy-card {
+    background: var(--card-background);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px var(--shadow-light);
+    margin-bottom: 3rem;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    border: 1px solid var(--border-light);
+}
+
+.remedy-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px var(--shadow-medium);
+}
+
+/* Header */
 .remedy-header {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  margin-bottom: 2rem;
+    padding: 2.5rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.remedy-image-container {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px var(--shadow-medium);
 }
 
 .remedy-image {
-  width: 220px;
-  height: 220px;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(140, 82, 123, 0.08);
-  background: #f8f0f5;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.remedy-card:hover .remedy-image {
+    transform: scale(1.05);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(139, 78, 125, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .remedy-meta {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
-.remedy-meta h1 {
-  font-size: 2rem;
-  color: #8B4E7D;
-  margin: 0 0 0.3rem 0;
+
+.remedy-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+    line-height: 1.2;
 }
+
+.remedy-badges {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 .remedy-badge {
-  background: #f3e1f0;
-  color: #8B4E7D;
-  font-size: 1.05rem;
-  font-weight: 600;
-  border-radius: 16px;
-  padding: 4px 14px;
-  display: inline-block;
-  margin-bottom: 0.2rem;
-}
-.remedy-time, .remedy-calories {
-  font-size: 1rem;
-  color: #57304e;
-  margin-bottom: 0.2rem;
+    background: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--bloom-blush) 100%);
+    color: var(--primary-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 2px 8px var(--shadow-light);
 }
 
+.remedy-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stat-item i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* Description */
 .remedy-description {
-  font-size: 1.08rem;
-  color: #57304e;
-  margin-bottom: 1.5rem;
-  background: #f8f0f5;
-  border-radius: 10px;
-  padding: 1rem 1.2rem;
+    padding: 0 2.5rem 1.5rem;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    background: linear-gradient(135deg, var(--pastel-blush) 0%, rgba(232, 223, 245, 0.5) 100%);
+    margin: 0 2.5rem;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-light);
 }
 
+/* Content */
 .remedy-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
+    padding: 2rem 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
 }
 
 .remedy-section {
-  flex: 1 1 250px;
-  background: #f6eaf7;
-  border-radius: 12px;
-  padding: 1.2rem 1.3rem 1.1rem 1.3rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(140, 82, 123, 0.06);
-}
-.remedy-section h2 {
-  color: #8B4E7D;
-  font-size: 1.15rem;
-  margin-bottom: 0.7rem;
-}
-.ingredients-list, .steps-list, .benefits-list {
-  margin: 0;
-  padding-left: 1.2rem;
-  font-size: 1rem;
-}
-.ingredients-list li, .steps-list li, .benefits-list li {
-  margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--bloom-white) 0%, var(--pastel-lavender) 100%);
+    border-radius: 18px;
+    padding: 2rem;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 4px 20px var(--shadow-light);
+    transition: all 0.3s ease;
 }
 
-.remedy-benefits {
-  color: #57304e;
-  font-size: 1.01rem;
-  background: #f8f0f5;
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
+.remedy-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px var(--shadow-medium);
 }
 
-@media (max-width: 900px) {
-  .remedy-header {
-    flex-direction: column;
+.section-header {
+    display: flex;
     align-items: center;
-    gap: 1.2rem;
-  }
-  .remedy-image {
-    width: 160px;
-    height: 160px;
-  }
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
-@media (max-width: 600px) {
-  .remedy-detail-container {
-    padding: 1.2rem 0.5rem;
-  }
-  .remedy-header {
-    gap: 0.7rem;
-  }
-  .remedy-content {
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-  .remedy-section {
-    padding: 0.8rem 0.7rem;
-  }
+.section-header i {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    background: var(--pastel-blush);
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.section-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+/* Lists */
+.ingredient-list, .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ingredient-item, .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: all 0.2s ease;
+}
+
+.ingredient-item:last-child, .benefit-item:last-child {
+    border-bottom: none;
+}
+
+.ingredient-item:hover, .benefit-item:hover {
+    background: var(--pastel-blush);
+    border-radius: 8px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.ingredient-item i, .benefit-item i {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.steps-list {
+    padding-left: 0;
+    margin: 0;
+    counter-reset: step-counter;
+}
+
+.step-item {
+    position: relative;
+    padding: 1rem 0 1rem 3rem;
+    border-bottom: 1px solid var(--border-light);
+    counter-increment: step-counter;
+    transition: all 0.2s ease;
+}
+
+.step-item:last-child {
+    border-bottom: none;
+}
+
+.step-item:before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 1rem;
+    background: var(--gradient-primary);
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.step-item:hover {
+    background: var(--pastel-blush);
+    border-radius: 8px;
+    padding-left: 3.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Footer */
+.remedy-footer {
+    padding: 2rem 2.5rem;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, var(--bloom-rose), var(--bloom-plum));
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 15px var(--shadow-light);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.action-btn:hover {
+    background: linear-gradient(135deg, var(--bloom-plum), var(--bloom-rose));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--shadow-medium);
+}
+
+.action-btn i {
+    margin-right: 0.5rem;
+}
+
+.save-btn:hover {
+    background: linear-gradient(135deg, var(--bloom-active) 0%, var(--primary-dark) 100%);
+}
+
+.share-btn {
+    background: linear-gradient(135deg, var(--pastel-lilac) 0%, var(--bloom-lavender) 100%);
+    color: var(--primary-dark);
+}
+
+.share-btn:hover {
+    background: linear-gradient(135deg, var(--bloom-lavender) 0%, var(--pastel-lilac) 100%);
+}
+
+/* Divider */
+.remedy-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border-light) 50%, transparent 100%);
+    margin: 3rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .remedy-header {
+        grid-template-columns: 240px 1fr;
+        gap: 2rem;
+    }
+    
+    .remedy-image {
+        height: 240px;
+    }
+    
+    .remedy-title {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .remedy-hero {
+        padding: 1.2rem 0 1.5rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .back-btn {
+        position: static;
+        margin-bottom: 1rem;
+        align-self: flex-start;
+    }
+    
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .remedy-header {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .remedy-image {
+        height: 200px;
+    }
+    
+    .remedy-title {
+        font-size: 2rem;
+    }
+    
+    .remedy-content {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+    
+    .remedy-section {
+        padding: 1.5rem;
+    }
+    
+    .remedy-footer {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .remedy-list-container {
+        padding: 0 1rem 3rem;
+    }
+    
+    .page-title {
+        font-size: 2.2rem;
+    }
+    
+    .remedy-card {
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+    
+    .remedy-header {
+        padding: 1.5rem;
+    }
+    
+    .remedy-description {
+        margin: 0 1.5rem;
+        padding: 1rem;
+    }
+    
+    .remedy-content {
+        padding: 1rem;
+    }
+    
+    .remedy-section {
+        padding: 1rem;
+    }
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.remedy-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.remedy-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.remedy-card:nth-child(3) {
+    animation-delay: 0.2s;
 }

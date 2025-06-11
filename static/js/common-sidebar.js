@@ -8,8 +8,7 @@ function setActiveNavItem() {
     
     // Remove active class from all items
     navItems.forEach(item => item.classList.remove('active'));    dropdownItems.forEach(item => item.classList.remove('active'));
-    
-    // Map of paths to nav items
+      // Map of paths to nav items
     const pathMap = {
         '/': 'dashboard',  // Root still maps to dashboard for fallback
         '/dashboard': 'dashboard',
@@ -19,6 +18,7 @@ function setActiveNavItem() {
         '/education': 'education',
         '/consultation': 'consultation',
         '/chatbot': 'chatbot',
+        '/store': 'store',  // Wellness store path
         '/settings': 'settings',        '/Period-Tracker': 'period-tracker',
         '/recipe': 'nutrition', // Recipe pages should highlight nutrition
         // '/personalised-yoga': 'yoga',  // Removed to prevent auto-selection of yoga sidebar

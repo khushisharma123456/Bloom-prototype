@@ -36,11 +36,16 @@
             color: var(--text-dark);
             display: flex;
             min-height: 100vh;
-        }        
+        }        /* Settings Page Specific Sidebar Override */
+        .sidebar {
+            width: 210px !important;
+            padding: 25px 15px !important;
+        }
+        
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            margin-left: 292px; /* Match dashboard margin: 250px sidebar + 42px total padding */
+            margin-left: 230px; /* Match custom sidebar width */
             padding: 40px;
             transition: var(--transition);
         }
@@ -654,11 +659,15 @@
             justify-content: flex-end;
             gap: 12px;
             margin-top: 24px;
-        }
-          /* Responsive */
+        }        /* Responsive */
         @media (max-width: 1024px) {
+            .sidebar {
+                width: 160px !important;
+                padding: 20px 12px !important;
+            }
+            
             .main-content {
-                margin-left: 292px; /* Keep dashboard margin */
+                margin-left: 160px; /* Match responsive sidebar width */
                 padding: 32px;
             }
         }
