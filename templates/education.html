@@ -1254,6 +1254,7 @@
             </ul>`
         ];
 
+        // Remove duplicate openPhaseModal and closePhaseModal definitions
         function openPhaseModal(index) {
             document.getElementById('phase-modal-body').innerHTML = phaseModalData[index];
             document.getElementById('phase-modal-bg').classList.add('active');
@@ -1358,78 +1359,12 @@
                 saveSymptoms();
             }        });
 
-        // Phase Modal Functions
-        function openPhaseModal(index) {
-            const phaseData = [
-                {
-                    emoji: '🩸',
-                    title: 'Menstrual Phase',
-                    content: `
-                        <p><strong>What's happening:</strong> Your uterus sheds its lining, resulting in menstrual bleeding.</p>
-                        <ul>
-                            <li><span class="emoji-large">💧</span> <b>Stay hydrated</b> to help reduce bloating and fatigue.</li>
-                            <li><span class="emoji-large">🌿</span> <b>Eat iron-rich foods</b> (spinach, nuts, beans) to replenish your body.</li>
-                            <li><span class="emoji-large">🔥</span> <b>Use a heat pad</b> for cramps and lower back pain.</li>
-                            <li><span class="emoji-large">🧘‍♀️</span> <b>Gentle yoga</b> or stretching can help relieve discomfort.</li>
-                        </ul>
-                        <p><strong>Hygiene:</strong> Change your pad/tampon every 4-6 hours. Use breathable cotton underwear.</p>
-                    `
-                },
-                {
-                    emoji: '🌱',
-                    title: 'Follicular Phase',
-                    content: `
-                        <p><strong>What's happening:</strong> Your body prepares for ovulation by developing follicles in the ovaries.</p>
-                        <ul>
-                            <li><span class="emoji-large">💪</span> <b>Try new workouts</b> – your energy is rising!</li>
-                            <li><span class="emoji-large">🥗</span> <b>Eat protein & healthy fats</b> for hormone support.</li>
-                            <li><span class="emoji-large">💧</span> <b>Stay hydrated</b> to support cervical mucus production.</li>
-                        </ul>
-                    `
-                },
-                {
-                    emoji: '🥚',
-                    title: 'Ovulation Phase',
-                    content: `
-                        <p><strong>What's happening:</strong> An egg is released from the ovary and travels down the fallopian tube.</p>
-                        <ul>
-                            <li><span class="emoji-large">🔍</span> <b>Notice changes</b> in cervical mucus (egg-white texture is normal).</li>
-                            <li><span class="emoji-large">🩲</span> <b>Wear cotton underwear</b> for comfort.</li>
-                            <li><span class="emoji-large">🍒</span> <b>Eat anti-inflammatory foods</b> (berries, turmeric, ginger).</li>
-                        </ul>
-                    `
-                },
-                {
-                    emoji: '🌕',
-                    title: 'Luteal Phase',
-                    content: `
-                        <p><strong>What's happening:</strong> The empty follicle produces progesterone to prepare the uterus for possible pregnancy.</p>
-                        <ul>
-                            <li><span class="emoji-large">🥦</span> <b>Eat magnesium-rich foods</b> (dark chocolate, leafy greens) for mood.</li>
-                            <li><span class="emoji-large">🧘‍♀️</span> <b>Practice stress-reduction</b> (meditation, deep breathing).</li>
-                            <li><span class="emoji-large">🚶‍♀️</span> <b>Gentle walks</b> can help with PMS symptoms.</li>
-                        </ul>
-                    `
-                }
-            ];
-
-            const modalBody = document.getElementById('phase-modal-body');
-            modalBody.innerHTML = `
-                <h3><span class="emoji-large">${phaseData[index].emoji}</span>${phaseData[index].title}</h3>
-                ${phaseData[index].content}
-            `;
-            document.getElementById('phase-modal-bg').classList.add('active');
-        }
-
-        function closePhaseModal() {
-            document.getElementById('phase-modal-bg').classList.remove('active');
-        }        // Create PCOS Symptoms Chart
+        // Create PCOS Symptoms Chart
         function createPCOSChart() {
             const ctx = document.getElementById('pcosChart').getContext('2d');
-            
-            // Survey data from backend
+            // Fix: Output JS boolean and object literals from Jinja
             const hasSurveyData = {{ 'true' if has_survey_data else 'false' }};
-            const surveyStats = {{ survey_stats | tojson if has_survey_data else '{}' }};
+            const surveyStats = {{ survey_stats | tojson if has_survey_data else '{}' | safe }};
             
             let chartLabels, chartData, chartColors;
             
@@ -1501,11 +1436,8 @@
                             labels: {
                                 padding: 15,
                                 font: {
-                                    size: 11,
                                     family: 'Poppins'
-                                },
-                                usePointStyle: true,
-                                pointStyle: 'circle'
+                                }
                             }
                         },
                         tooltip: {
@@ -1515,19 +1447,7 @@
                             borderColor: '#E8E0FF',
                             borderWidth: 1,
                             padding: 12,
-                            cornerRadius: 8,
-                            callbacks: {
-                                label: function(context) {
-                                    if (hasSurveyData) {
-                                        if (context.label === 'No Risk Factors Detected') {
-                                            return 'Great news! No PCOS risk factors detected from your survey.';
-                                        }
-                                        return context.label + ': Risk level ' + context.parsed + '%';
-                                    } else {
-                                        return context.label + ': ' + context.parsed + '% of women with PCOS';
-                                    }
-                                }
-                            }
+                            cornerRadius: 8
                         }
                     },
                     animation: {
