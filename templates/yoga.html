@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -523,14 +523,13 @@
 
         .popup-body {
             padding: 25px;
-        }
-
-        .pose-image {
+        }        .pose-image {
             width: 100%;
             height: 200px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: var(--rounded);
             margin-bottom: 20px;
+            background-color: var(--light-gray);
         }
 
         .section {
@@ -779,7 +778,7 @@
     </div>    <script>
         // Sample data for yoga poses - will be replaced with exercise.json data
         let yogaPoses = [];
-        let exerciseData = [];        // Load exercise data from exercise.json
+        let exerciseData = [];        // Load yoga pose data from yoga.json via API
         async function loadExerciseData() {
             try {
                 // Show loading state
@@ -787,23 +786,30 @@
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 16px; color: var(--soft-pink);"></i>
                         <h3>Loading yoga poses...</h3>
-                        <p>Please wait while we fetch the latest yoga pose information.</p>
+                        <p>Please wait while we fetch the latest yoga pose information with AI-generated images.</p>
                     </div>
                 `;
 
-                const response = await fetch('/api/exercises');
+                const response = await fetch('/api/yoga-poses');
                 if (!response.ok) {
-                    throw new Error('Failed to load exercise data');
+                    throw new Error('Failed to load yoga pose data');
                 }
                 exerciseData = await response.json();
                 
-                // Transform exercise data to match yogaPoses format
-                yogaPoses = exerciseData.map(exercise => ({
-                    name: exercise.name,
-                    icon: getIconForType(exercise.type),
-                    tags: [capitalizeFirst(exercise.type)],
-                    description: exercise.instructions.substring(0, 60) + "...",
-                    exerciseData: exercise // Store full data for popup
+                // Transform yoga data to match yogaPoses format
+                yogaPoses = exerciseData.map(yoga => ({
+                    name: yoga.name,
+                    icon: getIconForType(getYogaType(yoga)),
+                    tags: [getYogaCategoryTag(yoga)],
+                    description: yoga.benefits ? yoga.benefits[0] || 'Yoga pose for wellness' : 'Promotes relaxation and well-being',
+                    exerciseData: {
+                        ...yoga,
+                        type: getYogaType(yoga),
+                        instructions: yoga.steps ? yoga.steps.join('. ') : 'Follow traditional yoga guidelines for this pose.',
+                        benefits: yoga.benefits || ['Promotes relaxation and well-being'],
+                        precautions: yoga.precautions || ['Listen to your body and avoid strain'],
+                        idealTime: yoga.duration || '1-3 minutes'
+                    }
                 }));
                 
                 // Populate the pose library after data is loaded
@@ -811,7 +817,7 @@
                 populatePoseSelector();
                 
             } catch (error) {
-                console.error('Error loading exercise data:', error);
+                console.error('Error loading yoga pose data:', error);
                 // Show error state
                 poseGrid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
@@ -839,6 +845,30 @@
                     populatePoseSelector();
                 }, 2000);
             }
+        }
+
+        function getYogaType(yoga) {
+            // Determine yoga type based on pose name and benefits
+            const name = yoga.name.toLowerCase();
+            if (name.includes('meditation') || name.includes('savasana') || name.includes('child') || name.includes('reclining')) {
+                return 'meditative';
+            } else if (name.includes('warrior') || name.includes('standing') || name.includes('balance')) {
+                return 'strengthening';
+            } else {
+                return 'relief';
+            }
+        }
+
+        function getYogaCategoryTag(yoga) {
+            // Create category tags based on symptoms relieved
+            if (yoga.relievesSymptoms) {
+                if (yoga.relievesSymptoms.includes('Stress') || yoga.relievesSymptoms.includes('Irritability')) {
+                    return 'Meditative';
+                } else if (yoga.relievesSymptoms.includes('Menstrual cramps') || yoga.relievesSymptoms.includes('Lower back pain')) {
+                    return 'Relief';
+                }
+            }
+            return 'Mix';
         }
 
         function getIconForType(type) {

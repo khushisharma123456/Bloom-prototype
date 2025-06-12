@@ -39,11 +39,15 @@ class RecipeManager {
                 </div>
             `;
             return;
-        }
-
-        let html = '';
+        }        let html = '';
         filteredRecipes.forEach(recipe => {
-            const imageUrl = recipe.image ? `/static/${recipe.image}` : '/static/Images/default-recipe.png';
+            // Handle image path - ensure proper format for generated images
+            let imagePath = recipe.image || 'Images/default-recipe.png';
+            // Ensure the path starts with Images/ for consistency
+            if (!imagePath.startsWith('Images/')) {
+                imagePath = `Images/${imagePath}`;
+            }
+            const imageUrl = `/static/${imagePath}`;
             
             html += `
                 <div class="recipe-card" data-category="${recipe.badge}">

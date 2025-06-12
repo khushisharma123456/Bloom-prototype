@@ -25,14 +25,19 @@
             </div>
         </div>
 
-        <div class="remedy-list-container">
-        {% if remedies %}
+        <div class="remedy-list-container">        {% if remedies %}
             {% for remedy in remedies %}
                 <div class="remedy-card">
-                    <div class="remedy-header">
-                        <div class="remedy-image-container">
-                            <img src="{{ remedy.image }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image"
-                                 onerror="this.src='{{ url_for('static', filename='images/default-remedy.png') }}'">
+                    <div class="remedy-header">                        <div class="remedy-image-container">
+                            {% if remedy.image and remedy.image != 'Images/default-recipe.png' %}
+                                <img src="{{ url_for('static', filename=remedy.image) }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image"
+                                     onerror="this.src='{{ url_for('static', filename='Images/default-remedy.png') }}'">
+                            {% elif remedy.image %}
+                                <img src="{{ url_for('static', filename=remedy.image) }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image"
+                                     onerror="this.src='{{ url_for('static', filename='Images/default-remedy.png') }}'">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='Images/default-remedy.png') }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image">
+                            {% endif %}
                             <div class="image-overlay"></div>
                         </div>
                         <div class="remedy-meta">
@@ -120,12 +125,11 @@
         {% elif remedy %}
             <!-- fallback: single remedy view -->
             <div class="remedy-card">
-                <div class="remedy-header">
-                    <div class="remedy-image-container">
-                        <img src="{{ remedy.image }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image"
-                             onerror="this.src='{{ url_for('static', filename='images/default-remedy.png') }}'">
-                        <div class="image-overlay"></div>
-                    </div>
+                <div class="remedy-header">                        <div class="remedy-image-container">
+                            <img src="{{ url_for('static', filename=remedy.image) }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image"
+                                 onerror="this.src='{{ url_for('static', filename='Images/default-remedy.png') }}'">
+                            <div class="image-overlay"></div>
+                        </div>
                     <div class="remedy-meta">
                         <h2 class="remedy-title">{{ remedy.name or remedy.title }}</h2>
                         <div class="remedy-badges">

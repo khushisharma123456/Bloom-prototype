@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Image Generator - Bloom Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #6E5B9A;
+            --secondary-pink: #FF9ED2;
+            --accent-lavender: #E8E0FF;
+            --light-pink: #FFF6FA;
+            --bloom-white: #FFFFFF;
+            --text-dark: #2D1B48;
+            --text-light: #6B7280;
+            --success-green: #10B981;
+            --error-red: #EF4444;
+            --warning-orange: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--light-pink) 0%, var(--accent-lavender) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-pink) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--light-pink) 0%, white 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 2px solid var(--accent-lavender);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--primary-purple);
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .action-section {
+            margin-bottom: 40px;
+        }
+
+        .action-section h2 {
+            color: var(--text-dark);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-pink) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(110, 91, 154, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--accent-lavender);
+            color: var(--primary-purple);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .progress-section {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--accent-lavender);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-pink) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .log-section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .log-section h3 {
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #logContainer {
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .log-entry {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .log-info {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        .log-success {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        .log-error {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .log-warning {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid var(--accent-lavender);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            border-color: var(--primary-purple);
+            transform: translateY(-2px);
+        }
+
+        .product-card h4 {
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .product-maker {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            color: var(--primary-purple);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .product-categories {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .category-tag {
+            background: var(--accent-lavender);
+            color: var(--primary-purple);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .product-image-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .status-generated {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-pending {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .status-error {
+            background: var(--error-red);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shopping-bag"></i> Product Image Generator</h1>
+            <p>Generate beautiful AI images for all store products - organic & ayurvedic wellness</p>
+        </div>
+
+        <div class="content">
+            <!-- Stats Section -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <h3 id="totalProducts">12</h3>
+                    <p>Total Products</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3 id="generatedImages">0</h3>
+                    <p>Images Generated</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <h3 id="estimatedTime">~1 min</h3>
+                    <p>Est. Time Remaining</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-cloud"></i>
+                    <h3 id="cloudStatus">Ready</h3>
+                    <p>Cloud Status</p>
+                </div>
+            </div>
+
+            <!-- Action Section -->
+            <div class="action-section">
+                <h2>Image Generation</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="generateAllBtn">
+                        <i class="fas fa-magic"></i>
+                        Generate All Product Images
+                    </button>
+                    <button class="btn btn-secondary" id="checkStatusBtn">
+                        <i class="fas fa-sync"></i>
+                        Check Status
+                    </button>
+                    <button class="btn btn-secondary" id="previewProductsBtn">
+                        <i class="fas fa-eye"></i>
+                        Preview Products
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progressSection">
+                <h2>Generation Progress</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Preparing to generate images...</p>
+            </div>
+
+            <!-- Log Section -->
+            <div class="log-section">
+                <h3><i class="fas fa-terminal"></i> Generation Log</h3>
+                <div id="logContainer">
+                    <div class="log-entry log-info">
+                        <i class="fas fa-info-circle"></i> Ready to generate product images. Click "Generate All Product Images" to start.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product List Section -->
+            <div id="productListSection" style="display: none;">
+                <h2>Product Status</h2>
+                <div class="product-list" id="productList">
+                    <!-- Product cards will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let products = [];
+        let generationResults = [];
+        let isGenerating = false;
+
+        // Product data - matches the data in product_image_generator.py
+        const productData = [
+            {
+                title: 'Saathi Organic Pads',
+                maker: 'By Saathi, Gujarat',
+                price: '₹249 (pack of 10)',
+                categories: ['all', 'menstrual', 'eco', 'artisan']
+            },
+            {
+                title: "Boomerang Menstrual Cup",
+                maker: "By Boomerang, India",
+                price: "₹599",
+                categories: ['all', 'menstrual', 'eco']
+            },
+            {
+                title: "The Woman's Company Cloth Pads",
+                maker: "By The Woman's Company",
+                price: "₹399 (pack of 3)",
+                categories: ['all', 'menstrual', 'eco', 'artisan']
+            },
+            {
+                title: "Bamboo Razor with Blades",
+                maker: "By EcoRoots, Karnataka",
+                price: "₹349",
+                categories: ['all', 'eco']
+            },
+            {
+                title: "Himalaya Menstrual Comfort Tea",
+                maker: "By Himalaya Herbals",
+                price: "₹199 (25 tea bags)",
+                categories: ['all', 'ayurvedic']
+            },
+            {
+                title: "Kottakkal M2 Tone Syrup",
+                maker: "By Arya Vaidya Sala",
+                price: "₹275 (200ml)",
+                categories: ['all', 'ayurvedic']
+            },
+            {
+                title: "Organic India Shatavari",
+                maker: "By Organic India",
+                price: "₹399 (60 capsules)",
+                categories: ['all', 'ayurvedic']
+            },
+            {
+                title: "Kama Ayurveda Kumkumadi Oil",
+                maker: "By Kama Ayurveda",
+                price: "₹1,250 (30ml)",
+                categories: ['all', 'ayurvedic']
+            },
+            {
+                title: "EcoFemme Reusable Pads",
+                maker: "By EcoFemme, Tamil Nadu",
+                price: "₹1,200 (pack of 5)",
+                categories: ['all', 'eco', 'artisan']
+            },
+            {
+                title: "Ahimsa Silk Underwear",
+                maker: "By No Nasties",
+                price: "₹899 each",
+                categories: ['all', 'eco', 'artisan']
+            },
+            {
+                title: "Organic Cotton Tampons",
+                maker: "By Carmesi",
+                price: "₹299 (pack of 16)",
+                categories: ['all', 'eco']
+            },
+            {
+                title: "Neem Wood Comb",
+                maker: "By Forest Essentials",
+                price: "₹450",
+                categories: ['all', 'eco']
+            }
+        ];
+
+        // Load initial data
+        window.addEventListener('DOMContentLoaded', function() {
+            products = productData;
+            updateStats();
+            checkExistingImages();
+        });
+
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = products.length;
+            updateEstimatedTime();
+        }
+
+        function updateEstimatedTime() {
+            const remaining = products.length - generationResults.filter(r => r.success).length;
+            const minutes = Math.ceil(remaining * 30 / 60); // ~30 seconds per image
+            document.getElementById('estimatedTime').textContent = `~${minutes} min`;
+        }
+
+        function updateCloudStatus(status) {
+            document.getElementById('cloudStatus').textContent = status;
+        }
+
+        function logMessage(type, message) {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            
+            const icons = {
+                info: 'fas fa-info-circle',
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle'
+            };
+            
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `<i class="${icons[type]}"></i> [${timestamp}] ${message}`;
+            
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateProgress(current, total) {
+            const percentage = (current / total) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = 
+                `Generating images... ${current}/${total} completed (${Math.round(percentage)}%)`;
+        }
+
+        async function generateAllImages() {
+            if (isGenerating) return;
+            
+            isGenerating = true;
+            const generateBtn = document.getElementById('generateAllBtn');
+            const progressSection = document.getElementById('progressSection');
+            
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="loading-spinner"></div> Generating...';
+            progressSection.style.display = 'block';
+            
+            updateCloudStatus('Generating...');
+            logMessage('info', 'Starting product image generation process...');
+            
+            try {
+                const response = await fetch('/api/generate-all-product-images', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    generationResults = result.results;
+                    const successful = result.results.filter(r => r.success).length;
+                    const failed = result.results.filter(r => !r.success).length;
+                    
+                    document.getElementById('generatedImages').textContent = successful;
+                    updateProgress(result.results.length, result.results.length);
+                    
+                    logMessage('success', `Generation completed! ${successful} successful, ${failed} failed`);
+                    updateCloudStatus('Complete');
+                    
+                    // Show detailed results
+                    showGenerationResults(result.results);
+                    
+                } else {
+                    throw new Error(result.error || 'Generation failed');
+                }
+                
+            } catch (error) {
+                logMessage('error', `Generation failed: ${error.message}`);
+                updateCloudStatus('Error');
+            } finally {
+                isGenerating = false;
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate All Product Images';
+                updateEstimatedTime();
+            }
+        }
+
+        function showGenerationResults(results) {
+            const productListSection = document.getElementById('productListSection');
+            const productList = document.getElementById('productList');
+            
+            productListSection.style.display = 'block';
+            productList.innerHTML = '';
+            
+            results.forEach(result => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                const statusClass = result.success ? 'generated' : 'error';
+                const statusIcon = result.success ? '✓' : '✗';
+                
+                const categories = products.find(p => p.title === result.product_title)?.categories || [];
+                const categoriesHtml = categories.map(cat => 
+                    `<span class="category-tag">${cat}</span>`
+                ).join('');
+                
+                card.innerHTML = `
+                    <h4>${result.product_title}</h4>
+                    <div class="product-categories">${categoriesHtml}</div>
+                    <div class="product-image-status">
+                        <div class="status-icon status-${statusClass}">${statusIcon}</div>
+                        <span>${result.success ? 'Generated Successfully' : 'Generation Failed'}</span>
+                    </div>
+                    ${result.success ? `<small>File: ${result.filename}</small>` : ''}
+                    ${result.error ? `<small style="color: var(--error-red);">Error: ${result.error}</small>` : ''}
+                `;
+                
+                productList.appendChild(card);
+            });
+        }
+
+        async function checkExistingImages() {
+            try {
+                const response = await fetch('/api/product-images');
+                const results = await response.json();
+                
+                if (Array.isArray(results) && results.length > 0) {
+                    generationResults = results;
+                    const successful = results.filter(r => r.success).length;
+                    document.getElementById('generatedImages').textContent = successful;
+                    logMessage('info', `Found ${successful} existing generated images`);
+                    showGenerationResults(results);
+                }
+            } catch (error) {
+                logMessage('warning', 'Could not load existing image status');
+            }
+        }
+
+        function previewProducts() {
+            const productListSection = document.getElementById('productListSection');
+            const productList = document.getElementById('productList');
+            
+            productListSection.style.display = 'block';
+            productList.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                const categoriesHtml = product.categories.map(cat => 
+                    `<span class="category-tag">${cat}</span>`
+                ).join('');
+                
+                card.innerHTML = `
+                    <h4>${product.title}</h4>
+                    <p class="product-maker">${product.maker}</p>
+                    <p class="product-price">${product.price}</p>
+                    <div class="product-categories">${categoriesHtml}</div>
+                    <div class="product-image-status">
+                        <div class="status-icon status-pending">⏳</div>
+                        <span>Ready for Generation</span>
+                    </div>
+                `;
+                
+                productList.appendChild(card);
+            });
+            
+            logMessage('info', `Showing ${products.length} products ready for image generation`);
+        }
+
+        // Event listeners
+        document.getElementById('generateAllBtn').addEventListener('click', generateAllImages);
+        document.getElementById('checkStatusBtn').addEventListener('click', checkExistingImages);
+        document.getElementById('previewProductsBtn').addEventListener('click', previewProducts);
+    </script>
+</body>
+</html>

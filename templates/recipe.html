@@ -15,7 +15,8 @@
     <div class="main-content">
         <div class="recipe-wrapper">
             <h1>{{ recipe.name }}</h1>
-            <img src="{{ url_for('static', filename='Images/' + recipe.image) }}" alt="{{ recipe.name }}" class="recipe-image">
+            <img src="{{ url_for('static', filename=recipe.image) }}" alt="{{ recipe.name }}" class="recipe-image" 
+                 onerror="this.src='{{ url_for('static', filename='Images/default-recipe.png') }}'">
             <div class="section">
                 <h2>Ingredients</h2>
                 <ul>

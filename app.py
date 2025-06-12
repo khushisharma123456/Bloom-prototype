@@ -614,6 +614,13 @@ def store():
         return redirect(url_for('login'))
     return render_template('store.html', user_name=session['user_name'])
 
+@app.route('/product-image-generator')
+def product_image_generator():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('product_image_generator.html', user_name=session['user_name'])
+
 @app.route('/personalised-yoga')
 def personalised_yoga():
     if 'user_id' not in session:
@@ -1192,8 +1199,7 @@ def remedy_details(remedy_name):
             
         with open(json_path, 'r') as f:
             data = json.load(f)
-        
-        # Find matching remedy (case-insensitive)
+          # Find matching remedy (case-insensitive)
         found_remedy = None
         for remedy in data.get('remedies', []):
             if remedy.get('name', '').lower() == decoded_name.lower():
@@ -1202,10 +1208,22 @@ def remedy_details(remedy_name):
         
         if not found_remedy:
             abort(404, description=f"Remedy '{decoded_name}' not found")
-            
-        # Ensure image path is correct
-        if 'image' in found_remedy and found_remedy['image'].startswith('/static/'):
-            found_remedy['image'] = found_remedy['image'][7:]  # Remove '/static' prefix
+              # Ensure image path is properly formatted for template
+        if 'image' in found_remedy and found_remedy['image']:
+            image_path = found_remedy['image']
+            # Remove any /static/ prefix if present
+            if image_path.startswith('/static/'):
+                image_path = image_path[8:]  # Remove '/static/'
+            # Ensure the path starts with Images/ if it's not already there
+            if not image_path.startswith('Images/'):
+                if image_path.startswith('recipe_'):
+                    image_path = f'Images/{image_path}'
+                else:
+                    image_path = f'Images/recipe_{image_path}'
+            found_remedy['image'] = image_path
+        else:
+            # Set default image if no image is specified
+            found_remedy['image'] = 'Images/default-recipe.png'
             
         return render_template('remedy.html', remedy=found_remedy)
         
@@ -2308,48 +2326,78 @@ def get_recipe_images():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/test-config')
-def test_config():
-    """Test endpoint to check production configuration"""
+# ======================= PRODUCT IMAGE GENERATION ROUTES =======================
+
+@app.route('/api/generate-product-image', methods=['POST'])
+def generate_product_image():
+    """Generate image for a specific product"""
     try:
-        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
-        creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-        
-        # Check if we're in production or development
-        is_production = os.getenv('FLASK_ENV') == 'production' or not app.debug
-        
-        config_status = {
-            'project_id_set': bool(project_id and project_id != 'your-imagen4-project-id'),
-            'credentials_set': bool(creds_path) or is_production,  # In production, might use default credentials
-            'environment': 'production' if is_production else 'development',
-            'flask_debug': app.debug,
-            'timestamp': datetime.now().isoformat()
+        data = request.get_json()
+        product_data = {
+            'title': data.get('title'),
+            'maker': data.get('maker', ''),
+            'price': data.get('price', ''),
+            'categories': data.get('categories', ['eco'])
         }
         
-        return jsonify(config_status)
-    except Exception as e:
-        return jsonify({'error': str(e), 'config_check': False}), 500
-
-@app.route('/admin/regenerate-images')
-def regenerate_all_images():
-    """Admin route to regenerate all doctor images"""
-    try:
-        from generate_doctor_images import main as generate_main
-        generate_main()
-        return jsonify({'success': True, 'message': 'Image generation started'})
+        # Secure environment variable handling
+        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+        if not project_id or project_id == 'your-imagen4-project-id':
+            return jsonify({
+                'success': False, 
+                'error': 'Google Cloud Project ID not configured. Please set GOOGLE_CLOUD_PROJECT_ID environment variable.'
+            }), 500
+        
+        # Initialize generator
+        from product_image_generator import ProductImageGenerator
+        generator = ProductImageGenerator(project_id)
+        result = generator.generate_and_save_image(product_data)
+        
+        return jsonify(result)
+    
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-@app.route('/api/recipes')
-def get_recipes_api():
-    """API endpoint to get all recipes data"""
+
+@app.route('/api/generate-all-product-images', methods=['POST'])
+def generate_all_product_images():
+    """Generate images for all products in the store"""
     try:
-        recipes_path = os.path.join(app.static_folder, 'data', 'recipes.json')
-        with open(recipes_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return jsonify(data)
+        # Secure environment variable handling
+        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+        if not project_id or project_id == 'your-imagen4-project-id':
+            return jsonify({
+                'success': False, 
+                'error': 'Google Cloud Project ID not configured. Please set GOOGLE_CLOUD_PROJECT_ID environment variable.'
+            }), 500
+        
+        # Initialize generator and run generation
+        from product_image_generator import ProductImageGenerator
+        generator = ProductImageGenerator(project_id)
+        generator.generate_all_product_images()
+        
+        # Return results
+        return jsonify({
+            'success': True,
+            'message': 'Product image generation completed',
+            'results': generator.results
+        })
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/product-images')
+def get_product_images():
+    """Get all generated product images"""
+    try:
+        # Read from results file
+        results_path = os.path.join(os.path.dirname(__file__), 'product_images_results.json')
+        if os.path.exists(results_path):
+            with open(results_path, 'r') as f:
+                results = json.load(f)
+            return jsonify(results)
+        else:
+            return jsonify([])
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# ======================= END PRODUCT IMAGE GENERATION ROUTES =======================

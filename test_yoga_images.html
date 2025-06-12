@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Yoga Images - Bloom</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #5a4a6a;
+        }
+        .pose-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .pose-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pose-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .pose-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #5a4a6a;
+        }
+        .pose-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .status-ai {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .status-fallback {
+            background: #ffc107;
+            color: black;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #5a4a6a;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧘‍♀️ Yoga Pose AI Image Test</h1>
+            <p>Testing AI-generated yoga pose images integration</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat">
+                <div class="stat-number" id="totalPoses">-</div>
+                <div class="stat-label">Total Poses</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="aiImages">-</div>
+                <div class="stat-label">AI Generated</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="fallbackImages">-</div>
+                <div class="stat-label">Fallback Images</div>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            Loading yoga poses...
+        </div>
+        
+        <div class="pose-grid" id="poseGrid" style="display: none;">
+            <!-- Poses will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        async function loadYogaPoses() {
+            try {
+                const response = await fetch('/api/yoga-poses');
+                const poses = await response.json();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('poseGrid').style.display = 'grid';
+                
+                // Calculate stats
+                let aiGenerated = 0;
+                let fallback = 0;
+                
+                poses.forEach(pose => {
+                    if (pose.image && pose.image.includes('storage.googleapis.com')) {
+                        aiGenerated++;
+                    } else {
+                        fallback++;
+                    }
+                });
+                
+                // Update stats
+                document.getElementById('totalPoses').textContent = poses.length;
+                document.getElementById('aiImages').textContent = aiGenerated;
+                document.getElementById('fallbackImages').textContent = fallback;
+                
+                // Render poses
+                const poseGrid = document.getElementById('poseGrid');
+                poses.forEach(pose => {
+                    const isAI = pose.image && pose.image.includes('storage.googleapis.com');
+                    
+                    const poseCard = document.createElement('div');
+                    poseCard.className = 'pose-card';
+                    poseCard.innerHTML = `
+                        <img class="pose-image" 
+                             src="${pose.image || '/static/Images/meditation-figure.png'}" 
+                             alt="${pose.name}"
+                             onerror="this.src='/static/Images/meditation-figure.png'; this.nextElementSibling.innerHTML='<span class=\\"status-fallback\\">Failed to Load</span>';">
+                        <div class="pose-status">
+                            ${isAI ? '<span class="status-ai">AI Generated</span>' : '<span class="status-fallback">Fallback Image</span>'}
+                        </div>
+                        <div class="pose-name">${pose.name}</div>
+                        <div style="font-size: 12px; color: #666;">
+                            Duration: ${pose.duration || 'Not specified'}<br>
+                            Benefits: ${pose.benefits ? pose.benefits[0] : 'Promotes wellness'}
+                        </div>
+                    `;
+                    poseGrid.appendChild(poseCard);
+                });
+                
+            } catch (error) {
+                console.error('Error loading poses:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: #dc3545;">
+                        <h3>Error loading yoga poses</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Load poses when page loads
+        window.addEventListener('DOMContentLoaded', loadYogaPoses);
+    </script>
+</body>
+</html>

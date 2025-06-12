@@ -1,707 +1,725 @@
 [
-    {
-      "name": "Supta Baddha Konasana (Reclining Bound Angle Pose)",
-      "steps": [
-        "Lie on your back, bend your knees, and bring the soles of your feet together.",
-        "Let your knees fall open to the sides.",
-        "Place your arms comfortably at your sides and relax."
-      ],
-      "duration": "5–10 minutes",
-      "precautions": [
-        "Support knees with pillows if they strain your inner thighs.",
-        "Avoid if you have severe hip or groin injury."
-      ],
-      "image": "supta_baddha_konasana.jpg",
-      "benefits": [
-        "Relieves pelvic tension",
-        "Promotes relaxation",
-        "Improves blood circulation in the pelvic region"
-      ],
-      "relievesSymptoms": [
-        "Menstrual cramps",
-        "Bloating",
-        "Irritability"
-      ]
-    },
-    {
-      "name": "Balasana (Child's Pose)",
-      "steps": [
-        "Kneel down, sit on your heels, and stretch arms forward on the floor.",
-        "Lower your forehead to the mat and relax deeply.",
-        "Breathe slowly and deeply."
-      ],
-      "duration": "2–5 minutes",
-      "precautions": [
-        "Avoid if pregnant or with severe knee issues.",
-        "Can place a pillow under the chest for more comfort."
-      ],
-      "image": "balasana.jpg",
-      "benefits": [
-        "Releases tension in the back and hips",
-        "Calms the nervous system",
-        "Eases menstrual discomfort"
-      ],
-      "relievesSymptoms": [
-        "Lower back pain",
-        "Stress",
-        "Menstrual cramps"
-      ]
-    },
-    {
-      "name": "Apanasana (Knees-to-Chest Pose)",
-      "steps": [
-        "Lie on your back, hug both knees into your chest.",
-        "Hold your shins and gently rock side to side.",
-        "Keep breathing deeply."
-      ],
-      "duration": "1–3 minutes",
-      "precautions": [
-        "Avoid if you have recent abdominal surgery.",
-        "Be gentle if suffering from spinal issues."
-      ],
-      "image": "apanasana.jpg",
-      "benefits": [
-        "Aids digestion and bloating relief",
-        "Releases lower back tension",
-        "Soothes abdominal organs"
-      ],
-      "relievesSymptoms": [
-        "Gas",
-        "Cramps",
-        "Bloating"
-      ]
-    },
-    {
-      "name": "Viparita Karani (Legs-up-the-Wall Pose)",
-      "steps": [
-        "Lie down and swing your legs up against the wall.",
-        "Keep your arms relaxed at your sides.",
-        "Focus on slow breathing."
-      ],
-      "duration": "5–15 minutes",
-      "precautions": [
-        "Avoid if you have glaucoma or neck issues.",
-        "Support hips with a folded blanket if needed."
-      ],
-      "image": "viparita_karani.jpg",
-      "benefits": [
-        "Reduces leg fatigue",
-        "Calms anxiety",
-        "Improves lymphatic flow"
-      ],
-      "relievesSymptoms": [
-        "Fatigue",
-        "Irritability",
-        "Swollen legs"
-      ]
-    },
-    {
-      "name": "Setu Bandhasana (Bridge Pose)",
-      "steps": [
-        "Lie on your back, bend your knees and place feet flat on the floor.",
-        "Lift your hips upward while pressing arms and shoulders into the floor.",
-        "Hold and breathe slowly."
-      ],
-      "duration": "30–60 seconds",
-      "precautions": [
-        "Avoid if you have a neck or shoulder injury.",
-        "Don't turn your head while in the pose."
-      ],
-      "image": "setu_bandhasana.jpg",
-      "benefits": [
-        "Stretches lower abdomen",
-        "Stimulates reproductive organs",
-        "Improves mood and reduces anxiety"
-      ],
-      "relievesSymptoms": [
-        "Pelvic pain",
-        "Mild depression",
-        "Hormonal imbalance"
-      ]
-    },
-    {
-      "name": "Marjaryasana-Bitilasana (Cat-Cow Pose)",
-      "steps": [
-        "Start on all fours with wrists under shoulders and knees under hips.",
-        "Inhale, arch your back and lift your head and tailbone (Cow Pose).",
-        "Exhale, round your spine and tuck your chin (Cat Pose).",
-        "Repeat slowly several times, coordinating with your breath."
-      ],
-      "duration": "1–3 minutes",
-      "precautions": [
-        "Avoid if you have severe wrist or spine injury.",
-        "Move gently if you have neck problems."
-      ],
-      "image": "cat_cow_pose.jpg",
-      "benefits": [
-        "Relieves lower back pain",
-        "Improves spinal flexibility",
-        "Reduces tension and stress"
-      ],
-      "relievesSymptoms": [
-        "Backache",
-        "Stress",
-        "Cramps"
-      ]
-    },
-    {
-      "name": "Bhujangasana (Cobra Pose)",
-      "steps": [
-        "Lie face down with palms under shoulders.",
-        "Inhale, press palms and lift chest off the floor, keeping elbows slightly bent.",
-        "Look forward or slightly up.",
-        "Hold and breathe steadily."
-      ],
-      "duration": "15–30 seconds",
-      "precautions": [
-        "Avoid if you have wrist, back or neck injuries.",
-        "Do not overextend the spine."
-      ],
-      "image": "cobra_pose.jpg",
-      "benefits": [
-        "Stretches abdominal muscles",
-        "Stimulates reproductive organs",
-        "Improves blood flow to pelvic area"
-      ],
-      "relievesSymptoms": [
-        "Menstrual cramps",
-        "Fatigue",
-        "Lower back stiffness"
-      ]
-    },
-    {
-      "name": "Parivrtta Janu Sirsasana (Revolved Head-to-Knee Pose)",
-      "steps": [
-        "Sit with one leg extended and the other bent with foot touching inner thigh.",
-        "Inhale, lengthen the spine.",
-        "Exhale, twist torso and reach toward the extended leg.",
-        "Hold and breathe deeply."
-      ],
-      "duration": "30 seconds each side",
-      "precautions": [
-        "Avoid if you have spinal or hamstring injuries.",
-        "Do not force the twist."
-      ],
-      "image": "revolved_head_to_knee_pose.jpg",
-      "benefits": [
-        "Relieves lower back pain",
-        "Massages abdominal organs",
-        "Improves digestion and circulation"
-      ],
-      "relievesSymptoms": [
-        "Bloating",
-        "Constipation",
-        "Backache"
-      ]
-    },
-    {
-      "name": "Uttanasana (Standing Forward Bend)",
-      "steps": [
-        "Stand tall with feet hip-width apart.",
-        "Exhale, bend forward at hips, letting your head hang.",
-        "Keep knees slightly bent if needed.",
-        "Relax your neck and shoulders."
-      ],
-      "duration": "30 seconds to 1 minute",
-      "precautions": [
-        "Avoid if you have lower back or hamstring injury.",
-        "Do not bounce in the pose."
-      ],
-      "image": "uttanasana.jpg",
-      "benefits": [
-        "Calms the mind",
-        "Relieves tension in the back and neck",
-        "Stimulates abdominal organs"
-      ],
-      "relievesSymptoms": [
-        "Stress",
-        "Headache",
-        "Menstrual cramps"
-      ]
-    },
-    {
-      "name": "Adho Mukha Svanasana (Downward Facing Dog)",
-      "steps": [
-        "Start on all fours, hands shoulder-width apart and feet hip-width apart.",
-        "Lift hips toward the ceiling to form an inverted V shape.",
-        "Press heels toward the floor and keep the spine straight.",
-        "Breathe evenly and hold."
-      ],
-      "duration": "1–3 minutes",
-      "precautions": [
-        "Avoid if you have wrist, shoulder, or back injuries.",
-        "Modify with bent knees if hamstrings are tight."
-      ],
-      "image": "downward_dog.jpg",
-      "benefits": [
-        "Improves blood flow",
-        "Relieves fatigue",
-        "Stretches shoulders, hamstrings and calves"
-      ],
-      "relievesSymptoms": [
-        "Fatigue",
-        "Lower back pain",
-        "Stress"
-      ]
-    },
-    {
-      "name": "Virabhadrasana II (Warrior II Pose)",
-      "steps": [
-        "Stand with legs wide apart.",
-        "Turn one foot out 90 degrees, bend that knee.",
-        "Extend arms out to sides parallel to floor.",
-        "Gaze over front hand."
-      ],
-      "duration": "30 seconds - 1 minute per side",
-      "precautions": [
-        "Avoid if knee injury."
-      ],
-      "benefits": [
-        "Strengthens legs",
-        "Improves stamina",
-        "Reduces fatigue"
-      ],
-      "relievesSymptoms": [
-        "Fatigue",
-        "Weakness"
-      ]
-    },
-    {
-      "name": "Utthita Trikonasana (Extended Triangle Pose)",
-      "steps": [
-        "Stand with legs wide apart.",
-        "Turn one foot out and stretch arms parallel to floor.",
-        "Reach front hand down to shin/foot and other arm up.",
-        "Look up toward raised hand."
-      ],
-      "duration": "30 seconds - 1 minute per side",
-      "precautions": [
-        "Avoid if neck injury."
-      ],
-      "benefits": [
-        "Stretches sides of torso",
-        "Improves digestion",
-        "Relieves stress"
-      ],
-      "relievesSymptoms": [
-        "Bloating",
-        "Stress"
-      ]
-    },
-    {
-      "name": "Parivrtta Trikonasana (Revolved Triangle Pose)",
-      "steps": [
-        "From triangle pose, twist torso and reach opposite hand to outside of front foot.",
-        "Extend other arm upwards.",
-        "Keep spine long and breathe deeply."
-      ],
-      "duration": "30 seconds per side",
-      "precautions": [
-        "Avoid if back or neck injury."
-      ],
-      "benefits": [
-        "Improves digestion",
-        "Increases spinal flexibility",
-        "Detoxifies abdominal organs"
-      ],
-      "relievesSymptoms": [
-        "Bloating",
-        "Constipation"
-      ]
-    },
-    {
-      "name": "Ustrasana (Camel Pose)",
-      "steps": [
-        "Kneel on the floor with knees hip-width apart.",
-        "Place hands on heels, arch back, lift chest.",
-        "Drop head back if comfortable.",
-        "Hold and breathe steadily."
-      ],
-      "duration": "20-30 seconds",
-      "precautions": [
-        "Avoid if neck or back pain."
-      ],
-      "benefits": [
-        "Stretches abdomen",
-        "Stimulates reproductive organs",
-        "Relieves menstrual cramps"
-      ],
-      "relievesSymptoms": [
-        "Cramps",
-        "Fatigue"
-      ]
-    },
-    {
-      "name": "Ardha Matsyendrasana (Half Spinal Twist)",
-      "steps": [
-        "Sit with legs extended.",
-        "Bend one knee and cross it over other leg.",
-        "Twist torso toward bent knee, place opposite arm outside knee.",
-        "Look over shoulder and breathe."
-      ],
-      "duration": "30 seconds per side",
-      "precautions": [
-        "Avoid if spinal injury."
-      ],
-      "benefits": [
-        "Improves digestion",
-        "Stimulates abdominal organs",
-        "Relieves lower back pain"
-      ],
-      "relievesSymptoms": [
-        "Back pain",
-        "Bloating"
-      ]
-    },
-    {
-      "name": "Savasana (Corpse Pose)",
-      "steps": [
-        "Lie flat on back.",
-        "Keep legs and arms relaxed, palms up.",
-        "Close eyes and breathe naturally.",
-        "Relax completely."
-      ],
-      "duration": "5-10 minutes",
-      "precautions": [
-        "None"
-      ],
-      "benefits": [
-        "Relaxes entire body",
-        "Reduces stress and anxiety",
-        "Improves sleep"
-      ],
-      "relievesSymptoms": [
-        "Stress",
-        "Fatigue"
-      ]
-    },
-    {
-      "name": "Gomukhasana (Cow Face Pose)",
-      "steps": [
-        "Sit cross-legged.",
-        "Stack knees, right on top of left.",
-        "Reach one arm over shoulder, other behind back to clasp hands.",
-        "Breathe steadily."
-      ],
-      "duration": "1-2 minutes per side",
-      "precautions": [
-        "Avoid if shoulder injury."
-      ],
-      "benefits": [
-        "Stretches shoulders and hips",
-        "Improves posture",
-        "Relieves menstrual discomfort"
-      ],
-      "relievesSymptoms": [
-        "Back pain",
-        "Cramping"
-      ]
-    },
-    {
-      "name": "Parsvottanasana (Intense Side Stretch Pose)",
-      "steps": [
-        "Stand with feet hip-width apart.",
-        "Step one foot back and turn it out slightly.",
-        "Fold forward over front leg with hands on floor or blocks.",
-        "Keep spine long."
-      ],
-      "duration": "30 seconds - 1 minute",
-      "precautions": [
-        "Avoid if hamstring injury."
-      ],
-      "benefits": [
-        "Stretches hamstrings and calves",
-        "Calms nervous system",
-        "Improves digestion"
-      ],
-      "relievesSymptoms": [
-        "Stress",
-        "Bloating"
-      ]
-    },
-    {
-      "name": "Salamba Sarvangasana (Supported Shoulderstand)",
-      "steps": [
-        "Lie on back.",
-        "Lift legs and hips off floor, support back with hands.",
-        "Keep body vertical on shoulders.",
-        "Hold and breathe steadily."
-      ],
-      "duration": "30 seconds to 2 minutes",
-      "precautions": [
-        "Avoid if neck or high blood pressure problems.",
-        "Practice under supervision if beginner."
-      ],
-      "benefits": [
-        "Improves circulation",
-        "Regulates hormones",
-        "Relieves menstrual discomfort"
-      ],
-      "relievesSymptoms": [
-        "Hormonal imbalance",
-        "Fatigue"
-      ]
-    },
-    {
-      "name": "Virasana (Hero Pose)",
-      "steps": [
-        "Kneel with knees together.",
-        "Sit back between heels.",
-        "Keep spine straight.",
-        "Breathe calmly."
-      ],
-      "duration": "2-5 minutes",
-      "precautions": [
-        "Avoid if knee injury."
-      ],
-      "benefits": [
-        "Improves digestion",
-        "Calms mind",
-        "Relieves menstrual cramps"
-      ],
-      "relievesSymptoms": [
-        "Cramps",
-        "Anxiety"
-      ]
-    },
-    {
-      "name": "Malasana (Garland Pose)",
-      "steps": [
-        "Squat with feet close together.",
-        "Bring palms together in prayer position.",
-        "Press elbows against inner knees to open hips.",
-        "Keep back straight."
-      ],
-      "duration": "30 seconds - 1 minute",
-      "precautions": [
-        "Avoid if knee injury."
-      ],
-      "benefits": [
-        "Opens hips",
-        "Improves digestion",
-        "Relieves menstrual discomfort"
-      ],
-      "relievesSymptoms": [
-        "Cramping",
-        "Constipation"
-      ]
-    },
-    {
-      "name": "Bharadvajasana (Seated Twist)",
-      "steps": [
-        "Sit with legs extended straight.",
-        "Bend knees and bring feet to the left of hips.",
-        "Place right hand behind back, left hand on right knee.",
-        "Twist torso to the right, looking over right shoulder."
-      ],
-      "duration": "30 seconds each side",
-      "precautions": [
-        "Avoid if spinal injury.",
-        "Keep spine long during twist."
-      ],
-      "benefits": [
-        "Improves digestion",
-        "Massages internal organs",
-        "Relieves lower back tension"
-      ],
-      "relievesSymptoms": [
-        "Bloating",
-        "Back pain",
-        "Constipation"
-      ]
-    },
-    {
-      "name": "Supta Virasana (Reclining Hero Pose)",
-      "steps": [
-        "Start in Virasana (Hero Pose).",
-        "Place hands behind you, lean back onto forearms.",
-        "Lower back to floor, extend arms overhead.",
-        "Relax and breathe deeply."
-      ],
-      "duration": "1-3 minutes",
-      "precautions": [
-        "Avoid if knee or back injury.",
-        "Use props if needed for support."
-      ],
-      "benefits": [
-        "Stretches thighs and abdomen",
-        "Improves digestion",
-        "Relieves menstrual cramps"
-      ],
-      "relievesSymptoms": [
-        "Cramps",
-        "Digestive issues",
-        "Fatigue"
-      ]
-    },
-    {
-      "name": "Janu Sirsasana (Head-to-Knee Pose)",
-      "steps": [
-        "Sit with one leg extended, other bent with foot to inner thigh.",
-        "Inhale, lengthen spine.",
-        "Exhale, fold forward over extended leg.",
-        "Hold feet or ankles if possible."
-      ],
-      "duration": "1-3 minutes each side",
-      "precautions": [
-        "Avoid if hamstring injury.",
-        "Keep back straight while folding."
-      ],
-      "benefits": [
-        "Calms nervous system",
-        "Stretches spine and hamstrings",
-        "Relieves anxiety"
-      ],
-      "relievesSymptoms": [
-        "Stress",
-        "Anxiety",
-        "Headache"
-      ]
-    },
-    {
-      "name": "Supta Padangusthasana (Reclining Hand-to-Big-Toe Pose)",
-      "steps": [
-        "Lie on back, extend one leg up.",
-        "Hold big toe with hand or use strap.",
-        "Keep other leg straight on floor.",
-        "Breathe deeply and hold."
-      ],
-      "duration": "1-2 minutes each side",
-      "precautions": [
-        "Avoid if hamstring injury.",
-        "Use strap if needed."
-      ],
-      "benefits": [
-        "Stretches hamstrings",
-        "Improves circulation",
-        "Relieves leg fatigue"
-      ],
-      "relievesSymptoms": [
-        "Leg cramps",
-        "Fatigue",
-        "Restlessness"
-      ]
-    },
-    {
-      "name": "Ananda Balasana (Happy Baby Pose)",
-      "steps": [
-        "Lie on back, bring knees to chest.",
-        "Grab outer edges of feet with hands.",
-        "Gently pull knees toward armpits.",
-        "Rock side to side if comfortable."
-      ],
-      "duration": "1-3 minutes",
-      "precautions": [
-        "Avoid if hip injury.",
-        "Keep lower back on floor."
-      ],
-      "benefits": [
-        "Releases hip tension",
-        "Calms nervous system",
-        "Relieves lower back pain"
-      ],
-      "relievesSymptoms": [
-        "Hip pain",
-        "Stress",
-        "Backache"
-      ]
-    },
-    {
-      "name": "Matsyasana (Fish Pose)",
-      "steps": [
-        "Lie on back, place hands under hips.",
-        "Press elbows into floor, lift chest.",
-        "Drop head back gently.",
-        "Breathe deeply."
-      ],
-      "duration": "30 seconds - 1 minute",
-      "precautions": [
-        "Avoid if neck injury.",
-        "Support head if needed."
-      ],
-      "benefits": [
-        "Opens chest and throat",
-        "Improves breathing",
-        "Relieves tension"
-      ],
-      "relievesSymptoms": [
-        "Anxiety",
-        "Fatigue",
-        "Respiratory issues"
-      ]
-    },
-    {
-      "name": "Dhanurasana (Bow Pose)",
-      "steps": [
-        "Lie on stomach, bend knees.",
-        "Reach back to hold ankles.",
-        "Lift chest and thighs off floor.",
-        "Rock gently if comfortable."
-      ],
-      "duration": "20-30 seconds",
-      "precautions": [
-        "Avoid if back or neck injury.",
-        "Do not force the pose."
-      ],
-      "benefits": [
-        "Strengthens back",
-        "Improves posture",
-        "Stimulates abdominal organs"
-      ],
-      "relievesSymptoms": [
-        "Back pain",
-        "Fatigue",
-        "Digestive issues"
-      ]
-    },
-    {
-      "name": "Halasana (Plow Pose)",
-      "steps": [
-        "Lie on back, lift legs overhead.",
-        "Support lower back with hands.",
-        "Lower feet behind head if possible.",
-        "Keep legs straight."
-      ],
-      "duration": "1-3 minutes",
-      "precautions": [
-        "Avoid if neck injury.",
-        "Practice under supervision if beginner."
-      ],
-      "benefits": [
-        "Calms nervous system",
-        "Improves circulation",
-        "Relieves stress"
-      ],
-      "relievesSymptoms": [
-        "Stress",
-        "Fatigue",
-        "Headache"
-      ]
-    },
-    {
-      "name": "Paschimottanasana (Seated Forward Bend)",
-      "steps": [
-        "Sit with legs extended straight.",
-        "Inhale, lengthen spine.",
-        "Exhale, fold forward from hips.",
-        "Hold feet or ankles if possible."
-      ],
-      "duration": "1-3 minutes",
-      "precautions": [
-        "Avoid if back injury.",
-        "Keep back straight while folding."
-      ],
-      "benefits": [
-        "Calms mind",
-        "Stretches spine and hamstrings",
-        "Relieves stress"
-      ],
-      "relievesSymptoms": [
-        "Anxiety",
-        "Headache",
-        "Fatigue"
-      ]
-    }
+  {
+    "name": "Supta Baddha Konasana (Reclining Bound Angle Pose)",
+    "steps": [
+      "Lie on your back, bend your knees, and bring the soles of your feet together.",
+      "Let your knees fall open to the sides.",
+      "Place your arms comfortably at your sides and relax."
+    ],
+    "duration": "5–10 minutes",
+    "precautions": [
+      "Support knees with pillows if they strain your inner thighs.",
+      "Avoid if you have severe hip or groin injury."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_supta_baddha_konasana_reclining_bound_angle_pose.jpg",
+    "benefits": [
+      "Relieves pelvic tension",
+      "Promotes relaxation",
+      "Improves blood circulation in the pelvic region"
+    ],
+    "relievesSymptoms": [
+      "Menstrual cramps",
+      "Bloating",
+      "Irritability"
+    ]
+  },
+  {
+    "name": "Balasana (Child's Pose)",
+    "steps": [
+      "Kneel down, sit on your heels, and stretch arms forward on the floor.",
+      "Lower your forehead to the mat and relax deeply.",
+      "Breathe slowly and deeply."
+    ],
+    "duration": "2–5 minutes",
+    "precautions": [
+      "Avoid if pregnant or with severe knee issues.",
+      "Can place a pillow under the chest for more comfort."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_balasana_childs_pose.jpg",
+    "benefits": [
+      "Releases tension in the back and hips",
+      "Calms the nervous system",
+      "Eases menstrual discomfort"
+    ],
+    "relievesSymptoms": [
+      "Lower back pain",
+      "Stress",
+      "Menstrual cramps"
+    ]
+  },
+  {
+    "name": "Apanasana (Knees-to-Chest Pose)",
+    "steps": [
+      "Lie on your back, hug both knees into your chest.",
+      "Hold your shins and gently rock side to side.",
+      "Keep breathing deeply."
+    ],
+    "duration": "1–3 minutes",
+    "precautions": [
+      "Avoid if you have recent abdominal surgery.",
+      "Be gentle if suffering from spinal issues."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_apanasana.jpg",
+    "benefits": [
+      "Aids digestion and bloating relief",
+      "Releases lower back tension",
+      "Soothes abdominal organs"
+    ],
+    "relievesSymptoms": [
+      "Gas",
+      "Cramps",
+      "Bloating"
+    ]
+  },
+  {
+    "name": "Viparita Karani (Legs-up-the-Wall Pose)",
+    "steps": [
+      "Lie down and swing your legs up against the wall.",
+      "Keep your arms relaxed at your sides.",
+      "Focus on slow breathing."
+    ],
+    "duration": "5–15 minutes",
+    "precautions": [
+      "Avoid if you have glaucoma or neck issues.",
+      "Support hips with a folded blanket if needed."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_viparita.jpg",
+    "benefits": [
+      "Reduces leg fatigue",
+      "Calms anxiety",
+      "Improves lymphatic flow"
+    ],
+    "relievesSymptoms": [
+      "Fatigue",
+      "Irritability",
+      "Swollen legs"
+    ]
+  },
+  {
+    "name": "Setu Bandhasana (Bridge Pose)",
+    "steps": [
+      "Lie on your back, bend your knees and place feet flat on the floor.",
+      "Lift your hips upward while pressing arms and shoulders into the floor.",
+      "Hold and breathe slowly."
+    ],
+    "duration": "30–60 seconds",
+    "precautions": [
+      "Avoid if you have a neck or shoulder injury.",
+      "Don't turn your head while in the pose."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_setu.jpg",
+    "benefits": [
+      "Stretches lower abdomen",
+      "Stimulates reproductive organs",
+      "Improves mood and reduces anxiety"
+    ],
+    "relievesSymptoms": [
+      "Pelvic pain",
+      "Mild depression",
+      "Hormonal imbalance"
+    ]
+  },
+  {
+    "name": "Marjaryasana-Bitilasana (Cat-Cow Pose)",
+    "steps": [
+      "Start on all fours with wrists under shoulders and knees under hips.",
+      "Inhale, arch your back and lift your head and tailbone (Cow Pose).",
+      "Exhale, round your spine and tuck your chin (Cat Pose).",
+      "Repeat slowly several times, coordinating with your breath."
+    ],
+    "duration": "1–3 minutes",
+    "precautions": [
+      "Avoid if you have severe wrist or spine injury.",
+      "Move gently if you have neck problems."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_marjaryasana_bitilasana_cat_cow_pose.jpg",
+    "benefits": [
+      "Relieves lower back pain",
+      "Improves spinal flexibility",
+      "Reduces tension and stress"
+    ],
+    "relievesSymptoms": [
+      "Backache",
+      "Stress",
+      "Cramps"
+    ]
+  },
+  {
+    "name": "Bhujangasana (Cobra Pose)",
+    "steps": [
+      "Lie face down with palms under shoulders.",
+      "Inhale, press palms and lift chest off the floor, keeping elbows slightly bent.",
+      "Look forward or slightly up.",
+      "Hold and breathe steadily."
+    ],
+    "duration": "15–30 seconds",
+    "precautions": [
+      "Avoid if you have wrist, back or neck injuries.",
+      "Do not overextend the spine."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_bhujangasana.jpg",
+    "benefits": [
+      "Stretches abdominal muscles",
+      "Stimulates reproductive organs",
+      "Improves blood flow to pelvic area"
+    ],
+    "relievesSymptoms": [
+      "Menstrual cramps",
+      "Fatigue",
+      "Lower back stiffness"
+    ]
+  },
+  {
+    "name": "Parivrtta Janu Sirsasana (Revolved Head-to-Knee Pose)",
+    "steps": [
+      "Sit with one leg extended and the other bent with foot touching inner thigh.",
+      "Inhale, lengthen the spine.",
+      "Exhale, twist torso and reach toward the extended leg.",
+      "Hold and breathe deeply."
+    ],
+    "duration": "30 seconds each side",
+    "precautions": [
+      "Avoid if you have spinal or hamstring injuries.",
+      "Do not force the twist."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_parivrtta.jpg",
+    "benefits": [
+      "Relieves lower back pain",
+      "Massages abdominal organs",
+      "Improves digestion and circulation"
+    ],
+    "relievesSymptoms": [
+      "Bloating",
+      "Constipation",
+      "Backache"
+    ]
+  },
+  {
+    "name": "Uttanasana (Standing Forward Bend)",
+    "steps": [
+      "Stand tall with feet hip-width apart.",
+      "Exhale, bend forward at hips, letting your head hang.",
+      "Keep knees slightly bent if needed.",
+      "Relax your neck and shoulders."
+    ],
+    "duration": "30 seconds to 1 minute",
+    "precautions": [
+      "Avoid if you have lower back or hamstring injury.",
+      "Do not bounce in the pose."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_uttanasana_standing_forward_bend.jpg",
+    "benefits": [
+      "Calms the mind",
+      "Relieves tension in the back and neck",
+      "Stimulates abdominal organs"
+    ],
+    "relievesSymptoms": [
+      "Stress",
+      "Headache",
+      "Menstrual cramps"
+    ]
+  },
+  {
+    "name": "Adho Mukha Svanasana (Downward Facing Dog)",
+    "steps": [
+      "Start on all fours, hands shoulder-width apart and feet hip-width apart.",
+      "Lift hips toward the ceiling to form an inverted V shape.",
+      "Press heels toward the floor and keep the spine straight.",
+      "Breathe evenly and hold."
+    ],
+    "duration": "1–3 minutes",
+    "precautions": [
+      "Avoid if you have wrist, shoulder, or back injuries.",
+      "Modify with bent knees if hamstrings are tight."
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_adho_mukha_svanasana_downward_facing_dog.jpg",
+    "benefits": [
+      "Improves blood flow",
+      "Relieves fatigue",
+      "Stretches shoulders, hamstrings and calves"
+    ],
+    "relievesSymptoms": [
+      "Fatigue",
+      "Lower back pain",
+      "Stress"
+    ]
+  },
+  {
+    "name": "Virabhadrasana II (Warrior II Pose)",
+    "steps": [
+      "Stand with legs wide apart.",
+      "Turn one foot out 90 degrees, bend that knee.",
+      "Extend arms out to sides parallel to floor.",
+      "Gaze over front hand."
+    ],
+    "duration": "30 seconds - 1 minute per side",
+    "precautions": [
+      "Avoid if knee injury."
+    ],
+    "benefits": [
+      "Strengthens legs",
+      "Improves stamina",
+      "Reduces fatigue"
+    ],
+    "relievesSymptoms": [
+      "Fatigue",
+      "Weakness"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_virabhadrasana_ii_warrior_ii_pose.jpg"
+  },
+  {
+    "name": "Utthita Trikonasana (Extended Triangle Pose)",
+    "steps": [
+      "Stand with legs wide apart.",
+      "Turn one foot out and stretch arms parallel to floor.",
+      "Reach front hand down to shin/foot and other arm up.",
+      "Look up toward raised hand."
+    ],
+    "duration": "30 seconds - 1 minute per side",
+    "precautions": [
+      "Avoid if neck injury."
+    ],
+    "benefits": [
+      "Stretches sides of torso",
+      "Improves digestion",
+      "Relieves stress"
+    ],
+    "relievesSymptoms": [
+      "Bloating",
+      "Stress"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_utthita_trikonasana_extended_triangle_pose.jpg"
+  },
+  {
+    "name": "Parivrtta Trikonasana (Revolved Triangle Pose)",
+    "steps": [
+      "From triangle pose, twist torso and reach opposite hand to outside of front foot.",
+      "Extend other arm upwards.",
+      "Keep spine long and breathe deeply."
+    ],
+    "duration": "30 seconds per side",
+    "precautions": [
+      "Avoid if back or neck injury."
+    ],
+    "benefits": [
+      "Improves digestion",
+      "Increases spinal flexibility",
+      "Detoxifies abdominal organs"
+    ],
+    "relievesSymptoms": [
+      "Bloating",
+      "Constipation"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_parivrtta.jpg"
+  },
+  {
+    "name": "Ustrasana (Camel Pose)",
+    "steps": [
+      "Kneel on the floor with knees hip-width apart.",
+      "Place hands on heels, arch back, lift chest.",
+      "Drop head back if comfortable.",
+      "Hold and breathe steadily."
+    ],
+    "duration": "20-30 seconds",
+    "precautions": [
+      "Avoid if neck or back pain."
+    ],
+    "benefits": [
+      "Stretches abdomen",
+      "Stimulates reproductive organs",
+      "Relieves menstrual cramps"
+    ],
+    "relievesSymptoms": [
+      "Cramps",
+      "Fatigue"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_ustrasana_camel_pose.jpg"
+  },
+  {
+    "name": "Ardha Matsyendrasana (Half Spinal Twist)",
+    "steps": [
+      "Sit with legs extended.",
+      "Bend one knee and cross it over other leg.",
+      "Twist torso toward bent knee, place opposite arm outside knee.",
+      "Look over shoulder and breathe."
+    ],
+    "duration": "30 seconds per side",
+    "precautions": [
+      "Avoid if spinal injury."
+    ],
+    "benefits": [
+      "Improves digestion",
+      "Stimulates abdominal organs",
+      "Relieves lower back pain"
+    ],
+    "relievesSymptoms": [
+      "Back pain",
+      "Bloating"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_ardha_matsyendrasana_half_spinal_twist.jpg"
+  },
+  {
+    "name": "Savasana (Corpse Pose)",
+    "steps": [
+      "Lie flat on back.",
+      "Keep legs and arms relaxed, palms up.",
+      "Close eyes and breathe naturally.",
+      "Relax completely."
+    ],
+    "duration": "5-10 minutes",
+    "precautions": [
+      "None"
+    ],
+    "benefits": [
+      "Relaxes entire body",
+      "Reduces stress and anxiety",
+      "Improves sleep"
+    ],
+    "relievesSymptoms": [
+      "Stress",
+      "Fatigue"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_savasana_corpse_pose.jpg"
+  },
+  {
+    "name": "Gomukhasana (Cow Face Pose)",
+    "steps": [
+      "Sit cross-legged.",
+      "Stack knees, right on top of left.",
+      "Reach one arm over shoulder, other behind back to clasp hands.",
+      "Breathe steadily."
+    ],
+    "duration": "1-2 minutes per side",
+    "precautions": [
+      "Avoid if shoulder injury."
+    ],
+    "benefits": [
+      "Stretches shoulders and hips",
+      "Improves posture",
+      "Relieves menstrual discomfort"
+    ],
+    "relievesSymptoms": [
+      "Back pain",
+      "Cramping"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_gomukhasana_cow_face_pose.jpg"
+  },
+  {
+    "name": "Parsvottanasana (Intense Side Stretch Pose)",
+    "steps": [
+      "Stand with feet hip-width apart.",
+      "Step one foot back and turn it out slightly.",
+      "Fold forward over front leg with hands on floor or blocks.",
+      "Keep spine long."
+    ],
+    "duration": "30 seconds - 1 minute",
+    "precautions": [
+      "Avoid if hamstring injury."
+    ],
+    "benefits": [
+      "Stretches hamstrings and calves",
+      "Calms nervous system",
+      "Improves digestion"
+    ],
+    "relievesSymptoms": [
+      "Stress",
+      "Bloating"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_parsvottanasana_intense_side_stretch_pose.jpg"
+  },
+  {
+    "name": "Salamba Sarvangasana (Supported Shoulderstand)",
+    "steps": [
+      "Lie on back.",
+      "Lift legs and hips off floor, support back with hands.",
+      "Keep body vertical on shoulders.",
+      "Hold and breathe steadily."
+    ],
+    "duration": "30 seconds to 2 minutes",
+    "precautions": [
+      "Avoid if neck or high blood pressure problems.",
+      "Practice under supervision if beginner."
+    ],
+    "benefits": [
+      "Improves circulation",
+      "Regulates hormones",
+      "Relieves menstrual discomfort"
+    ],
+    "relievesSymptoms": [
+      "Hormonal imbalance",
+      "Fatigue"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_salamba.jpg"
+  },
+  {
+    "name": "Virasana (Hero Pose)",
+    "steps": [
+      "Kneel with knees together.",
+      "Sit back between heels.",
+      "Keep spine straight.",
+      "Breathe calmly."
+    ],
+    "duration": "2-5 minutes",
+    "precautions": [
+      "Avoid if knee injury."
+    ],
+    "benefits": [
+      "Improves digestion",
+      "Calms mind",
+      "Relieves menstrual cramps"
+    ],
+    "relievesSymptoms": [
+      "Cramps",
+      "Anxiety"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_virasana_hero_pose.jpg"
+  },
+  {
+    "name": "Malasana (Garland Pose)",
+    "steps": [
+      "Squat with feet close together.",
+      "Bring palms together in prayer position.",
+      "Press elbows against inner knees to open hips.",
+      "Keep back straight."
+    ],
+    "duration": "30 seconds - 1 minute",
+    "precautions": [
+      "Avoid if knee injury."
+    ],
+    "benefits": [
+      "Opens hips",
+      "Improves digestion",
+      "Relieves menstrual discomfort"
+    ],
+    "relievesSymptoms": [
+      "Cramping",
+      "Constipation"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_malasana_garland_pose.jpg"
+  },
+  {
+    "name": "Bharadvajasana (Seated Twist)",
+    "steps": [
+      "Sit with legs extended straight.",
+      "Bend knees and bring feet to the left of hips.",
+      "Place right hand behind back, left hand on right knee.",
+      "Twist torso to the right, looking over right shoulder."
+    ],
+    "duration": "30 seconds each side",
+    "precautions": [
+      "Avoid if spinal injury.",
+      "Keep spine long during twist."
+    ],
+    "benefits": [
+      "Improves digestion",
+      "Massages internal organs",
+      "Relieves lower back tension"
+    ],
+    "relievesSymptoms": [
+      "Bloating",
+      "Back pain",
+      "Constipation"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_bharadvajasana_seated_twist.jpg"
+  },
+  {
+    "name": "Supta Virasana (Reclining Hero Pose)",
+    "steps": [
+      "Start in Virasana (Hero Pose).",
+      "Place hands behind you, lean back onto forearms.",
+      "Lower back to floor, extend arms overhead.",
+      "Relax and breathe deeply."
+    ],
+    "duration": "1-3 minutes",
+    "precautions": [
+      "Avoid if knee or back injury.",
+      "Use props if needed for support."
+    ],
+    "benefits": [
+      "Stretches thighs and abdomen",
+      "Improves digestion",
+      "Relieves menstrual cramps"
+    ],
+    "relievesSymptoms": [
+      "Cramps",
+      "Digestive issues",
+      "Fatigue"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_supta.jpg"
+  },
+  {
+    "name": "Janu Sirsasana (Head-to-Knee Pose)",
+    "steps": [
+      "Sit with one leg extended, other bent with foot to inner thigh.",
+      "Inhale, lengthen spine.",
+      "Exhale, fold forward over extended leg.",
+      "Hold feet or ankles if possible."
+    ],
+    "duration": "1-3 minutes each side",
+    "precautions": [
+      "Avoid if hamstring injury.",
+      "Keep back straight while folding."
+    ],
+    "benefits": [
+      "Calms nervous system",
+      "Stretches spine and hamstrings",
+      "Relieves anxiety"
+    ],
+    "relievesSymptoms": [
+      "Stress",
+      "Anxiety",
+      "Headache"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_janu_sirsasana_head_to_knee_pose.jpg"
+  },
+  {
+    "name": "Supta Padangusthasana (Reclining Hand-to-Big-Toe Pose)",
+    "steps": [
+      "Lie on back, extend one leg up.",
+      "Hold big toe with hand or use strap.",
+      "Keep other leg straight on floor.",
+      "Breathe deeply and hold."
+    ],
+    "duration": "1-2 minutes each side",
+    "precautions": [
+      "Avoid if hamstring injury.",
+      "Use strap if needed."
+    ],
+    "benefits": [
+      "Stretches hamstrings",
+      "Improves circulation",
+      "Relieves leg fatigue"
+    ],
+    "relievesSymptoms": [
+      "Leg cramps",
+      "Fatigue",
+      "Restlessness"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_supta_padangusthasana_reclining_hand_to_big_toe_pose.jpg"
+  },
+  {
+    "name": "Ananda Balasana (Happy Baby Pose)",
+    "steps": [
+      "Lie on back, bring knees to chest.",
+      "Grab outer edges of feet with hands.",
+      "Gently pull knees toward armpits.",
+      "Rock side to side if comfortable."
+    ],
+    "duration": "1-3 minutes",
+    "precautions": [
+      "Avoid if hip injury.",
+      "Keep lower back on floor."
+    ],
+    "benefits": [
+      "Releases hip tension",
+      "Calms nervous system",
+      "Relieves lower back pain"
+    ],
+    "relievesSymptoms": [
+      "Hip pain",
+      "Stress",
+      "Backache"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_ananda_balasana_happy_baby_pose.jpg"
+  },
+  {
+    "name": "Matsyasana (Fish Pose)",
+    "steps": [
+      "Lie on back, place hands under hips.",
+      "Press elbows into floor, lift chest.",
+      "Drop head back gently.",
+      "Breathe deeply."
+    ],
+    "duration": "30 seconds - 1 minute",
+    "precautions": [
+      "Avoid if neck injury.",
+      "Support head if needed."
+    ],
+    "benefits": [
+      "Opens chest and throat",
+      "Improves breathing",
+      "Relieves tension"
+    ],
+    "relievesSymptoms": [
+      "Anxiety",
+      "Fatigue",
+      "Respiratory issues"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_matsyasana.jpg"
+  },
+  {
+    "name": "Dhanurasana (Bow Pose)",
+    "steps": [
+      "Lie on stomach, bend knees.",
+      "Reach back to hold ankles.",
+      "Lift chest and thighs off floor.",
+      "Rock gently if comfortable."
+    ],
+    "duration": "20-30 seconds",
+    "precautions": [
+      "Avoid if back or neck injury.",
+      "Do not force the pose."
+    ],
+    "benefits": [
+      "Strengthens back",
+      "Improves posture",
+      "Stimulates abdominal organs"
+    ],
+    "relievesSymptoms": [
+      "Back pain",
+      "Fatigue",
+      "Digestive issues"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_dhanurasana_bow_pose.jpg"
+  },
+  {
+    "name": "Halasana (Plow Pose)",
+    "steps": [
+      "Lie on back, lift legs overhead.",
+      "Support lower back with hands.",
+      "Lower feet behind head if possible.",
+      "Keep legs straight."
+    ],
+    "duration": "1-3 minutes",
+    "precautions": [
+      "Avoid if neck injury.",
+      "Practice under supervision if beginner."
+    ],
+    "benefits": [
+      "Calms nervous system",
+      "Improves circulation",
+      "Relieves stress"
+    ],
+    "relievesSymptoms": [
+      "Stress",
+      "Fatigue",
+      "Headache"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_halasana_plow_pose.jpg"
+  },
+  {
+    "name": "Paschimottanasana (Seated Forward Bend)",
+    "steps": [
+      "Sit with legs extended straight.",
+      "Inhale, lengthen spine.",
+      "Exhale, fold forward from hips.",
+      "Hold feet or ankles if possible."
+    ],
+    "duration": "1-3 minutes",
+    "precautions": [
+      "Avoid if back injury.",
+      "Keep back straight while folding."
+    ],
+    "benefits": [
+      "Calms mind",
+      "Stretches spine and hamstrings",
+      "Relieves stress"
+    ],
+    "relievesSymptoms": [
+      "Anxiety",
+      "Headache",
+      "Fatigue"
+    ],
+    "image": "https://storage.googleapis.com/polished-bridge-462015-d8-yoga-pose-images/poses/yoga_pose_paschimottanasana.jpg"
+  }
 ]
-  
-  
