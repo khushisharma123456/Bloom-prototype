@@ -9,12 +9,33 @@ import requests
 from urllib.parse import urlencode
 import base64
 from datetime import datetime, timedelta
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+import secrets
+
+# Load environment variables (prioritize system env vars over .env file)
+try:
+    from dotenv import load_dotenv
+    # Only load .env if we're in development (not on Render)
+    if not os.getenv('RENDER'):  # Render sets this environment variable
+        load_dotenv()
+except ImportError:
+    # If python-dotenv is not installed, environment variables should be set manually
+    pass
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID = "your_google_client_id_here"  # Replace with your actual Google Client ID
+GOOGLE_CLIENT_SECRET = "your_google_client_secret_here"  # Replace with your actual Google Client Secret
+GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid_connect_json_web_keyset"
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Only for development
 
 db = SQLAlchemy(app)
 
@@ -92,6 +113,23 @@ class DailyCheckIn(db.Model):
     # Ensure one check-in per user per day
     __table_args__ = (db.UniqueConstraint('user_id', 'check_date', name='_user_date_checkin'),)
 
+class SymptomEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    entry_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
+    flow_level = db.Column(db.String(20))  # light, medium, heavy
+    mood = db.Column(db.String(20))  # happy, neutral, sad, anxious, irritable
+    pain_level = db.Column(db.Integer)  # 0-10 scale
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationship back to user
+    user = db.relationship('User', backref=db.backref('symptom_entries', lazy=True))
+    
+    # Ensure one symptom entry per user per day
+    __table_args__ = (db.UniqueConstraint('user_id', 'entry_date', name='_user_date_symptom'),)
+
 with app.app_context():
     db.create_all()
 
@@ -159,6 +197,129 @@ def signup():
             return redirect(url_for('signup'))
 
     return render_template('signup.html')
+
+# Google OAuth Routes
+@app.route('/auth/google')
+def google_login():
+    """Initiate Google OAuth login"""
+    try:
+        # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps
+        flow = Flow.from_client_config(
+            {
+                "web": {
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                    "redirect_uris": ["http://localhost:5000/auth/google/callback"]
+                }
+            },
+            scopes=["openid", "email", "profile"]
+        )
+        
+        flow.redirect_uri = url_for('google_callback', _external=True)
+        
+        # Generate authorization URL
+        authorization_url, state = flow.authorization_url(
+            access_type='offline',
+            include_granted_scopes='true'
+        )
+        
+        # Store state in session for verification
+        session['state'] = state
+        
+        return redirect(authorization_url)
+        
+    except Exception as e:
+        flash(f'Error initiating Google login: {str(e)}', 'danger')
+        return redirect(url_for('login'))
+
+@app.route('/auth/google/callback')
+def google_callback():
+    """Handle Google OAuth callback"""
+    try:
+        # Verify state parameter
+        if request.args.get('state') != session.get('state'):
+            flash('Invalid state parameter', 'danger')
+            return redirect(url_for('login'))
+        
+        # Create flow instance
+        flow = Flow.from_client_config(
+            {
+                "web": {
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                    "redirect_uris": ["http://localhost:5000/auth/google/callback"]
+                }
+            },
+            scopes=["openid", "email", "profile"],
+            state=session['state']
+        )
+        
+        flow.redirect_uri = url_for('google_callback', _external=True)
+        
+        # Get authorization response
+        authorization_response = request.url
+        flow.fetch_token(authorization_response=authorization_response)
+        
+        # Get user info from Google
+        credentials = flow.credentials
+        request_session = google_requests.Request()
+        
+        # Verify the token and get user info
+        idinfo = id_token.verify_oauth2_token(
+            credentials.id_token, request_session, GOOGLE_CLIENT_ID
+        )
+        
+        # Extract user information
+        google_id = idinfo.get('sub')
+        email = idinfo.get('email')
+        name = idinfo.get('name')
+        picture = idinfo.get('picture')
+        
+        if not email:
+            flash('Unable to get email from Google account', 'danger')
+            return redirect(url_for('login'))
+        
+        # Check if user exists
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            # User exists, log them in
+            session['user_id'] = user.id
+            session['user_name'] = user.full_name
+            flash('Successfully logged in with Google!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            # Create new user
+            new_user = User(
+                full_name=name or 'Google User',
+                email=email,
+                password=generate_password_hash(secrets.token_urlsafe(32), method='pbkdf2:sha256'),  # Random password
+                survey_completed=False
+            )
+            
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                
+                # Log the user in automatically
+                session['user_id'] = new_user.id
+                session['user_name'] = new_user.full_name
+                
+                flash('Account created successfully with Google! Please complete our quick survey.', 'success')
+                return redirect(url_for('survey'))
+                
+            except Exception as e:
+                db.session.rollback()
+                flash('Error creating account. Email might already be registered.', 'danger')
+                return redirect(url_for('login'))
+        
+    except Exception as e:
+        flash(f'Error during Google authentication: {str(e)}', 'danger')
+        return redirect(url_for('login'))
 
 @app.route('/survey', methods=['GET', 'POST'])
 def survey():
@@ -254,20 +415,16 @@ def dashboard():
         current_phase = "Luteal"    # Generate survey stats for the chart
     survey_stats = {}
     if survey:
-        def safe_yes(val):
-            return (val or '').strip().lower() == 'yes'
-        def safe_no(val):
-            return (val or '').strip().lower() == 'no'
         survey_stats = {
-            "Irregular Periods": 70 if safe_no(survey.q5_period_regularity) else 0,
-            "Excessive Hair": 60 if safe_yes(survey.q6_hair_growth) else 0,
-            "Acne": 55 if safe_yes(survey.q7_acne) else 0,
-            "Hair Thinning": 45 if safe_yes(survey.q8_hair_thinning) else 0,
-            "Weight Gain": 50 if safe_yes(survey.q9_weight_gain) else 0,
-            "Sugar Cravings": 65 if safe_yes(survey.q10_sugar_craving) else 0,
-            "Family History": 40 if safe_yes(survey.q11_family_history) else 0,
-            "Fertility Issues": 35 if safe_yes(survey.q12_fertility) else 0,
-            "Mood Swings": 75 if safe_yes(survey.q13_mood_swings) else 0
+            "Irregular Periods": 70 if survey.q5_period_regularity == 'No' else 0,
+            "Excessive Hair": 60 if survey.q6_hair_growth == 'Yes' else 0,
+            "Acne": 55 if survey.q7_acne == 'Yes' else 0,
+            "Hair Thinning": 45 if survey.q8_hair_thinning == 'Yes' else 0,
+            "Weight Gain": 50 if survey.q9_weight_gain == 'Yes' else 0,
+            "Sugar Cravings": 65 if survey.q10_sugar_craving == 'Yes' else 0,
+            "Family History": 40 if survey.q11_family_history == 'Yes' else 0,
+            "Fertility Issues": 35 if survey.q12_fertility == 'Yes' else 0,
+            "Mood Swings": 75 if survey.q13_mood_swings == 'Yes' else 0
         }
 
     return render_template(
@@ -367,7 +524,58 @@ def index():
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
-    return render_template('index (1).html')
+
+    user = User.query.get(session['user_id'])
+
+    if not user.survey_completed:
+        flash('Please complete the survey first!', 'warning')
+        return redirect(url_for('survey'))
+
+    # ⬇️ Fetch latest survey response
+    survey = SurveyResponse.query.filter_by(user_id=user.id).order_by(SurveyResponse.timestamp.desc()).first()
+
+    if not survey or not survey.q2_last_period:
+        flash('Survey data is missing or incomplete.', 'warning')
+        return redirect(url_for('survey'))
+
+    # Calculate cycle day and phase
+    today = datetime.utcnow().date()
+    days_since_period = (today - survey.q2_last_period).days
+    current_day = (days_since_period % user.cycle_length) + 1 if days_since_period >= 0 else 0
+
+    if current_day <= user.period_length:
+        current_phase = "Menstrual"
+    elif current_day <= (user.cycle_length - 14):
+        current_phase = "Follicular"
+    elif current_day <= (user.cycle_length - 9):
+        current_phase = "Ovulation"
+    else:
+        current_phase = "Luteal"
+
+    # Generate survey stats for the chart
+    survey_stats = {}
+    if survey:
+        survey_stats = {
+            "Irregular Periods": 70 if survey.q5_period_regularity == 'No' else 0,
+            "Excessive Hair": 60 if survey.q6_hair_growth == 'Yes' else 0,
+            "Acne": 55 if survey.q7_acne == 'Yes' else 0,
+            "Hair Thinning": 45 if survey.q8_hair_thinning == 'Yes' else 0,
+            "Weight Gain": 50 if survey.q9_weight_gain == 'Yes' else 0,
+            "Sugar Cravings": 65 if survey.q10_sugar_craving == 'Yes' else 0,
+            "Family History": 40 if survey.q11_family_history == 'Yes' else 0,
+            "Fertility Issues": 35 if survey.q12_fertility == 'Yes' else 0,
+            "Mood Swings": 75 if survey.q13_mood_swings == 'Yes' else 0
+        }
+
+    return render_template(
+        'index.html',
+        user_name=session['user_name'],
+        current_day=current_day,
+        current_phase=current_phase,
+        cycle_length=user.cycle_length,
+        period_length=user.period_length,
+        survey_stats=survey_stats
+    )
 
 @app.route('/about')
 def about():
@@ -405,6 +613,21 @@ def store():
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
     return render_template('store.html', user_name=session['user_name'])
+
+@app.route('/personalised-yoga')
+def personalised_yoga():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('personalised-yoga.html', user_name=session['user_name'])
+
+@app.route('/personalised-remdy')
+def personalised_remdy():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('personalised-remdy.html', user_name=session['user_name'])
+
 #===========================================================================================================
 
 
@@ -420,7 +643,32 @@ def education():
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
-    return render_template('education.html', user_name=session['user_name'])
+    
+    user = User.query.get(session['user_id'])
+    survey = SurveyResponse.query.filter_by(user_id=user.id).order_by(SurveyResponse.timestamp.desc()).first()
+    
+    # Generate survey stats for the chart
+    survey_stats = {}
+    has_survey_data = False
+    if survey:
+        has_survey_data = True
+        survey_stats = {
+            "Irregular Periods": 70 if survey.q5_period_regularity == 'Irregular' or survey.q5_period_regularity == 'Missed' else 0,
+            "Excessive Hair": 60 if survey.q6_hair_growth == 'Yes' else 0,
+            "Acne": 55 if survey.q7_acne == 'Yes' else 0,
+            "Hair Thinning": 45 if survey.q8_hair_thinning == 'Yes' else 0,
+            "Weight Gain": 50 if survey.q9_weight_gain == 'Yes' else 0,
+            "Sugar Cravings": 65 if survey.q10_sugar_craving == 'Yes' else 0,
+            "Family History": 40 if survey.q11_family_history == 'Yes' else 0,
+            "Fertility Issues": 35 if survey.q12_fertility == 'Yes' else 0,
+            "Mood Swings": 75 if survey.q13_mood_swings == 'Yes' else 0
+        }
+    
+    return render_template('education.html', 
+                         user_name=session['user_name'],
+                         survey_stats=survey_stats,
+                         has_survey_data=has_survey_data,
+                         survey=survey)
 
 # Add this function to check Spotify token status
 def is_spotify_token_valid():
@@ -810,8 +1058,7 @@ def update_survey_answers():
         if not survey:
             survey = SurveyResponse(user_id=user.id)
             db.session.add(survey)
-        
-        # Update fields based on form data
+          # Update fields based on form data
         if 'cycle_regularity' in request.form:
             survey.q5_period_regularity = request.form['cycle_regularity']
         
@@ -838,6 +1085,79 @@ def update_survey_answers():
         db.session.rollback()
         return jsonify({'error': str(e), 'message': 'Failed to save changes'}), 500
 
+@app.route('/save_symptom_entry', methods=['POST'])
+def save_symptom_entry():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    try:
+        data = request.get_json()
+        user_id = session['user_id']
+        today = datetime.utcnow().date()
+        
+        # Check if entry already exists for today
+        existing_entry = SymptomEntry.query.filter_by(
+            user_id=user_id, 
+            entry_date=today
+        ).first()
+        
+        if existing_entry:
+            # Update existing entry
+            existing_entry.flow_level = data.get('flow_level')
+            existing_entry.mood = data.get('mood')
+            existing_entry.pain_level = data.get('pain_level')
+            existing_entry.notes = data.get('notes', '')
+            existing_entry.updated_at = datetime.utcnow()
+        else:
+            # Create new entry
+            new_entry = SymptomEntry(
+                user_id=user_id,
+                entry_date=today,
+                flow_level=data.get('flow_level'),
+                mood=data.get('mood'),
+                pain_level=data.get('pain_level'),
+                notes=data.get('notes', '')
+            )
+            db.session.add(new_entry)
+        
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Symptoms saved successfully'})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e), 'message': 'Failed to save symptoms'}), 500
+
+@app.route('/get_symptom_entry')
+def get_symptom_entry():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    try:
+        user_id = session['user_id']
+        today = datetime.utcnow().date()
+        
+        entry = SymptomEntry.query.filter_by(
+            user_id=user_id, 
+            entry_date=today
+        ).first()
+        
+        if entry:
+            return jsonify({
+                'success': True,
+                'data': {
+                    'flow_level': entry.flow_level,
+                    'mood': entry.mood,
+                    'pain_level': entry.pain_level,
+                    'notes': entry.notes,
+                    'date': entry.entry_date.isoformat()
+                }
+            })
+        else:
+            return jsonify({'success': True, 'data': None})
+            
+    except Exception as e:
+        return jsonify({'error': str(e), 'message': 'Failed to get symptoms'}), 500
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -861,26 +1181,55 @@ recipes = load_recipes()
 
 @app.route('/remedy/<path:remedy_name>')
 def remedy_details(remedy_name):
-    print(f"\n\n=== DEBUG: Received request for: {remedy_name} ===")  # Check terminal
-    decoded_name = unquote(remedy_name).lower()
-    print(f"Decoded name: {decoded_name}")
-    
-    recipe = recipes.get(decoded_name)
-    if not recipe:
-        recipe = recipes.get(remedy_name.replace('-', ' ').lower())
-    
-    if not recipe:
-        print("Recipe not found!")
-        abort(404)
-    
-    
-    return render_template('remedy.html', remedy=recipe)
-
+    try:
+        # Decode URL-encoded name
+        decoded_name = unquote(remedy_name)
+        
+        # Load recipes
+        json_path = os.path.join(app.static_folder, 'data', 'recipes.json')
+        if not os.path.exists(json_path):
+            abort(404, description="Recipes data not found")
+            
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+        
+        # Find matching remedy (case-insensitive)
+        found_remedy = None
+        for remedy in data.get('remedies', []):
+            if remedy.get('name', '').lower() == decoded_name.lower():
+                found_remedy = remedy
+                break
+        
+        if not found_remedy:
+            abort(404, description=f"Remedy '{decoded_name}' not found")
+            
+        # Ensure image path is correct
+        if 'image' in found_remedy and found_remedy['image'].startswith('/static/'):
+            found_remedy['image'] = found_remedy['image'][7:]  # Remove '/static' prefix
+            
+        return render_template('remedy.html', remedy=found_remedy)
+        
+    except json.JSONDecodeError:
+        abort(500, description="Invalid recipes data format")
+    except Exception as e:
+        abort(500, description=str(e))
+        
 @app.route('/remedies')
 def all_remedies():
-    # recipes is a dict: {title.lower(): recipe_dict}
-    all_recipes = list(recipes.values())
-    return render_template('remedy.html', remedies=all_recipes)
+    try:
+        # Load recipes data from the correct path
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(base_dir, 'static', 'data', 'recipes.json')
+        
+        with open(json_path, 'r') as f:
+            data = json.load(f)
+            remedies = data.get('remedies', [])
+            
+        return render_template('remedy.html', remedies=remedies)
+        
+    except Exception as e:
+        print(f"Error loading all remedies: {str(e)}")
+        return render_template('remedy.html', remedies=[])
 
 @app.route('/api/get-yoga-recommendations', methods=['POST'])
 def get_yoga_recommendations():
@@ -891,8 +1240,7 @@ def get_yoga_recommendations():
         
         # yoga_data should be an array directly
         asanas = yoga_data if isinstance(yoga_data, list) else []
-        
-        # Normalize symptoms for robust matching
+          # Normalize symptoms for robust matching
         normalized_symptoms = [s.strip().lower() for s in symptoms]
         recommendations = []
         
@@ -910,6 +1258,13 @@ def get_yoga_recommendations():
                 print(f"MATCHED: {asana.get('name', 'Unknown')}")
         
         print(f"Total yoga recommendations: {len(recommendations)}")
+        
+        # If no recommendations found from JSON data, use the symptom-specific database
+        if len(recommendations) == 0:
+            print("No matches in JSON data, using symptom-specific database...")
+            fallback_recommendations = get_symptom_specific_yoga(symptoms)
+            recommendations = fallback_recommendations.get('yogaAsanas', [])
+            print(f"Fallback recommendations: {len(recommendations)}")
         
         return jsonify({
             'success': True,
@@ -978,12 +1333,20 @@ def get_gemini_recommendations():
         # Debug: Check if API key exists
         api_key = os.getenv('GEMINI_API_KEY')
         print(f"API Key exists: {'Yes' if api_key else 'No'}")
+        if api_key:
+            print(f"API Key (first 20 chars): {api_key[:20]}...")
         
         if not api_key:
             print("ERROR: GEMINI_API_KEY environment variable not found")
+            is_render = os.getenv('RENDER')
+            error_message = (
+                'API key not configured. Please check your GEMINI_API_KEY environment variable in Render.'
+                if is_render else
+                'API key not configured. Please set GEMINI_API_KEY in your .env file or environment variables.'
+            )
             return jsonify({
                 'success': False,
-                'message': 'API key not configured. Please check your GEMINI_API_KEY environment variable in Render.'
+                'message': error_message
             }), 500
             
         data = request.get_json()
@@ -998,8 +1361,7 @@ def get_gemini_recommendations():
             
         # Gemini API URL
         url = f'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key={api_key}'
-        
-        # Request payload
+          # Request payload
         payload = {
             'contents': [{'parts': [{'text': prompt}]}],
             'generationConfig': {
@@ -1011,8 +1373,30 @@ def get_gemini_recommendations():
         }
         
         # Make request to Gemini API
+        print(f"Making request to Gemini API...")
         response = requests.post(url, json=payload, timeout=30)
         
+        if response.status_code == 400:
+            error_data = response.json().get('error', {})
+            if 'API Key' in error_data.get('message', ''):
+                # If in development and API key is invalid, return mock data
+                if not os.getenv('RENDER'):
+                    print("Using mock data for development...")
+                    # Check if this is an Ayurvedic request based on prompt content
+                    if 'ayurvedic' in prompt.lower() or 'ayurveda' in prompt.lower():
+                        mock_response = get_symptom_specific_ayurveda(symptoms)
+                    else:
+                        mock_response = get_symptom_specific_yoga(symptoms)
+                    return jsonify({
+                        'success': True,
+                        'recommendations': mock_response
+                    })
+                else:
+                    return jsonify({
+                        'success': False,
+                        'message': 'Invalid API key. Please check your GEMINI_API_KEY in Render environment variables.'
+                    }), 400
+                
         if response.status_code != 200:
             return jsonify({
                 'success': False,
@@ -1028,20 +1412,34 @@ def get_gemini_recommendations():
             }), 500
             
         gemini_response = result['candidates'][0]['content']['parts'][0]['text']
-          # Try to parse as JSON
+        
+        # Debug: Print the raw Gemini response
+        print("=== RAW GEMINI RESPONSE ===")
+        print(gemini_response)
+        print("=== END RAW RESPONSE ===")
+        
+        # Try to parse as JSON
         try:
             parsed_response = json.loads(gemini_response)
+            print("=== PARSED JSON RESPONSE ===")
+            print(json.dumps(parsed_response, indent=2))
+            print("=== END PARSED RESPONSE ===")
             return jsonify({
                 'success': True,
                 'recommendations': parsed_response
             })
-        except json.JSONDecodeError:
-            # If not valid JSON, return as text
+        except json.JSONDecodeError as e:
+            print(f"=== JSON DECODE ERROR ===")
+            print(f"Error: {e}")
+            print("=== USING MOCK DATA INSTEAD ===")
+            # If JSON parsing fails, use mock data
+            if 'ayurvedic' in prompt.lower() or 'ayurveda' in prompt.lower():
+                mock_response = get_symptom_specific_ayurveda(symptoms)
+            else:
+                mock_response = get_symptom_specific_yoga(symptoms)
             return jsonify({
                 'success': True,
-                'recommendations': {
-                    'text': gemini_response
-                }
+                'recommendations': mock_response
             })
             
     except requests.exceptions.Timeout:
@@ -1082,6 +1480,50 @@ def serve_recipes_data():
         return jsonify(data)
     except FileNotFoundError:
         return jsonify({'error': 'Recipes data not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ======================= YOUTUBE SHORTS FETCH API =======================
+
+YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')  # Set this in your environment variables
+YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
+
+def fetch_youtube_short(exercise_name):
+    if not YOUTUBE_API_KEY:
+        return None
+    params = {
+        'part': 'snippet',
+        'q': f"{exercise_name} exercise short",
+        'type': 'video',
+        'maxResults': 1,
+        'videoDuration': 'short',
+        'key': YOUTUBE_API_KEY
+    }
+    try:
+        resp = requests.get(YOUTUBE_SEARCH_URL, params=params, timeout=10)
+        if resp.status_code == 200:
+            items = resp.json().get('items', [])
+            if items:
+                return items[0]['id']['videoId']
+        return None
+    except Exception as e:
+        print(f"YouTube fetch error: {e}")
+        return None
+
+@app.route('/api/exercise_videos', methods=['GET'])
+def get_exercise_videos():
+    """Return exercise list with YouTube Shorts video IDs"""
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        exercises_path = os.path.join(base_dir, 'exercise.json')
+        with open(exercises_path, 'r') as f:
+            exercises = json.load(f)
+        result = []
+        for ex in exercises.get('exercises', []):
+            video_id = fetch_youtube_short(ex.get('name', ''))
+            ex['youtube_video_id'] = video_id
+            result.append(ex)
+        return jsonify({'exercises': result})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -1197,8 +1639,7 @@ def get_exercises():
     """Get all available exercises from exercise.json"""
     try:
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        # Use the new static/data/exercise.json path
-        exercises_path = os.path.join(base_dir, 'static', 'data', 'exercise.json')
+        exercises_path = os.path.join(base_dir, 'exercise.json')
         
         if os.path.exists(exercises_path):
             with open(exercises_path, 'r') as f:
@@ -1206,7 +1647,7 @@ def get_exercises():
             return jsonify(exercises)
         else:
             return jsonify({'error': 'Exercises file not found'}), 404
-        
+            
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -1372,9 +1813,448 @@ def daily_checkin():
 
 # ======================= END YOGA ROUTINES API ROUTES =======================
 
+# Helper function to generate symptom-specific yoga poses for development
+def get_symptom_specific_yoga(symptoms):
+    """Generate yoga poses based on specific symptoms"""
+    
+    # Define yoga poses for different symptoms
+    poses_db = {
+        "cramps": [
+            {
+                "name": "Child's Pose (Balasana)",
+                "duration": "5-10 minutes",
+                "steps": [
+                    "Kneel on the floor with your big toes touching",
+                    "Sit back on your heels and separate knees hip-width apart",
+                    "Fold forward, extending your arms in front of you",
+                    "Rest your forehead on the mat and breathe deeply"
+                ],
+                "benefits": ["Relieves menstrual cramps", "Calms the nervous system", "Reduces stress"],
+                "relievesSymptoms": ["cramps", "stress", "anxiety"],
+                "precautions": ["Avoid if you have knee injuries", "Use a pillow under your head if needed"]
+            },
+            {
+                "name": "Supine Spinal Twist",
+                "duration": "3-5 minutes each side",
+                "steps": [
+                    "Lie on your back with arms stretched out",
+                    "Bring knees to chest, then drop them to one side",
+                    "Keep shoulders grounded and breathe deeply",
+                    "Switch sides after 3-5 minutes"
+                ],
+                "benefits": ["Relieves lower back tension", "Eases menstrual cramps", "Improves digestion"],
+                "relievesSymptoms": ["cramps", "back pain", "bloating"],
+                "precautions": ["Move slowly", "Don't force the twist"]
+            }
+        ],
+        "bloating": [
+            {
+                "name": "Wind-Relieving Pose (Pawanmuktasana)",
+                "duration": "2-3 minutes each leg",
+                "steps": [
+                    "Lie on your back with legs extended",
+                    "Bring one knee to chest and hug it",
+                    "Rock gently side to side",
+                    "Switch legs and repeat"
+                ],
+                "benefits": ["Relieves gas and bloating", "Improves digestion", "Massages abdominal organs"],
+                "relievesSymptoms": ["bloating", "gas", "digestive issues"],
+                "precautions": ["Avoid if you have recent abdominal surgery"]
+            },
+            {
+                "name": "Seated Forward Bend",
+                "duration": "5-8 minutes",
+                "steps": [
+                    "Sit with legs extended straight",
+                    "Inhale and lengthen your spine",
+                    "Exhale and fold forward from the hips",
+                    "Rest hands on legs or feet"
+                ],
+                "benefits": ["Stimulates digestion", "Relieves bloating", "Calms the mind"],
+                "relievesSymptoms": ["bloating", "stress", "fatigue"],
+                "precautions": ["Don't force the forward fold", "Keep knees slightly bent if tight hamstrings"]
+            }
+        ],
+        "back pain": [
+            {
+                "name": "Cat-Cow Stretch",
+                "duration": "5-10 repetitions",
+                "steps": [
+                    "Start on hands and knees in tabletop position",
+                    "Inhale, arch your back and look up (Cow)",
+                    "Exhale, round your spine and tuck chin (Cat)",
+                    "Continue flowing between positions"
+                ],
+                "benefits": ["Increases spinal flexibility", "Relieves back tension", "Improves posture"],
+                "relievesSymptoms": ["back pain", "stiffness", "tension"],
+                "precautions": ["Move slowly and smoothly", "Stop if you feel sharp pain"]
+            },
+            {
+                "name": "Knee-to-Chest Pose",
+                "duration": "3-5 minutes",
+                "steps": [
+                    "Lie on your back with knees bent",
+                    "Bring both knees to chest",
+                    "Wrap arms around knees and rock gently",
+                    "Breathe deeply and hold"
+                ],
+                "benefits": ["Stretches lower back", "Relieves tension", "Improves circulation"],
+                "relievesSymptoms": ["back pain", "tension", "stiffness"],
+                "precautions": ["Move gently", "Avoid if you have knee problems"]
+            }
+        ],
+        "headache": [
+            {
+                "name": "Legs-Up-The-Wall Pose",
+                "duration": "10-15 minutes",
+                "steps": [
+                    "Lie on your back near a wall",
+                    "Extend legs up the wall",
+                    "Rest arms by your sides",
+                    "Close eyes and breathe deeply"
+                ],
+                "benefits": ["Relieves headaches", "Reduces stress", "Improves circulation"],
+                "relievesSymptoms": ["headache", "stress", "fatigue"],
+                "precautions": ["Come out slowly", "Use a pillow under your head if needed"]
+            },
+            {
+                "name": "Gentle Neck Rolls",
+                "duration": "2-3 minutes",
+                "steps": [
+                    "Sit comfortably with spine straight",
+                    "Slowly drop chin to chest",
+                    "Gently roll head to one side, then the other",
+                    "Complete 5-8 slow circles in each direction"
+                ],
+                "benefits": ["Relieves neck tension", "Reduces headaches", "Improves mobility"],
+                "relievesSymptoms": ["headache", "neck tension", "stress"],
+                "precautions": ["Move very slowly", "Stop if you feel dizzy"]
+            }
+        ],
+        "fatigue": [
+            {
+                "name": "Supported Bridge Pose",
+                "duration": "5-10 minutes",
+                "steps": [
+                    "Lie on your back with knees bent",
+                    "Place a yoga block or pillow under your sacrum",
+                    "Let your body rest on the support",
+                    "Breathe deeply and relax"
+                ],
+                "benefits": ["Energizes the body", "Opens the chest", "Improves mood"],
+                "relievesSymptoms": ["fatigue", "low energy", "depression"],
+                "precautions": ["Remove support slowly", "Avoid if you have neck issues"]
+            },
+            {
+                "name": "Gentle Backbend",
+                "duration": "3-5 minutes",
+                "steps": [
+                    "Sit cross-legged with hands behind you",
+                    "Lean back slightly and open your chest",
+                    "Breathe deeply into your chest",
+                    "Return to center slowly"
+                ],
+                "benefits": ["Increases energy", "Opens heart chakra", "Improves posture"],
+                "relievesSymptoms": ["fatigue", "low mood", "shallow breathing"],
+                "precautions": ["Don't overarch", "Support yourself with hands"]
+            }
+        ],
+        "anxiety": [
+            {
+                "name": "Corpse Pose (Savasana)",
+                "duration": "10-20 minutes",
+                "steps": [
+                    "Lie flat on your back with arms by your sides",
+                    "Let your feet fall open naturally",
+                    "Close your eyes and focus on your breath",
+                    "Allow your body to completely relax"
+                ],
+                "benefits": ["Reduces anxiety", "Calms the nervous system", "Promotes deep relaxation"],
+                "relievesSymptoms": ["anxiety", "stress", "insomnia"],
+                "precautions": ["Use a blanket to stay warm", "Place pillow under knees if back is sensitive"]
+            },
+            {
+                "name": "Extended Puppy Pose",
+                "duration": "5-8 minutes",
+                "steps": [
+                    "Start in tabletop position",
+                    "Walk hands forward while keeping hips over knees",
+                    "Lower forehead to the mat",
+                    "Breathe deeply and hold"
+                ],
+                "benefits": ["Calms anxiety", "Stretches spine", "Promotes introspection"],
+                "relievesSymptoms": ["anxiety", "stress", "tension"],
+                "precautions": ["Use a blanket under knees", "Don't force the stretch"]
+            }
+        ],
+        "mood swings": [
+            {
+                "name": "Heart Opening Camel Pose (Modified)",
+                "duration": "3-5 minutes",
+                "steps": [
+                    "Kneel with shins on the floor",
+                    "Place hands on lower back",
+                    "Gently arch back and lift chest",
+                    "Keep head neutral or slightly back"
+                ],
+                "benefits": ["Balances emotions", "Opens heart chakra", "Increases confidence"],
+                "relievesSymptoms": ["mood swings", "depression", "low self-esteem"],
+                "precautions": ["Come up slowly", "Avoid if you have neck problems"]
+            },
+            {
+                "name": "Warrior II Pose",
+                "duration": "3-5 minutes each side",
+                "steps": [
+                    "Stand with feet wide apart",
+                    "Turn right foot out 90 degrees",
+                    "Bend right knee over ankle",
+                    "Extend arms parallel to floor"
+                ],
+                "benefits": ["Builds inner strength", "Improves focus", "Balances emotions"],
+                "relievesSymptoms": ["mood swings", "low confidence", "emotional instability"],
+                "precautions": ["Don't let knee go past ankle", "Keep front thigh parallel to floor"]
+            }
+        ]
+    }
+    
+    # Extract symptoms from the prompt if it's a string
+    if isinstance(symptoms, str):
+        symptoms_list = [s.strip().lower() for s in symptoms.split(',')]
+    elif isinstance(symptoms, list):
+        symptoms_list = [s.lower() for s in symptoms]
+    else:
+        symptoms_list = ['cramps']  # default
+    
+    # Collect relevant poses based on symptoms
+    recommended_poses = []
+    used_poses = set()
+    
+    for symptom in symptoms_list:
+        if symptom in poses_db:
+            for pose in poses_db[symptom]:
+                pose_name = pose['name']
+                if pose_name not in used_poses:
+                    recommended_poses.append(pose)
+                    used_poses.add(pose_name)
+    
+    # If no specific poses found, add some general menstrual health poses
+    if not recommended_poses:
+        recommended_poses = poses_db['cramps'] + poses_db['bloating'][:1]
+      # Limit to 6 poses maximum
+    recommended_poses = recommended_poses[:6]
+    
+    return {
+        "yogaAsanas": recommended_poses
+    }
 
-            
+# Helper function to generate symptom-specific ayurvedic remedies for development
+def get_symptom_specific_ayurveda(symptoms):
+    """Generate ayurvedic remedies based on specific symptoms"""
+    
+    # Define ayurvedic remedies for different symptoms
+    remedies_db = {
+        "cramps": [
+            {
+                "title": "अजवाइन काढ़ा (Ajwain Kadha) - Carom Seed Decoction",
+                "description": "A traditional Ayurvedic remedy that balances Vata dosha and provides quick relief from menstrual cramps through its antispasmodic properties.",
+                "ingredients": [
+                    "1 teaspoon carom seeds (ajwain)",
+                    "1 cup water",
+                    "1/2 teaspoon jaggery (optional)",
+                    "Pinch of black salt"
+                ],
+                "steps": [
+                    "Step 1: Boil 1 cup water in a small saucepan",
+                    "Step 2: Add 1 teaspoon carom seeds and simmer for 5 minutes",
+                    "Step 3: Strain the decoction into a cup",
+                    "Step 4: Add jaggery and black salt to taste",
+                    "Step 5: Drink warm, twice daily during menstruation"
+                ],
+                "benefits": "Relieves menstrual cramps, improves digestion, balances Vata dosha, reduces bloating, and has anti-inflammatory properties",
+                "bestTimeToConsume": "Morning on empty stomach and evening before dinner",
+                "precautions": [
+                    "Avoid during pregnancy",
+                    "Reduce quantity if you have acidity",
+                    "Not recommended for those with high blood pressure"
+                ],
+                "storageInstructions": "Prepare fresh each time for best results",
+                "shelfLife": "Consume immediately after preparation",
+                "time": "10 minutes preparation, 3-day treatment cycle",
+                "image": "static/Images/default-remedy.jpg"
+            },
+            {
+                "title": "शतावरी चूर्ण (Shatavari Churna) - Asparagus Root Powder",
+                "description": "A powerful Rasayana (rejuvenative) herb that specifically supports women's reproductive health and hormonal balance.",
+                "ingredients": [
+                    "1 teaspoon Shatavari powder",
+                    "1 cup warm milk",
+                    "1/2 teaspoon ghee",
+                    "Honey to taste"
+                ],
+                "steps": [
+                    "Step 1: Warm 1 cup of milk without boiling",
+                    "Step 2: Add 1 teaspoon Shatavari powder and mix well",
+                    "Step 3: Add ghee and stir until dissolved",
+                    "Step 4: Let it cool slightly, then add honey",
+                    "Step 5: Drink daily during menstrual cycle"
+                ],
+                "benefits": "Balances hormones, strengthens reproductive system, reduces menstrual irregularities, supports Ojas (vitality)",
+                "bestTimeToConsume": "Before bedtime for better absorption",
+                "precautions": [
+                    "Start with small quantities",
+                    "Avoid if allergic to asparagus",
+                    "Consult Ayurvedic practitioner for dosage"
+                ],
+                "storageInstructions": "Store powder in airtight container in cool, dry place",
+                "shelfLife": "Powder: 1 year, Prepared milk: consume immediately",
+                "time": "5 minutes preparation, use throughout menstrual cycle",
+                "image": "static/Images/default-remedy.jpg"
+            }
+        ],
+        "bloating": [
+            {
+                "title": "हींग पानी (Hing Pani) - Asafoetida Water",
+                "description": "An effective Ayurvedic remedy for digestive issues that helps balance Vata and Kapha doshas, particularly beneficial for abdominal bloating.",
+                "ingredients": [
+                    "Pinch of pure asafoetida (hing)",
+                    "1 glass warm water",
+                    "1/2 teaspoon lemon juice",
+                    "Rock salt to taste"
+                ],
+                "steps": [
+                    "Step 1: Take a pinch of pure asafoetida in a glass",
+                    "Step 2: Add warm water and stir until dissolved",
+                    "Step 3: Add lemon juice and rock salt",
+                    "Step 4: Mix well and drink immediately",
+                    "Step 5: Take 2-3 times daily for relief"
+                ],
+                "benefits": "Reduces bloating and gas, improves digestion, balances Vata dosha, relieves abdominal discomfort",
+                "bestTimeToConsume": "30 minutes before meals",
+                "precautions": [
+                    "Use only pure asafoetida",
+                    "Avoid if pregnant or breastfeeding",
+                    "May cause allergic reactions in some"
+                ],
+                "storageInstructions": "Prepare fresh each time",
+                "shelfLife": "Consume immediately",
+                "time": "2 minutes preparation, immediate relief",
+                "image": "static/Images/default-remedy.jpg"
+            }
+        ],
+        "fatigue": [
+            {
+                "title": "अश्वगंधा रसायन (Ashwagandha Rasayana) - Energy Tonic",
+                "description": "A revitalizing Ayurvedic formulation that builds Ojas (vital energy) and strengthens the nervous system.",
+                "ingredients": [
+                    "1 teaspoon Ashwagandha powder",
+                    "1 cup warm milk",
+                    "1/4 teaspoon cardamom powder",
+                    "1 teaspoon ghee",
+                    "Dates for sweetening"
+                ],
+                "steps": [
+                    "Step 1: Soak 2-3 dates and make a paste",
+                    "Step 2: Warm milk and add Ashwagandha powder",
+                    "Step 3: Add cardamom powder and date paste",
+                    "Step 4: Stir in ghee until well mixed",
+                    "Step 5: Drink before bedtime for best results"
+                ],
+                "benefits": "Increases energy and stamina, reduces fatigue, balances stress hormones, improves sleep quality",
+                "bestTimeToConsume": "Before bedtime or early morning",
+                "precautions": [
+                    "Not recommended during acute illness",
+                    "Avoid with sedative medications",
+                    "Start with smaller doses"
+                ],
+                "storageInstructions": "Store in refrigerator for up to 24 hours",
+                "shelfLife": "Best consumed fresh",
+                "time": "10 minutes preparation, 2-week course recommended",
+                "image": "static/Images/default-remedy.jpg"
+            }
+        ],
+        "headache": [
+            {
+                "title": "त्रिफला नस्य (Triphala Nasya) - Herbal Nasal Treatment",
+                "description": "A gentle Ayurvedic nasal therapy using Triphala that helps clear blocked channels and relieves headaches.",
+                "ingredients": [
+                    "1/2 teaspoon Triphala powder",
+                    "2 tablespoons warm water",
+                    "1 drop sesame oil",
+                    "Cotton swabs"
+                ],
+                "steps": [
+                    "Step 1: Mix Triphala powder with warm water to make paste",
+                    "Step 2: Strain the liquid and let it cool to room temperature",
+                    "Step 3: Add one drop of sesame oil",
+                    "Step 4: Using cotton swab, apply gently inside nostrils",
+                    "Step 5: Lie down for 5 minutes after application"
+                ],
+                "benefits": "Clears nasal passages, relieves tension headaches, balances Prana Vata, improves mental clarity",
+                "bestTimeToConsume": "Morning before sunrise or evening",
+                "precautions": [
+                    "Use only pharmaceutical grade Triphala",
+                    "Avoid if you have nasal infections",
+                    "Stop if irritation occurs"
+                ],
+                "storageInstructions": "Prepare fresh each time",
+                "shelfLife": "Use immediately after preparation",
+                "time": "15 minutes preparation and application",
+                "image": "static/Images/default-remedy.jpg"
+            }
+        ]
+    }
+    
+    # Extract symptoms from the input
+    if isinstance(symptoms, str):
+        symptoms_list = [s.strip().lower() for s in symptoms.split(',')]
+    elif isinstance(symptoms, list):
+        symptoms_list = [s.lower() for s in symptoms]
+    else:
+        symptoms_list = ['cramps']  # default
+    
+    # Collect relevant remedies based on symptoms
+    recommended_remedies = []
+    used_remedies = set()
+    
+    for symptom in symptoms_list:
+        if symptom in remedies_db:
+            for remedy in remedies_db[symptom]:
+                remedy_title = remedy['title']
+                if remedy_title not in used_remedies:
+                    recommended_remedies.append(remedy)
+                    used_remedies.add(remedy_title)
+    
+    # If no specific remedies found, add some general menstrual health remedies
+    if not recommended_remedies:
+        recommended_remedies = remedies_db['cramps'][:2]
+    
+    # Limit to 4 remedies maximum
+    recommended_remedies = recommended_remedies[:4]
+    
+    return {
+        "ayurvedicRemedies": recommended_remedies
+    }
+
+@app.route('/api/symptom-logs')
+def get_symptom_logs():
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'}), 401
+    try:
+        user_id = session['user_id']
+        # Get all symptom entries for this user, order by date ascending
+        entries = SymptomEntry.query.filter_by(user_id=user_id).order_by(SymptomEntry.entry_date.asc()).all()
+        data = []
+        for entry in entries:
+            data.append({
+                'date': entry.entry_date.isoformat(),
+                'flow_level': entry.flow_level,
+                'mood': entry.mood,
+                'pain_level': entry.pain_level,
+                'notes': entry.notes
+            })
+        return jsonify({'success': True, 'data': data})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
