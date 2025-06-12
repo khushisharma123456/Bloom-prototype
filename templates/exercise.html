@@ -490,7 +490,7 @@
                 renderExerciseList();
                 updateExerciseDisplay();
                 updateTimerDisplay();
-                setVolume(currentVolume);
+                // setVolume(currentVolume); // <-- Remove or comment out this line, as setVolume is not defined
                 // Load the default (Rain) Spotify player
                 loadSpotifyPlayer('https://open.spotify.com/track/3Zwu2K0Qa5sT6teCCHPShP');
             }
@@ -538,7 +538,16 @@
 
                     // Show YouTube video if available, else show animation placeholder
                     if (currentExercise.youtube_url) {
-                        animationPlaceholder.innerHTML = `<iframe width="100%" height="420" src="${currentExercise.youtube_url.replace('watch?v=', 'embed/')}" frameborder="0" allowfullscreen></iframe>`;
+                        let ytUrl = currentExercise.youtube_url;
+                        // Convert youtu.be and add embed support for URLs with ?si= params
+                        if (ytUrl.includes('youtu.be/')) {
+                            ytUrl = ytUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0];
+                        } else if (ytUrl.includes('watch?v=')) {
+                            ytUrl = ytUrl.replace('watch?v=', 'embed/').split('&')[0];
+                        } else if (ytUrl.includes('youtube.com/embed/')) {
+                            ytUrl = ytUrl.split('?')[0];
+                        }
+                        animationPlaceholder.innerHTML = `<iframe width="100%" height="420" src="${ytUrl}" frameborder="0" allowfullscreen></iframe>`;
                     } else {
                         animationPlaceholder.textContent = currentExercise.name;
                     }
