@@ -31,8 +31,7 @@
                 <div class="remedy-card">
                     <div class="remedy-header">
                         <div class="remedy-image-container">
-                            <img src="{{ remedy.image }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image"
-                                 onerror="this.src='{{ url_for('static', filename='images/default-remedy.png') }}'">
+                            <img src="{{ remedy.image }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image">
                             <div class="image-overlay"></div>
                         </div>
                         <div class="remedy-meta">
