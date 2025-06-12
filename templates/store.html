@@ -349,13 +349,14 @@
         </div>
     </div>
     
-    <script>        // Product data with AI-generated images
+    <script>
+        // Product data with AI-generated images
         const products = [            {
                 title: 'Saathi Organic Pads',
                 maker: 'By Saathi, Gujarat',
                 price: '₹249 (pack of 10)',
                 image: 'https://m.media-amazon.com/images/I/71gGPRjqY5L._AC_UF1000,1000_QL80_.jpg',
-                aiImage: "{{ url_for('static', filename='Images/product_saathi-organic-pads.png') }}",
+                aiImage: 'https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_saathi-organic-pads.png',
                 link: 'https://www.saathipads.com/',
                 categories: ['all', 'menstrual', 'eco', 'artisan']
             },            {
@@ -363,7 +364,7 @@
                 maker: "By Boomerang, India",
                 price: "₹599",
                 image: "https://images-na.ssl-images-amazon.com/images/I/61HZo7lJCvL._SL1500_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_boomerang-menstrual-cup.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_boomerang-menstrual-cup.png",
                 link: "https://boomerangcup.com/",
                 categories: ['all', 'menstrual', 'eco']
             },            {
@@ -371,7 +372,7 @@
                 maker: "By The Woman's Company",
                 price: "₹399 (pack of 3)",
                 image: "https://m.media-amazon.com/images/I/71F2hX8G2oL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_the-womans-company-cloth-pads.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_the-womans-company-cloth-pads.png",
                 link: "https://www.thewomanscompany.com/collections/cloth-pads",
                 categories: ['all', 'menstrual', 'eco', 'artisan']
             },            {
@@ -379,7 +380,7 @@
                 maker: "By EcoRoots, Karnataka",
                 price: "₹349",
                 image: "https://m.media-amazon.com/images/I/61kVgH7+AFL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_bamboo-razor-with-blades.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_bamboo-razor-with-blades.png",
                 link: "https://ecoroots.in/products/bamboo-razor",
                 categories: ['all', 'eco']
             },
@@ -389,7 +390,7 @@
                 maker: "By Himalaya Herbals",
                 price: "₹199 (25 tea bags)",
                 image: "https://m.media-amazon.com/images/I/71R4Y4oH8WL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_himalaya-menstrual-comfort-tea.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_himalaya-menstrual-comfort-tea.png",
                 link: "https://himalayawellness.in/products/menstrual-comfort-tea",
                 categories: ['all', 'ayurvedic']
             },
@@ -398,7 +399,7 @@
                 maker: "By Arya Vaidya Sala",
                 price: "₹275 (200ml)",
                 image: "https://m.media-amazon.com/images/I/51KZXhYHJOL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_kottakkal-m2-tone-syrup.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_kottakkal-m2-tone-syrup.png",
                 link: "https://www.1mg.com/otc/kottakkal-arya-vaidya-sala-m2-tone-syrup-otc328073",
                 categories: ['all', 'ayurvedic']
             },
@@ -407,7 +408,7 @@
                 maker: "By Organic India",
                 price: "₹399 (60 capsules)",
                 image: "https://m.media-amazon.com/images/I/71m6vNhvbDL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_organic-india-shatavari.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_organic-india-shatavari.png",
                 link: "https://organicindia.com/product/shatavari/",
                 categories: ['all', 'ayurvedic']
             },
@@ -416,7 +417,7 @@
                 maker: "By Kama Ayurveda",
                 price: "₹1,250 (30ml)",
                 image: "https://m.media-amazon.com/images/I/61Y8vR1j4ML._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_kama-ayurveda-kumkumadi-oil.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_kama-ayurveda-kumkumadi-oil.png",
                 link: "https://www.kamaayurveda.com/products/kumkumadi-oil",
                 categories: ['all', 'ayurvedic']
             },
@@ -426,7 +427,7 @@
                 maker: "By EcoFemme, Tamil Nadu",
                 price: "₹1,200 (pack of 5)",
                 image: "https://m.media-amazon.com/images/I/71vU8pXzSoL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_ecofemme-reusable-pads.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_ecofemme-reusable-pads.png",
                 link: "https://ecofemme.org/shop/",
                 categories: ['all', 'eco', 'artisan']
             },
@@ -435,7 +436,7 @@
                 maker: "By No Nasties",
                 price: "₹899 each",
                 image: "https://m.media-amazon.com/images/I/61Vq7lD6VCL._UX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_ahimsa-silk-underwear.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_ahimsa-silk-underwear.png",
                 link: "https://www.nonasties.in/products/ahimsa-silk-underwear",
                 categories: ['all', 'eco', 'artisan']
             },
@@ -444,7 +445,7 @@
                 maker: "By Carmesi",
                 price: "₹299 (pack of 16)",
                 image: "https://m.media-amazon.com/images/I/71fJ7aU6pXL._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_organic-cotton-tampons.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_organic-cotton-tampons.png",
                 link: "https://www.mycarmesi.com/products/organic-cotton-tampons",
                 categories: ['all', 'eco']
             },
@@ -453,7 +454,7 @@
                 maker: "By Forest Essentials",
                 price: "₹450",
                 image: "https://m.media-amazon.com/images/I/61lxlS1dB6L._SX679_.jpg",
-                aiImage: "{{ url_for('static', filename='Images/product_neem-wood-comb.png') }}",
+                aiImage: "https://storage.googleapis.com/polished-bridge-462015-d8-product-images/product_neem-wood-comb.png",
                 link: "https://www.forestessentialsindia.com/products/neem-wood-comb.html",
                 categories: ['all', 'eco']
             }
