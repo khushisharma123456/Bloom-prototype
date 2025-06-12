@@ -689,6 +689,20 @@
         <p>Understand your body better and stay confident through every phase of your cycle 💖</p>
     </div>
 
+    <div class="section" id="symptom-logs-charts">
+        <h2 class="section-title">📈 Symptom Logs Overview</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 32px; justify-content: center;">
+            <div style="flex:1; min-width:320px; max-width:480px;">
+                <h4 style="text-align:center; color:var(--primary-purple); margin-bottom:8px;">Weekly Symptom Log</h4>
+                <canvas id="weeklySymptomChart" width="400" height="220"></canvas>
+            </div>
+            <div style="flex:1; min-width:320px; max-width:480px;">
+                <h4 style="text-align:center; color:var(--primary-purple); margin-bottom:8px;">Monthly Symptom Log</h4>
+                <canvas id="monthlySymptomChart" width="400" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
     <div class="section">
         <h2 class="section-title">🌸 Your Cycle Timeline</h2>
         <div class="timeline-container">
@@ -986,70 +1000,6 @@
     </div>
 
     <div class="section">
-        <h2 class="section-title">📊 Symptom Tracker</h2>
-        <form id="symptom-form" class="tracker-form">
-            <div class="form-group">
-                <label for="flow-level">Flow Level:</label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="flow-level" value="light"> Light
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="flow-level" value="medium" checked> Medium
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="flow-level" value="heavy"> Heavy
-                    </label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="mood">Mood:</label>
-                <select id="mood" name="mood">
-                    <option value="happy">😊 Happy</option>
-                    <option value="neutral">😐 Neutral</option>
-                    <option value="sad">😔 Sad</option>
-                    <option value="anxious">😰 Anxious</option>
-                    <option value="irritable">😠 Irritable</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="pain-level">Pain Level (0-10):</label>
-                <div class="slider-container">
-                    <input type="range" min="0" max="10" value="3" class="slider" id="pain-level" name="pain-level">
-                    <span class="slider-value" id="pain-value">3</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="notes">Additional Notes:</label>
-                <textarea id="notes" name="notes" rows="2" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--purple-medium);"></textarea>
-            </div>
-
-            <button type="button" class="tracker-button" onclick="saveSymptoms()">Save Today's Symptoms</button>
-        </form>
-
-        <div class="tracker-summary" id="tracker-summary">
-            <h3>Today's Summary</h3>
-            <div class="summary-item">
-                <span class="summary-label">Flow Level:</span>
-                <span class="summary-value" id="summary-flow">Medium</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-label">Mood:</span>
-                <span class="summary-value" id="summary-mood">😐 Neutral</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-label">Pain Level:</span>
-                <span class="summary-value" id="summary-pain">3/10</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-label">Notes:</span>
-                <span class="summary-value" id="summary-notes">-</span>
-            </div>
-        </div>
-    </div>    <div class="section">
         <h2 class="section-title">🩺 PCOD/PCOS Awareness</h2>
         <p style="color: var(--text-light); margin-bottom: 20px;">
             Polycystic Ovary Syndrome (PCOS) affects 1 in 10 women of reproductive age. Learn about the common symptoms and take our screening if you're concerned.
@@ -1294,77 +1244,12 @@
         // Auto-advance carousel every 5 seconds
         setInterval(nextSlide, 5000);
 
-        // Pain Level Slider Update
-        const painSlider = document.getElementById('pain-level');
-        const painValue = document.getElementById('pain-value');
-
-        painSlider.addEventListener('input', function() {
-            painValue.textContent = this.value;
-        });
-
-        // Symptom Tracker
-        function saveSymptoms() {
-            const flowLevel = document.querySelector('input[name="flow-level"]:checked').value;
-            const mood = document.getElementById('mood').value;
-            const painLevel = document.getElementById('pain-level').value;
-            const notes = document.getElementById('notes').value;
-
-            // Save to localStorage
-            const today = new Date().toISOString().split('T')[0];
-            const symptoms = {
-                date: today,
-                flowLevel,
-                mood,
-                painLevel,
-                notes
-            };
-            
-            localStorage.setItem('symptoms-' + today, JSON.stringify(symptoms));
-
-            // Update summary display
-            document.getElementById('summary-flow').textContent = flowLevel.charAt(0).toUpperCase() + flowLevel.slice(1);
-            
-            const moodEmoji = {
-                'happy': '😊 Happy',
-                'neutral': '😐 Neutral',
-                'sad': '😔 Sad',
-                'anxious': '😰 Anxious',
-                'irritable': '😠 Irritable'
-            };
-            document.getElementById('summary-mood').textContent = moodEmoji[mood];
-            
-            document.getElementById('summary-pain').textContent = `${painLevel}/10`;
-            document.getElementById('summary-notes').textContent = notes || '-';
-            
-            // Show summary
-            document.getElementById('tracker-summary').style.display = 'block';
-        }
-
-        // Load previous symptoms if available
-        window.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            const savedSymptoms = localStorage.getItem('symptoms-' + today);
-            
-            if (savedSymptoms) {
-                const symptoms = JSON.parse(savedSymptoms);
-                
-                // Set form values
-                document.querySelector(`input[name="flow-level"][value="${symptoms.flowLevel}"]`).checked = true;
-                document.getElementById('mood').value = symptoms.mood;
-                document.getElementById('pain-level').value = symptoms.painLevel;
-                document.getElementById('pain-value').textContent = symptoms.painLevel;
-                document.getElementById('notes').value = symptoms.notes;
-                
-                // Show summary
-                saveSymptoms();
-            }        });
-
-        // Create PCOS Symptoms Chart
+        // Only keep PCOS chart and related code
         function createPCOSChart() {
-            const ctx = document.getElementById('pcosChart').getContext('2d');
-            // Fix: Output JS boolean and object literals from Jinja
-            const hasSurveyData = {{ 'true' if has_survey_data else 'false' }};
-            const surveyStats = {{ survey_stats | tojson if has_survey_data else '{}' | safe }};
+            var ctx = document.getElementById('pcosChart').getContext('2d');
+            // Output JS boolean and object literals from Jinja
+            var hasSurveyData = {{ has_survey_data | tojson | safe }};
+            var surveyStats = {{ survey_stats | tojson if has_survey_data else '{}' | safe }};
             
             let chartLabels, chartData, chartColors;
             
@@ -1467,8 +1352,112 @@
             }
         });
     </script>
-    </div> <!-- End main-content -->
-    
+    <script src="/static/js/chart.min.js"></script>
+    <script>
+    // Symptom Log Chart Rendering for Education Page (Backend version)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Chart === 'undefined') return;
+
+        // Helper: Get last N days as YYYY-MM-DD
+        function getDateLabels(days) {
+            const labels = [];
+            const today = new Date();
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                labels.push(d.toISOString().slice(0, 10));
+            }
+            return labels;
+        }
+
+        // Aggregate logs by date
+        function aggregateLogs(logs, dateLabels) {
+            // For each date, count number of symptoms logged (or sum severity, etc.)
+            const data = dateLabels.map(date => {
+                const entry = logs.find(l => l.date === date);
+                if (!entry) return 0;
+                // Count number of non-empty fields (flow, mood, pain, notes)
+                let count = 0;
+                if (entry.flow_level) count++;
+                if (entry.mood) count++;
+                if (typeof entry.pain_level === 'number' && entry.pain_level > 0) count++;
+                if (entry.notes && entry.notes.trim() !== '') count++;
+                return count;
+            });
+            return data;
+        }
+
+        // Render Chart.js chart
+        function renderSymptomChart(ctx, labels, data, label) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.map(l => l.slice(5)), // show MM-DD
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: 'rgba(255, 184, 209, 0.7)',
+                        borderColor: 'rgba(110, 91, 154, 0.8)',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        maxBarThickness: 32
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fetch all symptom entries for the user from backend
+        function fetchSymptomLogs(cb) {
+            fetch('/api/symptom-logs')
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success && Array.isArray(res.data)) {
+                        cb(res.data);
+                    } else {
+                        cb([]);
+                    }
+                })
+                .catch(() => cb([]));
+        }
+
+        // Main logic
+        function updateSymptomCharts() {
+            fetchSymptomLogs(function(logs) {
+                // Weekly
+                const weekLabels = getDateLabels(7);
+                const weekData = aggregateLogs(logs, weekLabels);
+                // Monthly
+                const monthLabels = getDateLabels(30);
+                const monthData = aggregateLogs(logs, monthLabels);
+
+                // Destroy previous charts if any
+                if (window.weeklySymptomChartObj) window.weeklySymptomChartObj.destroy();
+                if (window.monthlySymptomChartObj) window.monthlySymptomChartObj.destroy();
+
+                const weekCtx = document.getElementById('weeklySymptomChart').getContext('2d');
+                const monthCtx = document.getElementById('monthlySymptomChart').getContext('2d');
+                window.weeklySymptomChartObj = renderSymptomChart(weekCtx, weekLabels, weekData, 'Symptoms Logged');
+                window.monthlySymptomChartObj = renderSymptomChart(monthCtx, monthLabels, monthData, 'Symptoms Logged');
+            });
+        }
+
+        // Initial render
+        updateSymptomCharts();
+    });
+    </script>
     <!-- Include common sidebar JavaScript -->
     <script src="{{ url_for('static', filename='js/common-sidebar.js') }}"></script>
 </body>

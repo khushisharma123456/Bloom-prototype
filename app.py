@@ -661,7 +661,7 @@ def education():
             "Sugar Cravings": 65 if survey.q10_sugar_craving == 'Yes' else 0,
             "Family History": 40 if survey.q11_family_history == 'Yes' else 0,
             "Fertility Issues": 35 if survey.q12_fertility == 'Yes' else 0,
-            "Mood Swings": 75 if survey.q13_mood_swings == 'Frequently' else 0
+            "Mood Swings": 75 if survey.q13_mood_swings == 'Yes' else 0
         }
     
     return render_template('education.html', 
@@ -1483,6 +1483,50 @@ def serve_recipes_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ======================= YOUTUBE SHORTS FETCH API =======================
+
+YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')  # Set this in your environment variables
+YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
+
+def fetch_youtube_short(exercise_name):
+    if not YOUTUBE_API_KEY:
+        return None
+    params = {
+        'part': 'snippet',
+        'q': f"{exercise_name} exercise short",
+        'type': 'video',
+        'maxResults': 1,
+        'videoDuration': 'short',
+        'key': YOUTUBE_API_KEY
+    }
+    try:
+        resp = requests.get(YOUTUBE_SEARCH_URL, params=params, timeout=10)
+        if resp.status_code == 200:
+            items = resp.json().get('items', [])
+            if items:
+                return items[0]['id']['videoId']
+        return None
+    except Exception as e:
+        print(f"YouTube fetch error: {e}")
+        return None
+
+@app.route('/api/exercise_videos', methods=['GET'])
+def get_exercise_videos():
+    """Return exercise list with YouTube Shorts video IDs"""
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        exercises_path = os.path.join(base_dir, 'exercise.json')
+        with open(exercises_path, 'r') as f:
+            exercises = json.load(f)
+        result = []
+        for ex in exercises.get('exercises', []):
+            video_id = fetch_youtube_short(ex.get('name', ''))
+            ex['youtube_video_id'] = video_id
+            result.append(ex)
+        return jsonify({'exercises': result})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ======================= YOGA ROUTINES API ROUTES =======================
 
 @app.route('/api/routines', methods=['GET'])
@@ -2190,6 +2234,27 @@ def get_symptom_specific_ayurveda(symptoms):
     return {
         "ayurvedicRemedies": recommended_remedies
     }
+
+@app.route('/api/symptom-logs')
+def get_symptom_logs():
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'}), 401
+    try:
+        user_id = session['user_id']
+        # Get all symptom entries for this user, order by date ascending
+        entries = SymptomEntry.query.filter_by(user_id=user_id).order_by(SymptomEntry.entry_date.asc()).all()
+        data = []
+        for entry in entries:
+            data.append({
+                'date': entry.entry_date.isoformat(),
+                'flow_level': entry.flow_level,
+                'mood': entry.mood,
+                'pain_level': entry.pain_level,
+                'notes': entry.notes
+            })
+        return jsonify({'success': True, 'data': data})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

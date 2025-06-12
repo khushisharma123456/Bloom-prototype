@@ -76,3 +76,119 @@ window.addEventListener('DOMContentLoaded', loadDataAndInit);
 
 // Optionally, export exercises for debugging
 window.getCurrentExercises = () => exercises;
+
+// --- YOUTUBE SHORTS CAROUSEL ---
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/exercise_videos')
+        .then(res => res.json())
+        .then(data => {
+            if (data.exercises && Array.isArray(data.exercises)) {
+                renderExerciseCarousel(data.exercises);
+                if (window.renderRoutine) window.renderRoutine(data.exercises);
+            }
+        });
+});
+
+function renderExerciseCarousel(exercises) {
+    const rightPanel = document.querySelector('.right-panel');
+    if (!rightPanel) return;
+
+    // Remove old carousel if exists
+    let oldCarousel = document.getElementById('exercise-carousel');
+    if (oldCarousel) oldCarousel.remove();
+
+    // Carousel container
+    const carousel = document.createElement('div');
+    carousel.id = 'exercise-carousel';
+    carousel.style.display = 'flex';
+    carousel.style.flexDirection = 'column';
+    carousel.style.alignItems = 'center';
+    carousel.style.margin = '30px 0';
+
+    // Slides wrapper
+    const slidesWrapper = document.createElement('div');
+    slidesWrapper.style.display = 'flex';
+    slidesWrapper.style.alignItems = 'center';
+    slidesWrapper.style.justifyContent = 'center';
+    slidesWrapper.style.width = '100%';
+    slidesWrapper.style.maxWidth = '480px';
+    slidesWrapper.style.position = 'relative';
+
+    // Carousel state
+    let current = 0;
+
+    function renderSlide(idx) {
+        slidesWrapper.innerHTML = '';
+        const ex = exercises[idx];
+        // Video or fallback
+        let videoDiv = document.createElement('div');
+        videoDiv.style.width = '320px';
+        videoDiv.style.height = '570px';
+        videoDiv.style.background = '#eee';
+        videoDiv.style.display = 'flex';
+        videoDiv.style.alignItems = 'center';
+        videoDiv.style.justifyContent = 'center';
+        videoDiv.style.borderRadius = '16px';
+        videoDiv.style.overflow = 'hidden';
+        if (ex.youtube_video_id) {
+            videoDiv.innerHTML = `<iframe width="320" height="570" src="https://www.youtube.com/embed/${ex.youtube_video_id}?autoplay=0&mute=1&modestbranding=1&rel=0&playsinline=1&controls=1&enablejsapi=1" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+        } else {
+            videoDiv.innerHTML = `<div style='color:#888;text-align:center;'>No video found</div>`;
+        }
+        slidesWrapper.appendChild(videoDiv);
+    }
+
+    // Navigation buttons
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '<';
+    prevBtn.style.margin = '0 10px';
+    prevBtn.style.fontSize = '2rem';
+    prevBtn.style.background = '#fff';
+    prevBtn.style.border = '1px solid #ccc';
+    prevBtn.style.borderRadius = '50%';
+    prevBtn.style.width = '48px';
+    prevBtn.style.height = '48px';
+    prevBtn.style.cursor = 'pointer';
+    prevBtn.onclick = function() {
+        current = (current - 1 + exercises.length) % exercises.length;
+        renderSlide(current);
+        updateCaption();
+    };
+
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = '>';
+    nextBtn.style.margin = '0 10px';
+    nextBtn.style.fontSize = '2rem';
+    nextBtn.style.background = '#fff';
+    nextBtn.style.border = '1px solid #ccc';
+    nextBtn.style.borderRadius = '50%';
+    nextBtn.style.width = '48px';
+    nextBtn.style.height = '48px';
+    nextBtn.style.cursor = 'pointer';
+    nextBtn.onclick = function() {
+        current = (current + 1) % exercises.length;
+        renderSlide(current);
+        updateCaption();
+    };
+
+    slidesWrapper.appendChild(prevBtn);
+    renderSlide(current);
+    slidesWrapper.appendChild(nextBtn);
+
+    // Caption
+    const caption = document.createElement('div');
+    caption.style.marginTop = '12px';
+    caption.style.fontWeight = 'bold';
+    caption.style.fontSize = '1.1rem';
+    caption.style.color = '#5a4a6a';
+    function updateCaption() {
+        caption.textContent = `${exercises[current].name} - ${exercises[current].instructions || ''}`;
+    }
+    updateCaption();
+
+    carousel.appendChild(slidesWrapper);
+    carousel.appendChild(caption);
+
+    // Insert carousel at the top of right panel
+    rightPanel.insertBefore(carousel, rightPanel.firstChild);
+}
