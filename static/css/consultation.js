@@ -35,12 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const imageResults = await response.json();
             
             console.log('API Response:', imageResults);
-            
-            // Create a mapping of doctor names to image URLs
+          // Create a mapping of doctor names to image URLs
             imageResults.forEach(result => {
                 if (result.success) {
-                    doctorImages[result.doctor_name] = result.url;
-                    console.log(`Mapped: ${result.doctor_name} -> ${result.url}`);
+                    // Ensure URL starts with a slash for absolute path
+                    let imageUrl = result.url;
+                    if (imageUrl && imageUrl.startsWith('static/')) {
+                        imageUrl = '/' + imageUrl;
+                    }
+                    doctorImages[result.doctor_name] = imageUrl;
+                    console.log(`Mapped: ${result.doctor_name} -> ${imageUrl}`);
                 }
             });
             
@@ -134,15 +138,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal();
             }
         });
-    }
-
-    // Fetch professionals data
+    }    // Fetch professionals data
     async function fetchProfessionals() {
-        try {            const response = await fetch('../templates/data/doctors.json');
+        try {
+            console.log('Fetching professionals data...');
+            let response;
+            try {
+                // First try the API endpoint
+                response = await fetch('/api/doctors');
+                if (!response.ok) {
+                    console.log('API endpoint not available, falling back to static file');
+                    // Fall back to the static file
+                    response = await fetch('../templates/data/doctors.json');
+                }
+            } catch (error) {
+                console.log('Error fetching from API, falling back to static file:', error);
+                response = await fetch('../templates/data/doctors.json');
+            }
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
+            
+            // Process the doctor data - ensure all image paths are absolute
+            if (data.doctors && Array.isArray(data.doctors)) {
+                data.doctors.forEach(doctor => {
+                    if (doctor.image && doctor.image.startsWith('static/')) {
+                        doctor.image = '/' + doctor.image;
+                    }
+                });
+            }
+            
             state.professionals = data.doctors;
             renderProfessionals(state.professionals);
         } catch (error) {
@@ -340,7 +367,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return textB.length - textA.length; // Descending order
         });        // Check if generated image exists, otherwise use original image or default profile
         const generatedImage = doctorImages[professional.name];
-        const imageToUse = generatedImage || professional.image || 'static/Images/profile.png';
+        // Add leading slash to ensure path is relative to root domain
+        const imageToUse = generatedImage || professional.image || '/static/Images/profile.png';
         
         const imageStyle = imageToUse 
             ? `background-image: url('${imageToUse}'); background-size: contain; background-position: center; background-repeat: no-repeat;`
@@ -535,7 +563,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Priya Sharma",
                 specialty: "Gynecologist",
                 category: "gynecologist",
-                image: "Images/doctor1.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.8,
                 reviews: 214,
                 price: "₹1200",
@@ -552,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Meera Bhatia",
                 specialty: "Gynecologist",
                 category: "gynecologist",
-                image: "Images/doctor2.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.7,
                 reviews: 189,
                 price: "₹900",
@@ -569,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Rajesh Kumar",
                 specialty: "Gynecologist",
                 category: "gynecologist",
-                image: "Images/doctor3.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.9,
                 reviews: 276,
                 price: "₹1500",
@@ -586,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Amit Tandon",
                 specialty: "Gynecologist",
                 category: "gynecologist",
-                image: "Images/doctor4.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.6,
                 reviews: 167,
                 price: "₹1000",
@@ -605,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Deepa Krishnan",
                 specialty: "Ayurvedic Expert",
                 category: "ayurveda",
-                image: "Images/doctor5.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.8,
                 reviews: 234,
                 price: "₹800",
@@ -622,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Smita Naram",
                 specialty: "Ayurvedic Expert",
                 category: "ayurveda",
-                image: "Images/doctor6.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.9,
                 reviews: 312,
                 price: "₹1200",
@@ -639,7 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Partap Chauhan",
                 specialty: "Ayurvedic Expert",
                 category: "ayurveda",
-                image: "Images/doctor7.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.7,
                 reviews: 289,
                 price: "₹900",
@@ -656,7 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Ram Krishna Shastri",
                 specialty: "Ayurvedic Expert",
                 category: "ayurveda",
-                image: "Images/doctor8.jpg",
+                image: "/static/Images/profile.png",
                 rating: 4.6,
                 reviews: 178,
                 price: "₹700",
@@ -675,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Yasmin Karachiwala",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: "Images/coach1.jpg",
+                image: "/static/Images/Khushi.png",
                 rating: 4.9,
                 reviews: 456,
                 price: "₹2500",
@@ -692,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Sapna Vyas",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: doctorImages["Sapna Vyas"] || "Images/coach2.jpg",
+                image: doctorImages["Sapna Vyas"] || "/static/Images/Khushi.png",
                 rating: 4.7,
                 reviews: 378,
                 price: "₹1800",
@@ -709,7 +737,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Mustafa Ahmed",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: doctorImages["Mustafa Ahmed"] || "Images/coach3.jpg",
+                image: doctorImages["Mustafa Ahmed"] || "/static/Images/Khushi.png",
                 rating: 4.8,
                 reviews: 423,
                 price: "₹2000",
@@ -726,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Ranveer Allahbadia",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: doctorImages["Ranveer Allahbadia"] || "Images/coach4.jpg",
+                image: doctorImages["Ranveer Allahbadia"] || "/static/Images/Khushi.png",
                 rating: 4.6,
                 reviews: 345,
                 price: "₹1500",
@@ -745,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Rachna Khanna Singh",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Rachna Khanna Singh"] || "Images/therapist1.jpg",
+                image: doctorImages["Dr. Rachna Khanna Singh"] || "/static/Images/Mehak.png",
                 rating: 4.9,
                 reviews: 289,
                 price: "₹2000",
@@ -762,7 +790,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Shefali Batra",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Shefali Batra"] || "Images/therapist2.jpg",
+                image: doctorImages["Dr. Shefali Batra"] || "/static/Images/Mehak.png",
                 rating: 4.8,
                 reviews: 312,
                 price: "₹2500",
@@ -779,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Sayeli Jaiswal",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Sayeli Jaiswal"] || "Images/therapist3.jpg",
+                image: doctorImages["Dr. Sayeli Jaiswal"] || "/static/Images/Mehak.png",
                 rating: 4.7,
                 reviews: 267,
                 price: "₹1800",
@@ -796,7 +824,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Kamna Chhibber",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Kamna Chhibber"] || "Images/therapist4.jpg",
+                image: doctorImages["Dr. Kamna Chhibber"] || "/static/Images/Mehak.png",
                 rating: 4.8,
                 reviews: 345,
                 price: "₹2200",
@@ -813,7 +841,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Kersi Chavda",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Kersi Chavda"] || "Images/therapist5.jpg",
+                image: doctorImages["Dr. Kersi Chavda"] || "/static/Images/Mehak.png",
                 rating: 4.9,
                 reviews: 378,
                 price: "₹2500",
@@ -830,7 +858,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Achal Bhagat",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Achal Bhagat"] || "Images/therapist6.jpg",
+                image: doctorImages["Dr. Achal Bhagat"] || "/static/Images/Mehak.png",
                 rating: 4.7,
                 reviews: 289,
                 price: "₹2300",
@@ -847,7 +875,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Harish Shetty",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Harish Shetty"] || "Images/therapist7.jpg",
+                image: doctorImages["Dr. Harish Shetty"] || "/static/Images/Mehak.png",
                 rating: 4.8,
                 reviews: 334,
                 price: "₹2000",
@@ -864,7 +892,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Samir Parikh",
                 specialty: "Therapist",
                 category: "support",
-                image: doctorImages["Dr. Samir Parikh"] || "Images/therapist8.jpg",
+                image: doctorImages["Dr. Samir Parikh"] || "/static/Images/Mehak.png",
                 rating: 4.9,
                 reviews: 412,
                 price: "₹2400",
@@ -883,7 +911,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Rujuta Diwekar",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: doctorImages["Dr. Rujuta Diwekar"] || "Images/nutritionist1.jpg",
+                image: doctorImages["Dr. Rujuta Diwekar"] || "/static/Images/Suhani.png",
                 rating: 4.9,
                 reviews: 567,
                 price: "₹3000",
@@ -900,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Ishi Khosla",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: doctorImages["Dr. Ishi Khosla"] || "Images/nutritionist2.jpg",
+                image: doctorImages["Dr. Ishi Khosla"] || "/static/Images/Suhani.png",
                 rating: 4.8,
                 reviews: 423,
                 price: "₹2500",
@@ -917,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Nikhil Dhurandhar",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: doctorImages["Dr. Nikhil Dhurandhar"] || "Images/nutritionist3.jpg",
+                image: doctorImages["Dr. Nikhil Dhurandhar"] || "/static/Images/Suhani.png",
                 rating: 4.7,
                 reviews: 389,
                 price: "₹2000",
@@ -934,7 +962,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Manjari Chandra",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: doctorImages["Dr. Manjari Chandra"] || "Images/nutritionist4.jpg",
+                image: doctorImages["Dr. Manjari Chandra"] || "/static/Images/Suhani.png",
                 rating: 4.6,
                 reviews: 312,
                 price: "₹1800",

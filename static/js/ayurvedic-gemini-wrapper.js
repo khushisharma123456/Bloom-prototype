@@ -82,7 +82,7 @@ Please provide 4-6 traditional Ayurvedic remedies (nuskhe) that can help relieve
       "storageInstructions": "How to store the prepared remedy",
       "shelfLife": "How long the remedy remains effective",
       "time": "Preparation time and treatment duration",
-      "image": "static/Images/default-remedy.jpg"
+      "image": "/static/Images/default-remedy.jpg"
     }
   ]
 }

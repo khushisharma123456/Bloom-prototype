@@ -350,10 +350,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'ai-prompt';
         messageDiv.dataset.messageIndex = messageIndex;
-        
-        messageDiv.innerHTML = `
+          messageDiv.innerHTML = `
             <div class="up">
-                <img src="static/Images/logo1.png" alt="Bloom AI" class="ai-logo">
+                <img src="/static/Images/logo1.png" alt="Bloom AI" class="ai-logo">
                 <div class="message-content">
                     <p class="message-text">${text}</p>
                     <div class="message-actions">
@@ -594,10 +593,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     function showTypingIndicator() {
         isTyping = true;
         const typingDiv = document.createElement('div');
-        typingDiv.className = 'ai-prompt typing-indicator';
-        typingDiv.innerHTML = `
+        typingDiv.className = 'ai-prompt typing-indicator';        typingDiv.innerHTML = `
             <div class="up">
-                <img src="static/Images/logo1.png" alt="Bloom AI" class="ai-logo">
+                <img src="/static/Images/logo1.png" alt="Bloom AI" class="ai-logo">
                 <div class="message-content">
                     <div class="typing-dots">
                         <div class="dot"></div>
