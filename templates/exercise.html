@@ -535,7 +535,13 @@
                     const currentExercise = exercises[currentExerciseIndex];
                     exerciseTitle.textContent = currentExercise.name;
                     instructions.textContent = currentExercise.instructions;
-                    animationPlaceholder.textContent = currentExercise.name;
+
+                    // Show YouTube video if available, else show animation placeholder
+                    if (currentExercise.youtube_url) {
+                        animationPlaceholder.innerHTML = `<iframe width="100%" height="420" src="${currentExercise.youtube_url.replace('watch?v=', 'embed/')}" frameborder="0" allowfullscreen></iframe>`;
+                    } else {
+                        animationPlaceholder.textContent = currentExercise.name;
+                    }
                     
                     instructionsContainer.style.display = 'block';
                     completionMessage.style.display = 'none';
