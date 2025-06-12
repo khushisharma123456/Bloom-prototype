@@ -1517,15 +1517,19 @@ def get_exercise_videos():
         base_dir = os.path.dirname(os.path.abspath(__file__))
         exercises_path = os.path.join(base_dir, 'exercise.json')
         with open(exercises_path, 'r') as f:
-            exercises = json.load(f)
+            exercises = json.load(f)  # This is a list
+
         result = []
-        for ex in exercises.get('exercises', []):
+        for ex in exercises:
             video_id = fetch_youtube_short(ex.get('name', ''))
             ex['youtube_video_id'] = video_id
             result.append(ex)
+
         return jsonify({'exercises': result})
     except Exception as e:
+        print("Error in /api/exercise_videos:", e)
         return jsonify({'error': str(e)}), 500
+
 
 # ======================= YOGA ROUTINES API ROUTES =======================
 
