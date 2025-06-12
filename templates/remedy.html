@@ -31,7 +31,11 @@
                 <div class="remedy-card">
                     <div class="remedy-header">
                         <div class="remedy-image-container">
-                            <img src="{{ url_for('static', filename='Images/' + remedy.image) }}" alt="{{ remedy.name or remedy.title }}" class="remedy-image">
+                            {% if remedy.image %}
+<img src="{{ url_for('static', filename='images/' + remedy.image) }}" 
+     alt="{{ remedy.name or remedy.title }}" 
+     class="remedy-image">
+{% endif %}
                             <div class="image-overlay"></div>
                         </div>
                         <div class="remedy-meta">
