@@ -530,42 +530,61 @@
             }
 
             // Update the exercise display (right panel)
-            function updateExerciseDisplay() {
-                if (currentExerciseIndex < exercises.length) {
-                    const currentExercise = exercises[currentExerciseIndex];
-                    exerciseTitle.textContent = currentExercise.name;
-                    instructions.textContent = currentExercise.instructions;
+function updateExerciseDisplay() {
+    if (currentExerciseIndex < exercises.length) {
+        const currentExercise = exercises[currentExerciseIndex];
+        exerciseTitle.textContent = currentExercise.name;
+        instructions.textContent = currentExercise.instructions;
 
-                    // Show YouTube video if available, else show animation placeholder
-                    if (currentExercise.youtube_url) {
-                        let ytUrl = currentExercise.youtube_url;
-                        // Normalize YouTube URLs for embedding
-                        if (ytUrl.includes('youtu.be/')) {
-                            ytUrl = ytUrl.replace('https://youtu.be/', 'https://www.youtube.com/embed/').split('?')[0];
-                        } else if (ytUrl.includes('watch?v=')) {
-                            ytUrl = ytUrl.replace('watch?v=', 'embed/').split('&')[0];
-                        } else if (ytUrl.includes('youtube.com/embed/')) {
-                            ytUrl = ytUrl.split('?')[0];
-                        }
-                        // Only allow YouTube embed links
-                        if (ytUrl.startsWith('https://www.youtube.com/embed/') || ytUrl.startsWith('https://youtube.com/embed/')) {
-                            animationPlaceholder.innerHTML = `<iframe width="100%" height="420" src="${ytUrl}" frameborder="0" allowfullscreen></iframe>`;
-                        } else {
-                            animationPlaceholder.textContent = 'Video unavailable';
-                        }
-                    } else {
-                        animationPlaceholder.textContent = currentExercise.name;
-                    }
-                    
-                    instructionsContainer.style.display = 'block';
-                    completionMessage.style.display = 'none';
-                } else {
-                    // Routine complete
-                    instructionsContainer.style.display = 'none';
-                    completionMessage.style.display = 'flex';
-                }
+        // Clear previous content
+        animationPlaceholder.innerHTML = '';
+
+        // Show YouTube video if available
+        if (currentExercise.youtube_url) {
+            let videoId = '';
+            // Extract video ID from different YouTube URL formats
+            if (currentExercise.youtube_url.includes('youtu.be/')) {
+                videoId = currentExercise.youtube_url.split('youtu.be/')[1].split('?')[0];
+            } else if (currentExercise.youtube_url.includes('watch?v=')) {
+                videoId = currentExercise.youtube_url.split('watch?v=')[1].split('&')[0];
+            } else if (currentExercise.youtube_url.includes('embed/')) {
+                videoId = currentExercise.youtube_url.split('embed/')[1].split('?')[0];
             }
 
+            if (videoId) {
+                const iframe = document.createElement('iframe');
+                iframe.width = '100%';
+                iframe.height = '420';
+                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                iframe.frameBorder = '0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+                animationPlaceholder.appendChild(iframe);
+            } else {
+                animationPlaceholder.textContent = 'Video unavailable';
+            }
+        } else {
+            // Show exercise image if no video
+            if (currentExercise.image) {
+                const img = document.createElement('img');
+                img.src = currentExercise.image;
+                img.alt = currentExercise.name;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                animationPlaceholder.appendChild(img);
+            } else {
+                animationPlaceholder.textContent = currentExercise.name;
+            }
+        }
+        
+        instructionsContainer.style.display = 'block';
+        completionMessage.style.display = 'none';
+    } else {
+        // Routine complete
+        instructionsContainer.style.display = 'none';
+        completionMessage.style.display = 'flex';
+    }
+}
             // Format time as MM:SS
             function formatTime(seconds) {
                 const mins = Math.floor(seconds / 60);
