@@ -6,7 +6,7 @@
       "description": "Relieves bloating by improving digestion and reducing gas.",
       "calories": "N/A",
       "time": "5 min",
-      "image": "Images/ajwain-water.png",
+      "image": "Images/recipe_ajwain-water.png",
       "ingredients": [
         "1 tsp ajwain (carom seeds)",
         "1 cup water",
@@ -35,7 +35,7 @@
       "description": "Reduces bloating and calms the digestive tract.",
       "calories": "N/A",
       "time": "10 min",
-      "image": "Images/fennel-tea.png",
+      "image": "Images/recipe_fennel-tea.png",
       "ingredients": [
         "1 tsp fennel seeds",
         "1.5 cups water",
@@ -64,7 +64,7 @@
       "description": "Supports digestion and relieves chronic bloating.",
       "calories": "N/A",
       "time": "2 min",
-      "image": "Images/triphala.png",
+      "image": "Images/recipe_triphala-powder.png",
       "ingredients": [
         "1/2 tsp triphala powder",
         "1 cup warm water"
@@ -91,7 +91,7 @@
       "description": "Boosts metabolism and alleviates gas and bloating.",
       "calories": "N/A",
       "time": "7 min",
-      "image": "Images/ginger.png",
+      "image": "Images/recipe_ginger-elixir.png",
       "ingredients": [
         "1.5 inch fresh ginger root",
         "2 cups water",
@@ -122,7 +122,7 @@
       "description": "A blend of cumin, coriander, and fennel seeds to ease digestion and bloating.",
       "calories": "N/A",
       "time": "10 min",
-      "image": "Images/cumin-coriander-fennel.png",
+      "image": "Images/recipe_ccf-tea.png",
       "ingredients": [
         "1/2 tsp cumin seeds",
         "1/2 tsp coriander seeds",
@@ -152,7 +152,7 @@
       "description": "Powerful remedy for bloating and abdominal discomfort.",
       "calories": "N/A",
       "time": "3 min",
-      "image": "Images/hing-water.png",
+      "image": "Images/recipe_hing-asafoetida-water.png",
       "ingredients": [
         "1/8 tsp hing powder",
         "1 cup warm water",
@@ -179,7 +179,7 @@
       "description": "Stimulates digestion and helps flush out excess gas.",
       "calories": "N/A",
       "time": "5 min",
-      "image": "Images/lemon-honey.png",
+      "image": "Images/recipe_warm-lemon-honey-water.png",
       "ingredients": [
         "1/2 lemon",
         "1.5 cups warm water",
@@ -206,7 +206,7 @@
       "description": "Balances estrogen and supports reproductive health.",
       "calories": "N/A",
       "time": "5 min",
-      "image": "Images/shatavari.png",
+      "image": "Images/recipe_shatavari-powder.png",
       "ingredients": [
         "1/2 tsp shatavari powder",
         "1 cup warm almond or coconut milk",
@@ -231,7 +231,7 @@
       "description": "Helps regulate cortisol and thyroid hormone levels.",
       "calories": "N/A",
       "time": "5 min",
-      "image": "Images/ashwagandha-hormone.png",
+      "image": "Images/recipe_ashwagandha-tea.png",
       "ingredients": [
         "1/2 tsp ashwagandha powder",
         "1 cup hot water",
@@ -256,7 +256,7 @@
       "description": "Supports hormonal balance and menstrual regularity.",
       "calories": "N/A",
       "time": "2 min",
-      "image": "Images/flaxseeds.png",
+      "image": "Images/recipe_flaxseed-water.png",
       "ingredients": [
         "1 tbsp flaxseeds",
         "1 cup water"
@@ -277,7 +277,7 @@
       "description": "Maintains hormonal levels and soothes PCOS symptoms.",
       "calories": "N/A",
       "time": "3 min",
-      "image": "Images/aloevera-juice.png",
+      "image": "Images/recipe_aloe-vera-juice.png",
       "ingredients": [
         "2 tbsp aloe vera gel (fresh or store-bought)",
         "1 cup water",
@@ -299,7 +299,7 @@
       "description": "Rich in zinc and calcium, supports female hormones.",
       "calories": "120",
       "time": "20 min",
-      "image": "Images/sesame-ladoo.png",
+      "image": "Images/recipe_sesame-ladoo.png",
       "ingredients": [
         "1 cup sesame seeds",
         "1/2 cup jaggery",
@@ -322,7 +322,7 @@
       "description": "Improves insulin sensitivity and hormonal balance.",
       "calories": "N/A",
       "time": "Soak Overnight",
-      "image": "Images/methi-seeds.png",
+      "image": "Images/recipe_methi-seed-water.png",
       "ingredients": [
         "1 tsp methi (fenugreek) seeds",
         "1 cup water"
@@ -343,7 +343,7 @@
       "description": "Easy-to-digest meal with balancing spices for hormonal support.",
       "calories": "320",
       "time": "30 min",
-      "image": "Images/hormone-kitchari.png",
+      "image": "Images/recipe_hormone-balancing-kitchari.png",
       "ingredients": [
         "1/2 cup split mung dal",
         "1/2 cup basmati rice",
@@ -372,7 +372,7 @@
       "description": "Balances estrogen levels and eases PMS or menopausal discomfort.",
       "calories": "N/A",
       "time": "5 min",
-      "image": "Images/shatavari-elixir.png",
+      "image": "Images/recipe_shatavari-elixir.png",
       "ingredients": [
         "1/2 tsp shatavari powder",
         "1 cup warm milk",
@@ -395,7 +395,7 @@
       "description": "Supports hormone balance and reduces inflammation naturally.",
       "calories": "N/A",
       "time": "10 min",
-      "image": "Images/flaxseed-water.png",
+      "image": "Images/recipe_flaxseed-water.png",
       "ingredients": [
         "1 tbsp flaxseeds",
         "1 cup water"
@@ -416,7 +416,7 @@
       "description": "Promotes progesterone production and eases cycle-related pain.",
       "calories": "N/A",
       "time": "7 min",
-      "image": "Images/chasteberry-tea.png",
+      "image": "Images/recipe_chasteberry-infusion.png",
       "ingredients": [
         "1 tsp dried chasteberry",
         "1 cup boiling water"
@@ -437,7 +437,7 @@
       "description": "Supports hormonal health and reduces breast tenderness and cramps.",
       "calories": "N/A",
       "time": "Daily",
-      "image": "Images/evening-primrose.png",
+      "image": "Images/recipe_evening-primrose-oil.png",
       "ingredients": [
         "1-2 capsules evening primrose oil (supplement)"
       ],
@@ -456,7 +456,7 @@
       "description": "Rotating flax, pumpkin, sesame & sunflower seeds to regulate hormones.",
       "calories": "N/A",
       "time": "2 min",
-      "image": "Images/seed-cycling.png",
+      "image": "Images/recipe_seed-cycling-mix.png",
       "ingredients": [
         "1 tbsp flaxseeds",
         "1 tbsp pumpkin seeds",
@@ -480,7 +480,7 @@
       "description": "Classic herbal jam rich in amla and 40+ herbs to enhance energy and immunity.",
       "calories": "40",
       "time": "1 min",
-      "image": "Images/chyawanprash.png",
+      "image": "Images/recipe_chyawanprash-spoon.png",
       "ingredients": [
         "1 tsp chyawanprash"
       ],
@@ -499,7 +499,7 @@
       "description": "Blended dates, almonds, and warm milk for a quick energy and strength boost.",
       "calories": "180",
       "time": "10 min",
-      "image": "Images/dates-almond-shake.png",
+      "image": "Images/recipe_dates--almond-shake.png",
       "ingredients": [
         "5 dates, pitted",
         "10 almonds, soaked",
@@ -521,7 +521,7 @@
       "description": "Rich in iron and vitamin C, moringa helps fight fatigue and restores vitality.",
       "calories": "N/A",
       "time": "7 min",
-      "image": "Images/moringa-tea.png",
+      "image": "Images/recipe_moringa-tea.png",
       "ingredients": [
         "1 tsp moringa powder",
         "1 cup hot water",
@@ -544,7 +544,7 @@
       "description": "Balances stress hormones and supports sustained energy throughout the day.",
       "calories": "N/A",
       "time": "8 min",
-      "image": "Images/ashwagandha-latte.png",
+      "image": "Images/recipe_ashwagandha-latte.png",
       "ingredients": [
         "1/2 tsp ashwagandha powder",
         "1 cup milk (dairy or plant-based)",
@@ -568,7 +568,7 @@
       "description": "Detoxifying soup rich in antioxidants.",
       "calories": "180",
       "time": "35 min",
-      "image": "Images/4h.png",
+      "image": "Images/recipe_beetroot--carrot-soup.png",
       "ingredients": [
         "1 beetroot, peeled and diced",
         "2 carrots, chopped",
@@ -594,7 +594,7 @@
       "description": "Omega-3 rich smoothie for hormonal health.",
       "calories": "250",
       "time": "10 min",
-      "image": "Images/5h.png",
+      "image": "Images/recipe_flaxseed--banana-smoothie.png",
       "ingredients": [
         "1 banana",
         "1 tbsp flaxseed meal",
@@ -617,7 +617,7 @@
       "description": "Healing drink with turmeric and almond milk.",
       "calories": "150",
       "time": "10 min",
-      "image": "Images/7h.png",
+      "image": "Images/recipe_turmeric-golden-milk.png",
       "ingredients": [
         "1 cup almond milk",
         "1/2 tsp turmeric powder",
@@ -641,7 +641,7 @@
       "description": "Natural sweet energy balls for fatigue.",
       "calories": "200",
       "time": "20 min",
-      "image": "Images/9h.png",
+      "image": "Images/recipe_dates--nuts-ladoo.png",
       "ingredients": [
         "1 cup dates, pitted",
         "1/2 cup mixed nuts",
@@ -663,7 +663,7 @@
       "description": "Electrolyte-rich hydrating drink.",
       "calories": "120",
       "time": "5 min",
-      "image": "Images/10h.png",
+      "image": "Images/recipe_coconut-water--chia-fresca.png",
       "ingredients": [
         "1 cup coconut water",
         "1 tbsp chia seeds",
@@ -685,7 +685,7 @@
       "description": "Probiotic-rich fermented rice drink.",
       "calories": "160",
       "time": "12 hours",
-      "image": "Images/11h.png",
+      "image": "Images/recipe_fermented-rice-kanji.png",
       "ingredients": [
         "1/2 cup cooked rice",
         "2 cups water"
@@ -706,7 +706,7 @@
       "description": "Digestive tea to reduce bloating.",
       "calories": "50",
       "time": "10 min",
-      "image": "Images/12h.png",
+      "image": "Images/recipe_cumin--coriander-tea.png",
       "ingredients": [
         "1/2 tsp cumin seeds",
         "1/2 tsp coriander seeds",
@@ -728,7 +728,7 @@
       "description": "Magnesium-rich breakfast for mood swings.",
       "calories": "280",
       "time": "15 min",
-      "image": "Images/13h.png",
+      "image": "Images/recipe_dark-chocolate-oats.png",
       "ingredients": [
         "1/2 cup rolled oats",
         "1 cup milk",
@@ -751,7 +751,7 @@
       "description": "Cruciferous veggies for estrogen balance.",
       "calories": "240",
       "time": "20 min",
-      "image": "Images/14h.png",
+      "image": "Images/recipe_broccoli--almond-stir-fry.png",
       "ingredients": [
         "1 cup broccoli florets",
         "1/4 cup sliced almonds",
@@ -774,7 +774,7 @@
       "description": "Anti-inflammatory drink for cramps.",
       "calories": "80",
       "time": "12 min",
-      "image": "Images/15h.png",
+      "image": "Images/recipe_ginger--jaggery-tea.png",
       "ingredients": [
         "1 inch ginger, sliced",
         "1 cup water",
@@ -784,7 +784,8 @@
         "Boil ginger in water for 10 min.",
         "Strain, add jaggery, stir to dissolve.",
         "Drink warm."
-      ],      "benefits": [
+      ],
+      "benefits": [
         "Reduces cramps.",
         "Anti-inflammatory.",
         "Boosts circulation."
@@ -796,7 +797,7 @@
       "description": "High-protein breakfast with quinoa and vegetables",
       "calories": "320 cal",
       "time": "25 min",
-      "image": "Images/1h.png",
+      "image": "Images/recipe_quinoa-upma.png",
       "ingredients": [
         "1 cup quinoa",
         "2 cups water",
@@ -833,7 +834,7 @@
       "description": "Iron-rich spinach with protein-packed tofu",
       "calories": "310 cal",
       "time": "25 min",
-      "image": "Images/6h.png",
+      "image": "Images/recipe_palak-tofu-curry.png",
       "ingredients": [
         "200g firm tofu, cubed",
         "2 bunches fresh spinach",
@@ -872,7 +873,7 @@
       "description": "Iron and calcium rich stuffed flatbread",
       "calories": "280 cal",
       "time": "30 min",
-      "image": "Images/2h.png",
+      "image": "Images/recipe_spinach--paneer-paratha.png",
       "ingredients": [
         "1 cup whole wheat flour",
         "1 cup spinach, finely chopped",
@@ -906,7 +907,7 @@
       "description": "Protein-packed lentil pancakes with spices",
       "calories": "220 cal",
       "time": "20 min",
-      "image": "Images/3h.png",
+      "image": "Images/recipe_moong-dal-chilla.png",
       "ingredients": [
         "1 cup yellow moong dal, soaked",
         "1/4 cup onion, finely chopped",
@@ -940,7 +941,7 @@
       "description": "Protein-packed chickpea salad with veggies",
       "calories": "290 cal",
       "time": "15 min",
-      "image": "Images/8h.png",
+      "image": "Images/recipe_chana-chaat-salad.png",
       "ingredients": [
         "1 cup boiled chickpeas",
         "1 cucumber, diced",
@@ -975,7 +976,7 @@
       "description": "High-protein sprouted lentils with veggies",
       "calories": "210 cal",
       "time": "15 min",
-      "image": "Images/16h.png",
+      "image": "Images/recipe_sprouted-moong-salad.png",
       "ingredients": [
         "1 cup sprouted moong beans",
         "1/2 cup chopped cucumber",
@@ -1010,7 +1011,7 @@
       "description": "Iron and calcium rich stuffed flatbread, ideal for lunch during the menstrual phase",
       "calories": "280 cal",
       "time": "30 min",
-      "image": "Images/3h.png",
+      "image": "Images/recipe_iron-rich-palak-paratha.png",
       "ingredients": [
         "1 cup whole wheat flour",
         "1.5 cups spinach, blanched and puree",
@@ -1043,7 +1044,7 @@
       "description": "Protein-packed bowl to support energy and hormone balance for ovulation dinner",
       "calories": "320 cal",
       "time": "25 min",
-      "image": "Images/6h.png",
+      "image": "Images/recipe_quinoa--veggie-bowl.png",
       "ingredients": [
         "1/2 cup quinoa",
         "1 cup mixed vegetables (broccoli, bell peppers, zucchini)",
@@ -1076,7 +1077,7 @@
       "description": "Soaked fenugreek seeds regulate blood sugar and support hormonal balance",
       "calories": "N/A",
       "time": "Soak Overnight",
-      "image": "Images/methi-seed-water.png",
+      "image": "Images/recipe_methi-seed-water.png",
       "ingredients": [
         "1 tsp fenugreek seeds",
         "1 cup water",
@@ -1103,7 +1104,7 @@
       "description": "Reduces cortisol and boosts stamina, great for stress and hormone support",
       "calories": "N/A",
       "time": "5 min",
-      "image": "Images/ashwagandha-milk.png",
+      "image": "Images/recipe_ashwagandha-with-warm-milk.png",
       "ingredients": [
         "1 cup warm milk (dairy or plant-based)",
         "1/2 tsp ashwagandha powder",

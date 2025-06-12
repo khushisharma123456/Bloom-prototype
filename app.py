@@ -661,7 +661,7 @@ def education():
             "Sugar Cravings": 65 if survey.q10_sugar_craving == 'Yes' else 0,
             "Family History": 40 if survey.q11_family_history == 'Yes' else 0,
             "Fertility Issues": 35 if survey.q12_fertility == 'Yes' else 0,
-            "Mood Swings": 75 if survey.q13_mood_swings == 'Frequently' else 0
+            "Mood Swings": 75 if survey.q13_mood_swings == 'Yes' else 0
         }
     
     return render_template('education.html', 
@@ -2183,13 +2183,173 @@ def get_symptom_specific_ayurveda(symptoms):
     # If no specific remedies found, add some general menstrual health remedies
     if not recommended_remedies:
         recommended_remedies = remedies_db['cramps'][:2]
-    
-    # Limit to 4 remedies maximum
+      # Limit to 4 remedies maximum
     recommended_remedies = recommended_remedies[:4]
     
     return {
         "ayurvedicRemedies": recommended_remedies
     }
+
+# ======================= DOCTOR IMAGE GENERATION ROUTES =======================
+
+@app.route('/api/generate-doctor-image', methods=['POST'])
+def generate_doctor_image():
+    """Generate image for a specific doctor"""
+    try:
+        data = request.get_json()
+        doctor_data = {
+            'name': data.get('name'),
+            'specialty': data.get('specialty'),
+            'gender': data.get('gender', 'male')
+        }
+        
+        # Secure environment variable handling
+        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+        if not project_id or project_id == 'your-imagen4-project-id':
+            return jsonify({
+                'success': False, 
+                'error': 'Google Cloud Project ID not configured. Please set GOOGLE_CLOUD_PROJECT_ID environment variable.'
+            }), 500
+        
+        # Initialize generator
+        from imagen_generator import DoctorImageGenerator
+        generator = DoctorImageGenerator(project_id)
+        result = generator.generate_and_save_image(doctor_data)
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/doctor-images')
+def get_doctor_images():
+    """Get all generated doctor images"""
+    try:
+        # Read from results file or database
+        results_path = os.path.join(os.path.dirname(__file__), 'doctor_images_results.json')
+        if os.path.exists(results_path):
+            with open(results_path, 'r') as f:
+                results = json.load(f)
+            return jsonify(results)
+        else:
+            return jsonify([])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/generate-recipe-image', methods=['POST'])
+def generate_recipe_image():
+    """Generate image for a specific recipe"""
+    try:
+        data = request.get_json()
+        recipe_data = {
+            'name': data.get('name'),
+            'description': data.get('description', ''),
+            'badge': data.get('badge', ''),
+            'ingredients': data.get('ingredients', [])
+        }
+        
+        # Secure environment variable handling
+        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+        if not project_id or project_id == 'your-imagen4-project-id':
+            return jsonify({
+                'success': False, 
+                'error': 'Google Cloud Project ID not configured. Please set GOOGLE_CLOUD_PROJECT_ID environment variable.'
+            }), 500
+        
+        # Initialize generator
+        from recipe_image_generator import RecipeImageGenerator
+        generator = RecipeImageGenerator(project_id)
+        result = generator.generate_and_save_image(recipe_data)
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/generate-all-recipe-images', methods=['POST'])
+def generate_all_recipe_images():
+    """Generate images for all recipes in recipes.json"""
+    try:
+        # Secure environment variable handling
+        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+        if not project_id or project_id == 'your-imagen4-project-id':
+            return jsonify({
+                'success': False, 
+                'error': 'Google Cloud Project ID not configured. Please set GOOGLE_CLOUD_PROJECT_ID environment variable.'
+            }), 500
+        
+        # Initialize generator and run generation
+        from recipe_image_generator import RecipeImageGenerator
+        generator = RecipeImageGenerator(project_id)
+        generator.generate_all_recipe_images()
+        
+        # Return results
+        return jsonify({
+            'success': True,
+            'message': 'Recipe image generation completed',
+            'results': generator.results
+        })
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/recipe-images')
+def get_recipe_images():
+    """Get all generated recipe images"""
+    try:
+        # Read from results file
+        results_path = os.path.join(os.path.dirname(__file__), 'recipe_images_results.json')
+        if os.path.exists(results_path):
+            with open(results_path, 'r') as f:
+                results = json.load(f)
+            return jsonify(results)
+        else:
+            return jsonify([])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-config')
+def test_config():
+    """Test endpoint to check production configuration"""
+    try:
+        project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+        creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        
+        # Check if we're in production or development
+        is_production = os.getenv('FLASK_ENV') == 'production' or not app.debug
+        
+        config_status = {
+            'project_id_set': bool(project_id and project_id != 'your-imagen4-project-id'),
+            'credentials_set': bool(creds_path) or is_production,  # In production, might use default credentials
+            'environment': 'production' if is_production else 'development',
+            'flask_debug': app.debug,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        return jsonify(config_status)
+    except Exception as e:
+        return jsonify({'error': str(e), 'config_check': False}), 500
+
+@app.route('/admin/regenerate-images')
+def regenerate_all_images():
+    """Admin route to regenerate all doctor images"""
+    try:
+        from generate_doctor_images import main as generate_main
+        generate_main()
+        return jsonify({'success': True, 'message': 'Image generation started'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+@app.route('/api/recipes')
+def get_recipes_api():
+    """API endpoint to get all recipes data"""
+    try:
+        recipes_path = os.path.join(app.static_folder, 'data', 'recipes.json')
+        with open(recipes_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

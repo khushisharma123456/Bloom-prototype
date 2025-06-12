@@ -22,7 +22,35 @@ document.addEventListener('DOMContentLoaded', function() {
         premiumMessage: document.getElementById('premiumMessage')
     };
 
-    console.log('Elements initialized:', elements);    // State management
+    console.log('Elements initialized:', elements);
+    
+    // Doctor images storage
+    let doctorImages = {};
+
+    // Load doctor images on initialization
+    async function loadDoctorImages() {
+        try {
+            console.log('Loading doctor images from API...');
+            const response = await fetch('/api/doctor-images');
+            const imageResults = await response.json();
+            
+            console.log('API Response:', imageResults);
+            
+            // Create a mapping of doctor names to image URLs
+            imageResults.forEach(result => {
+                if (result.success) {
+                    doctorImages[result.doctor_name] = result.url;
+                    console.log(`Mapped: ${result.doctor_name} -> ${result.url}`);
+                }
+            });
+            
+            console.log('Final doctorImages object:', doctorImages);
+        } catch (error) {
+            console.error('Error loading doctor images:', error);
+        }
+    }
+
+    // State management
     const state = {
         professionals: [],
         filters: {
@@ -37,8 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
         appointments: [], // Array to store booked appointments
         contactedDoctors: new Set() // Set to store IDs of doctors you've messaged
     };    // Initialize the application
-    function init() {
+    async function init() {
         console.log('Initializing application');
+        await loadDoctorImages(); // Load images first
         setupEventListeners();
         setMinDateForAppointment();
         fetchProfessionals();
@@ -309,14 +338,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const textA = a.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags to get text content
             const textB = b.replace(/<[^>]*>/g, '').trim();
             return textB.length - textA.length; // Descending order
-        });
-
-        // Check if image URL exists, otherwise use default profile emoji
-        const imageStyle = professional.image 
-            ? `background-image: url('${professional.image}')`
-            : `background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 48px;`;        card.innerHTML = `
+        });        // Check if generated image exists, otherwise use original image or default profile
+        const generatedImage = doctorImages[professional.name];
+        const imageToUse = generatedImage || professional.image || 'static/Images/profile.png';
+        
+        const imageStyle = imageToUse 
+            ? `background-image: url('${imageToUse}'); background-size: contain; background-position: center; background-repeat: no-repeat;`
+            : `background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 48px;`;card.innerHTML = `
             <div class="professional-image" style="${imageStyle}">
-                ${!professional.image ? '<i class="fas fa-user-circle"></i>' : ''}
+                ${!imageToUse ? '<i class="fas fa-user-circle"></i>' : ''}
             </div>
             <div class="professional-info">
                 <div class="badge-container">${badges.join('')}</div>
@@ -662,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Sapna Vyas",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: "Images/coach2.jpg",
+                image: doctorImages["Sapna Vyas"] || "Images/coach2.jpg",
                 rating: 4.7,
                 reviews: 378,
                 price: "₹1800",
@@ -679,7 +709,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Mustafa Ahmed",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: "Images/coach3.jpg",
+                image: doctorImages["Mustafa Ahmed"] || "Images/coach3.jpg",
                 rating: 4.8,
                 reviews: 423,
                 price: "₹2000",
@@ -696,7 +726,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Ranveer Allahbadia",
                 specialty: "Fitness Coach",
                 category: "fitness",
-                image: "Images/coach4.jpg",
+                image: doctorImages["Ranveer Allahbadia"] || "Images/coach4.jpg",
                 rating: 4.6,
                 reviews: 345,
                 price: "₹1500",
@@ -715,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Rachna Khanna Singh",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist1.jpg",
+                image: doctorImages["Dr. Rachna Khanna Singh"] || "Images/therapist1.jpg",
                 rating: 4.9,
                 reviews: 289,
                 price: "₹2000",
@@ -732,7 +762,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Shefali Batra",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist2.jpg",
+                image: doctorImages["Dr. Shefali Batra"] || "Images/therapist2.jpg",
                 rating: 4.8,
                 reviews: 312,
                 price: "₹2500",
@@ -749,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Sayeli Jaiswal",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist3.jpg",
+                image: doctorImages["Dr. Sayeli Jaiswal"] || "Images/therapist3.jpg",
                 rating: 4.7,
                 reviews: 267,
                 price: "₹1800",
@@ -766,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Kamna Chhibber",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist4.jpg",
+                image: doctorImages["Dr. Kamna Chhibber"] || "Images/therapist4.jpg",
                 rating: 4.8,
                 reviews: 345,
                 price: "₹2200",
@@ -783,7 +813,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Kersi Chavda",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist5.jpg",
+                image: doctorImages["Dr. Kersi Chavda"] || "Images/therapist5.jpg",
                 rating: 4.9,
                 reviews: 378,
                 price: "₹2500",
@@ -800,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Achal Bhagat",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist6.jpg",
+                image: doctorImages["Dr. Achal Bhagat"] || "Images/therapist6.jpg",
                 rating: 4.7,
                 reviews: 289,
                 price: "₹2300",
@@ -817,7 +847,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Harish Shetty",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist7.jpg",
+                image: doctorImages["Dr. Harish Shetty"] || "Images/therapist7.jpg",
                 rating: 4.8,
                 reviews: 334,
                 price: "₹2000",
@@ -834,7 +864,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Samir Parikh",
                 specialty: "Therapist",
                 category: "support",
-                image: "Images/therapist8.jpg",
+                image: doctorImages["Dr. Samir Parikh"] || "Images/therapist8.jpg",
                 rating: 4.9,
                 reviews: 412,
                 price: "₹2400",
@@ -853,7 +883,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Rujuta Diwekar",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: "Images/nutritionist1.jpg",
+                image: doctorImages["Dr. Rujuta Diwekar"] || "Images/nutritionist1.jpg",
                 rating: 4.9,
                 reviews: 567,
                 price: "₹3000",
@@ -870,7 +900,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Ishi Khosla",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: "Images/nutritionist2.jpg",
+                image: doctorImages["Dr. Ishi Khosla"] || "Images/nutritionist2.jpg",
                 rating: 4.8,
                 reviews: 423,
                 price: "₹2500",
@@ -887,7 +917,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Nikhil Dhurandhar",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: "Images/nutritionist3.jpg",
+                image: doctorImages["Dr. Nikhil Dhurandhar"] || "Images/nutritionist3.jpg",
                 rating: 4.7,
                 reviews: 389,
                 price: "₹2000",
@@ -904,7 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "Dr. Manjari Chandra",
                 specialty: "Nutritionist",
                 category: "nutritionist",
-                image: "Images/nutritionist4.jpg",
+                image: doctorImages["Dr. Manjari Chandra"] || "Images/nutritionist4.jpg",
                 rating: 4.6,
                 reviews: 312,
                 price: "₹1800",

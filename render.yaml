@@ -1,0 +1,43 @@
+# Render.com Deployment Configuration
+# Place this file in your project root
+
+# Build Command
+pip install -r requirements.txt
+
+# Start Command  
+python app.py
+
+# Environment Variables (Set these in Render Dashboard -> Environment tab)
+# GOOGLE_CLOUD_PROJECT_ID=your-actual-project-id
+# GOOGLE_APPLICATION_CREDENTIALS=/opt/render/project/service-account-key.json
+# FLASK_ENV=production
+# FLASK_DEBUG=False
+
+# Service Configuration
+services:
+  - type: web
+    name: bloom-consultation
+    env: python
+    region: oregon
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    autoDeploy: false
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "False"
+      - key: PORT
+        value: "10000"
+    # Add these manually in Render dashboard:
+    # - GOOGLE_CLOUD_PROJECT_ID
+    # - GOOGLE_APPLICATION_CREDENTIALS (upload service account JSON)
+
+# File Upload Instructions for Render:
+# 1. Go to your service dashboard
+# 2. Navigate to "Environment" tab  
+# 3. Upload your service-account-key.json file
+# 4. Set GOOGLE_APPLICATION_CREDENTIALS to the uploaded file path
+# 5. Set GOOGLE_CLOUD_PROJECT_ID to your actual project ID

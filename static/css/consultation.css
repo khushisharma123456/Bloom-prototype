@@ -414,7 +414,7 @@ a {
     box-shadow: var(--shadow-sm);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
-    min-height: 200px; /* Decreased height from 250px to 200px */
+    min-height: 240px; /* Increased to accommodate larger image */
     max-width: 1200px; /* Restored original width */
     width: 100%;
     border: var(--border-light);
@@ -432,11 +432,45 @@ a {
 .professional-image {
     width: 320px; /* Restored original width */
     min-width: 320px; /* Restored original width */
-    height: 200px; /* Decreased height to match card height */
-    background-size: cover;
+    height: 240px; /* Increased height to show more of the image */
+    background-size: contain; /* Changed from 'cover' to 'contain' to prevent cropping */
     background-position: center;
+    background-repeat: no-repeat; /* Ensure no repetition */
     position: relative;
     border-right: var(--border-light);
+    background-color: #f8f9fa; /* Add background color for any empty space */
+    border-radius: 12px 0 0 12px; /* Round the left corners */
+}
+
+/* Alternative styling for better image display - fallback option */
+.professional-image.cover-style {
+    background-size: cover;
+    background-position: center top; /* Focus on the top portion to show face/head properly */
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 1024px) {
+    .professional-image {
+        width: 280px;
+        min-width: 280px;
+        height: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .professional-image {
+        width: 100%;
+        min-width: unset;
+        height: 200px;
+        border-right: none;
+        border-bottom: var(--border-light);
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .professional-card {
+        flex-direction: column;
+        min-height: auto;
+    }
 }
 
 /* Professional Badge Styles */
@@ -488,7 +522,7 @@ a {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    min-height: 200px; /* Decreased to match card height */
+    min-height: 240px; /* Increased to match card height */
     justify-content: space-between; /* Better distribution of content */
 }
 

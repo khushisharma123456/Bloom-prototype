@@ -7,3 +7,7 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 python-dotenv
+google-cloud-aiplatform
+vertexai
+google-cloud-storage
+Pillow
