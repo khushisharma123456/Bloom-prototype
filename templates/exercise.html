@@ -1,659 +1,664 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom - Meditative Exercises</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="/static/exercise.js" defer></script>
-    <style>        :root {
-            --lavender: #e6e6fa;
-            --sky-blue: #87cefa;
-            --soft-pink: #ffb6c1;
-            --white: #fff;
-            --light-gray: #f5f5f5;
-            --dark-gray: #333;
-            --rounded: 12px;
-            --shadow: 0 4px 12px rgba(0,0,0,0.1);
-            --transition: all 0.3s ease;
-            
-            /* Standardized sidebar font sizes - REQUIRED for consistent sidebar */
-            --sidebar-logo-size: 24px;
-            --sidebar-nav-size: 16px;
-            --sidebar-dropdown-size: 14px;
-            --sidebar-emoji-size: 16px;
-            --sidebar-dropdown-emoji-size: 14px;
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Bloom - Meditative Exercises</title><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"><script src="/static/exercise.js" defer></script><style> :root {
+    --lavender: #e6e6fa;
+    --sky-blue: #87cefa;
+    --soft-pink: #ffb6c1;
+    --white: #fff;
+    --light-gray: #f5f5f5;
+    --dark-gray: #333;
+    --rounded: 12px;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+
+    /* Standardized sidebar font sizes - REQUIRED for consistent sidebar */
+    --sidebar-logo-size: 24px;
+    --sidebar-nav-size: 16px;
+    --sidebar-dropdown-size: 14px;
+    --sidebar-emoji-size: 16px;
+    --sidebar-dropdown-emoji-size: 14px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #fef6f9;
+    color: #333;
+}
+
+/* Left Panel - Controls & Sequence */
+.left-panel {
+    width: 35%;
+    background: linear-gradient(135deg, var(--lavender) 0%, var(--sky-blue) 100%);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.play-pause-btn,
+.end-routine-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--white);
+    color: var(--soft-pink);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-pause-btn:hover,
+.end-routine-btn:hover {
+    transform: scale(1.05);
+}
+
+.end-routine-btn {
+    background-color: #f8d7da;
+    color: #dc3545;
+}
+
+.timer {
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.music-controls {
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: var(--rounded);
+    padding: 15px;
+}
+
+.music-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 10px;
+}
+
+.music-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.music-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #5a4a6a;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.music-btn:hover {
+    background-color: var(--white);
+}
+
+.music-btn.active {
+    background-color: var(--soft-pink);
+    color: white;
+}
+
+.volume-control {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.volume-control i {
+    color: var(--white);
+}
+
+.volume-slider {
+    flex-grow: 1;
+}
+
+.sequence-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 15px;
+}
+
+.exercise-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.exercise-item {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: var(--rounded);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.exercise-item.current {
+    background-color: var(--white);
+    box-shadow: var(--shadow);
+    transform: scale(1.02);
+    border-left: 5px solid var(--soft-pink);
+}
+
+.exercise-item.completed {
+    opacity: 0.7;
+}
+
+.exercise-item.upcoming {
+    opacity: 0.9;
+}
+
+.exercise-name {
+    font-weight: 600;
+    color: #5a4a6a;
+}
+
+.exercise-duration {
+    color: #5a4a6a;
+    font-size: 14px;
+}
+
+.exercise-item.current .exercise-name,
+.exercise-item.current .exercise-duration {
+    color: var(--dark-gray);
+}
+
+/* Right Panel - Animation & Instructions */
+.right-panel {
+    width: 65%;
+    background-color: var(--white);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.animation-container {
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    background-color: var(--light-gray);
+    border-radius: var(--rounded);
+    overflow: hidden;
+}
+
+.animation-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #888;
+}
+
+.instructions-container {
+    flex-grow: 1;
+    background-color: rgba(230, 230, 250, 0.3);
+    border-radius: var(--rounded);
+    padding: 25px;
+}
+
+.exercise-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #5a4a6a;
+    margin-bottom: 15px;
+}
+
+.instructions {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5a4a6a;
+}
+
+.completion-message {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
+
+.completion-message h2 {
+    font-size: 32px;
+    color: #5a4a6a;
+    margin-bottom: 20px;
+}
+
+.restart-btn,
+.return-yoga-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--rounded);
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    margin: 0 10px;
+}
+
+.restart-btn {
+    background-color: var(--soft-pink);
+}
+
+.restart-btn:hover {
+    background-color: #ff9aae;
+    transform: scale(1.05);
+}
+
+.return-yoga-btn {
+    background-color: var(--lavender);
+    color: #5a4a6a;
+}
+
+.return-yoga-btn:hover {
+    background-color: #d8bfd8;
+    transform: scale(1.05);
+}
+
+.completion-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        height: auto;
+    }
+
+    .left-panel {
+        order: 2;
+    }
+
+    .right-panel {
+        order: 1;
+    }
+
+    .animation-container {
+        height: 300px;
+    }
+}
+
+</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></head><body>< !-- Left Panel - Controls & Sequence --><div class="left-panel"><div class="controls"><div class="control-buttons"><button class="play-pause-btn" id="play-pause-btn"><i class="fas fa-play"></i></button><button class="end-routine-btn" id="end-routine-btn"><i class="fas fa-stop"></i></button></div><div class="timer" id="timer">00:00</div><div class="music-controls"><div class="music-title">Background Music</div><div class="music-options"><button class="music-btn" data-spotify="5MTVGdHPWhpCj3wKp1Fyk1">Rain</button><button class="music-btn" data-spotify="1uTkgOcBEBSDds99QDYDNl">Forest</button><button class="music-btn" data-spotify="4MuuGvZf7vNEJyMxDjvL31">Singing Bowl</button><button class="music-btn" data-spotify="3a6Rz4rjSBMyOlOVDZjknb">Ocean</button></div><div id="spotify-player-container" style="margin-top: 16px;"></div></div></div><h3 class="sequence-title">Meditation Sequence</h3><div class="exercise-list" id="exercise-list">< !-- Exercises will be populated by JavaScript --></div></div>< !-- Right Panel - Animation & Instructions --><div class="right-panel"><div class="animation-container"><div class="animation-placeholder" id="animation-placeholder">Animation will appear here </div></div><div class="instructions-container" id="instructions-container"><h2 class="exercise-title" id="exercise-title">Exercise Name</h2><div class="instructions" id="instructions">Instructions will appear here </div></div><div class="completion-message" id="completion-message"><h2>Routine Complete !</h2><p>Great job completing your meditation session.</p><div class="completion-buttons"><button class="restart-btn" id="restart-btn">Start Again</button><button class="return-yoga-btn" id="return-yoga-btn">Return to Yoga</button></div></div></div><script> // This function will be called by exercise.js after loading data
+
+window.renderRoutine=function(exercises) {
+    // All DOM element queries
+    const playPauseBtn=document.getElementById('play-pause-btn');
+    const endRoutineBtn=document.getElementById('end-routine-btn');
+    const timerDisplay=document.getElementById('timer');
+    const exerciseList=document.getElementById('exercise-list');
+    const animationPlaceholder=document.getElementById('animation-placeholder');
+    const exerciseTitle=document.getElementById('exercise-title');
+    const instructions=document.getElementById('instructions');
+    const instructionsContainer=document.getElementById('instructions-container');
+    const completionMessage=document.getElementById('completion-message');
+    const restartBtn=document.getElementById('restart-btn');
+    const returnYogaBtn=document.getElementById('return-yoga-btn');
+    const musicButtons=document.querySelectorAll('.music-btn');
+    const volumeSlider=document.getElementById('volume-slider');
+
+    // State variables
+    let currentExerciseIndex=0;
+    let timeRemaining=exercises[0]?.duration || 0;
+    let timerInterval;
+    let isPlaying=false;
+    let currentMusic='rain';
+    let currentVolume=0.5;
+    let currentSpotifyTrack='5MTVGdHPWhpCj3wKp1Fyk1';
+    let spotifyIframe=null;
+
+    function loadSpotifyPlayer(trackId) {
+        const container=document.getElementById('spotify-player-container');
+
+        if ( !trackId) {
+            container.innerHTML='';
+            spotifyIframe=null;
+            return;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Nunito', sans-serif;
-        }
+        container.innerHTML=`<iframe id="spotify-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
+        spotifyIframe=document.getElementById('spotify-iframe');
+    }
 
-        body {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #fef6f9;
-            color: #333;
-        }
-
-        /* Left Panel - Controls & Sequence */
-        .left-panel {
-            width: 35%;
-            background: linear-gradient(135deg, var(--lavender) 0%, var(--sky-blue) 100%);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .control-buttons {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .play-pause-btn, .end-routine-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            background-color: var(--white);
-            color: var(--soft-pink);
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .play-pause-btn:hover, .end-routine-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .end-routine-btn {
-            background-color: #f8d7da;
-            color: #dc3545;
-        }
-
-        .timer {
-            font-size: 48px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .music-controls {
-            width: 100%;
-            margin-bottom: 20px;
-            background-color: rgba(255,255,255,0.3);
-            border-radius: var(--rounded);
-            padding: 15px;
-        }
-
-        .music-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 10px;
-        }
-
-        .music-options {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .music-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 20px;
-            background-color: rgba(255,255,255,0.7);
-            color: #5a4a6a;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .music-btn:hover {
-            background-color: var(--white);
-        }
-
-        .music-btn.active {
-            background-color: var(--soft-pink);
-            color: white;
-        }
-
-        .volume-control {
-            width: 100%;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .volume-control i {
-            color: var(--white);
-        }
-
-        .volume-slider {
-            flex-grow: 1;
-        }
-
-        .sequence-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 15px;
-        }
-
-        .exercise-list {
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-
-        .exercise-item {
-            background-color: rgba(255,255,255,0.7);
-            border-radius: var(--rounded);
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .exercise-item.current {
-            background-color: var(--white);
-            box-shadow: var(--shadow);
-            transform: scale(1.02);
-            border-left: 5px solid var(--soft-pink);
-        }
-
-        .exercise-item.completed {
-            opacity: 0.7;
-        }
-
-        .exercise-item.upcoming {
-            opacity: 0.9;
-        }
-
-        .exercise-name {
-            font-weight: 600;
-            color: #5a4a6a;
-        }
-
-        .exercise-duration {
-            color: #5a4a6a;
-            font-size: 14px;
-        }
-
-        .exercise-item.current .exercise-name,
-        .exercise-item.current .exercise-duration {
-            color: var(--dark-gray);
-        }
-
-        /* Right Panel - Animation & Instructions */
-        .right-panel {
-            width: 65%;
-            background-color: var(--white);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .animation-container {
-            height: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            background-color: var(--light-gray);
-            border-radius: var(--rounded);
-            overflow: hidden;
-        }
-
-        .animation-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #888;
-        }
-
-        .instructions-container {
-            flex-grow: 1;
-            background-color: rgba(230,230,250,0.3);
-            border-radius: var(--rounded);
-            padding: 25px;
-        }
-
-        .exercise-title {
-            font-size: 28px;
-            font-weight: 600;
-            color: #5a4a6a;
-            margin-bottom: 15px;
-        }
-
-        .instructions {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #5a4a6a;
-        }
-
-        .completion-message {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-        }
-
-        .completion-message h2 {
-            font-size: 32px;
-            color: #5a4a6a;
-            margin-bottom: 20px;
-        }        .restart-btn, .return-yoga-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: var(--rounded);
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            margin: 0 10px;
-        }
-
-        .restart-btn {
-            background-color: var(--soft-pink);
-        }
-
-        .restart-btn:hover {
-            background-color: #ff9aae;
-            transform: scale(1.05);
-        }
-
-        .return-yoga-btn {
-            background-color: var(--lavender);
-            color: #5a4a6a;
-        }
-
-        .return-yoga-btn:hover {
-            background-color: #d8bfd8;
-            transform: scale(1.05);
-        }
-
-        .completion-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-                height: auto;
-                overflow-y: auto;
-            }
-
-            .left-panel, .right-panel {
-                width: 100%;
-                height: auto;
-            }
-
-            .left-panel {
-                order: 2;
-            }
-
-            .right-panel {
-                order: 1;
-            }
-
-            .animation-container {
-                height: 300px;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Left Panel - Controls & Sequence -->
-    <div class="left-panel">
-        <div class="controls">
-            <div class="control-buttons">
-                <button class="play-pause-btn" id="play-pause-btn">
-                    <i class="fas fa-play"></i>
-                </button>
-                <button class="end-routine-btn" id="end-routine-btn">
-                    <i class="fas fa-stop"></i>
-                </button>
-            </div>
-            <div class="timer" id="timer">00:00</div>
-            
-            <div class="music-controls">
-                <div class="music-title">Background Music</div>
-                <div class="music-options">
-                    <button class="music-btn" data-spotify="5MTVGdHPWhpCj3wKp1Fyk1">Rain</button>
-                    <button class="music-btn" data-spotify="1uTkgOcBEBSDds99QDYDNl">Forest</button>
-                    <button class="music-btn" data-spotify="4MuuGvZf7vNEJyMxDjvL31">Singing Bowl</button>
-                    <button class="music-btn" data-spotify="3a6Rz4rjSBMyOlOVDZjknb">Ocean</button>
-                </div>
-                <div id="spotify-player-container" style="margin-top: 16px;"></div>
-            </div>
-        </div>
-
-        <h3 class="sequence-title">Meditation Sequence</h3>
-        <div class="exercise-list" id="exercise-list">
-            <!-- Exercises will be populated by JavaScript -->
-        </div>
-    </div>
-
-    <!-- Right Panel - Animation & Instructions -->
-    <div class="right-panel">
-        <div class="animation-container">
-            <div class="animation-placeholder" id="animation-placeholder">
-                Animation will appear here
-            </div>
-        </div>
-
-        <div class="instructions-container" id="instructions-container">
-            <h2 class="exercise-title" id="exercise-title">Exercise Name</h2>
-            <div class="instructions" id="instructions">
-                Instructions will appear here
-            </div>
-        </div>        <div class="completion-message" id="completion-message">
-            <h2>Routine Complete!</h2>
-            <p>Great job completing your meditation session.</p>
-            <div class="completion-buttons">
-                <button class="restart-btn" id="restart-btn">Start Again</button>
-                <button class="return-yoga-btn" id="return-yoga-btn">Return to Yoga</button>
-            </div>
-        </div>
-    </div>    <script>
-        // This function will be called by exercise.js after loading data
-        window.renderRoutine = function(exercises) {
-            // All DOM element queries
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            const endRoutineBtn = document.getElementById('end-routine-btn');
-            const timerDisplay = document.getElementById('timer');
-            const exerciseList = document.getElementById('exercise-list');
-            const animationPlaceholder = document.getElementById('animation-placeholder');
-            const exerciseTitle = document.getElementById('exercise-title');
-            const instructions = document.getElementById('instructions');
-            const instructionsContainer = document.getElementById('instructions-container');            const completionMessage = document.getElementById('completion-message');
-            const restartBtn = document.getElementById('restart-btn');
-            const returnYogaBtn = document.getElementById('return-yoga-btn');
-            const musicButtons = document.querySelectorAll('.music-btn');
-            const volumeSlider = document.getElementById('volume-slider');
-              
-            // State variables
-            let currentExerciseIndex = 0;
-            let timeRemaining = exercises[0]?.duration || 0;
-            let timerInterval;
-            let isPlaying = false;
-            let currentMusic = 'rain';
-            let currentVolume = 0.5;
-            let currentSpotifyTrack = '5MTVGdHPWhpCj3wKp1Fyk1';
-            let spotifyIframe = null;
-
-            function loadSpotifyPlayer(trackId) {
-                const container = document.getElementById('spotify-player-container');
-                if (!trackId) {
-                    container.innerHTML = '';
-                    spotifyIframe = null;
-                    return;
-                }
-                container.innerHTML = `<iframe id="spotify-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
-                spotifyIframe = document.getElementById('spotify-iframe');
-            }
-
-            // Music selection buttons
-            musicButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    musicButtons.forEach(btn => btn.classList.remove('active'));
+    // Music selection buttons
+    musicButtons.forEach(button=> {
+            button.addEventListener('click', ()=> {
+                    musicButtons.forEach(btn=> btn.classList.remove('active'));
                     button.classList.add('active');
-                    const trackId = button.dataset.spotify;
-                    currentSpotifyTrack = trackId;
+                    const trackId=button.dataset.spotify;
+                    currentSpotifyTrack=trackId;
                     loadSpotifyPlayer(trackId);
                 });
-            });
+        });
 
-            // Play/Pause button click handler
-            playPauseBtn.addEventListener('click', () => {
-                if (currentExerciseIndex >= exercises.length) {
-                    // Restart routine if completed
-                    currentExerciseIndex = 0;
-                    timeRemaining = exercises[0].duration;
-                    updateExerciseDisplay();
-                    updateTimerDisplay();
-                    renderExerciseList();
-                }
-                isPlaying = !isPlaying;
-                if (isPlaying) {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    startTimer();
-                    // Try to play Spotify (user must interact with iframe)
-                    // No programmatic play possible due to browser security
-                } else {
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    pauseTimer();
-                    // Pause Spotify by removing and re-adding the iframe (forces stop)
-                    if (spotifyIframe) {
-                        const container = document.getElementById('spotify-player-container');
-                        container.innerHTML = '';
-                        setTimeout(() => loadSpotifyPlayer(currentSpotifyTrack), 100);
-                    }
-                }
-            });
-
-            // Restart button click handler
-            restartBtn.addEventListener('click', () => {
-                currentExerciseIndex = 0;
-                timeRemaining = exercises[0].duration;
-                isPlaying = false;
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    // Play/Pause button click handler
+    playPauseBtn.addEventListener('click', ()=> {
+            if (currentExerciseIndex >=exercises.length) {
+                // Restart routine if completed
+                currentExerciseIndex=0;
+                timeRemaining=exercises[0].duration;
                 updateExerciseDisplay();
                 updateTimerDisplay();
                 renderExerciseList();
-                pauseTimer();
-            });
-
-            // Return to Yoga button click handler
-            returnYogaBtn.addEventListener('click', () => {
-                // Navigate back to yoga page
-                window.location.href = '/yoga';
-            });
-
-            // Initialize the page
-            function init() {
-                renderExerciseList();
-                updateExerciseDisplay();
-                updateTimerDisplay();
-                setVolume(currentVolume);
-                // Load the default (Rain) Spotify player
-                loadSpotifyPlayer('https://open.spotify.com/track/3Zwu2K0Qa5sT6teCCHPShP');
             }
 
-            // Render the exercise list
-            function renderExerciseList() {
-                exerciseList.innerHTML = '';
-                exercises.forEach((exercise, index) => {
-                    const exerciseItem = document.createElement('div');
-                    exerciseItem.className = 'exercise-item';
-                    if (index === currentExerciseIndex) {
-                        exerciseItem.classList.add('current');
-                    } else if (index < currentExerciseIndex) {
-                        exerciseItem.classList.add('completed');
-                    } else {
-                        exerciseItem.classList.add('upcoming');
-                    }
+            isPlaying= !isPlaying;
 
-                    exerciseItem.innerHTML = `
-                        <span class="exercise-name">${exercise.name}</span>
-                        <span class="exercise-duration">${formatTime(exercise.duration)}</span>
-                    `;
+            if (isPlaying) {
+                playPauseBtn.innerHTML='<i class="fas fa-pause"></i>';
+                startTimer();
+                // Try to play Spotify (user must interact with iframe)
+                // No programmatic play possible due to browser security
+            }
 
-                    exerciseItem.addEventListener('click', () => {
+            else {
+                playPauseBtn.innerHTML='<i class="fas fa-play"></i>';
+                pauseTimer();
+
+                // Pause Spotify by removing and re-adding the iframe (forces stop)
+                if (spotifyIframe) {
+                    const container=document.getElementById('spotify-player-container');
+                    container.innerHTML='';
+                    setTimeout(()=> loadSpotifyPlayer(currentSpotifyTrack), 100);
+                }
+            }
+        });
+
+    // Restart button click handler
+    restartBtn.addEventListener('click', ()=> {
+            currentExerciseIndex=0;
+            timeRemaining=exercises[0].duration;
+            isPlaying=false;
+            playPauseBtn.innerHTML='<i class="fas fa-play"></i>';
+            updateExerciseDisplay();
+            updateTimerDisplay();
+            renderExerciseList();
+            pauseTimer();
+        });
+
+    // Return to Yoga button click handler
+    returnYogaBtn.addEventListener('click', ()=> {
+            // Navigate back to yoga page
+            window.location.href='/yoga';
+        });
+
+    // Initialize the page
+    function init() {
+        renderExerciseList();
+        updateExerciseDisplay();
+        updateTimerDisplay();
+        setVolume(currentVolume);
+        // Load the default (Rain) Spotify player
+        loadSpotifyPlayer('https://open.spotify.com/track/3Zwu2K0Qa5sT6teCCHPShP');
+    }
+
+    // Render the exercise list
+    function renderExerciseList() {
+        exerciseList.innerHTML='';
+
+        exercises.forEach((exercise, index)=> {
+                const exerciseItem=document.createElement('div');
+                exerciseItem.className='exercise-item';
+
+                if (index===currentExerciseIndex) {
+                    exerciseItem.classList.add('current');
+                }
+
+                else if (index < currentExerciseIndex) {
+                    exerciseItem.classList.add('completed');
+                }
+
+                else {
+                    exerciseItem.classList.add('upcoming');
+                }
+
+                exerciseItem.innerHTML=` <span class="exercise-name" >$ {
+                    exercise.name
+                }
+
+                </span> <span class="exercise-duration" >$ {
+                    formatTime(exercise.duration)
+                }
+
+                </span> `;
+
+                exerciseItem.addEventListener('click', ()=> {
                         if (isPlaying) {
                             pauseTimer();
                         }
-                        currentExerciseIndex = index;
-                        timeRemaining = exercises[index].duration;
+
+                        currentExerciseIndex=index;
+                        timeRemaining=exercises[index].duration;
                         updateExerciseDisplay();
                         updateTimerDisplay();
                         renderExerciseList();
                     });
 
-                    exerciseList.appendChild(exerciseItem);
-                });
-            }
-
-            // Update the exercise display (right panel)
-function updateExerciseDisplay() {
-    if (currentExerciseIndex < exercises.length) {
-        const currentExercise = exercises[currentExerciseIndex];
-        exerciseTitle.textContent = currentExercise.name;
-        instructions.textContent = currentExercise.instructions;
-
-        // Clear previous content
-        animationPlaceholder.innerHTML = '';
-
-        // Show YouTube video if available
-        if (currentExercise.youtube_url) {
-            let videoId = '';
-            // Extract video ID from different YouTube URL formats
-            if (currentExercise.youtube_url.includes('youtu.be/')) {
-                videoId = currentExercise.youtube_url.split('youtu.be/')[1].split('?')[0];
-            } else if (currentExercise.youtube_url.includes('watch?v=')) {
-                videoId = currentExercise.youtube_url.split('watch?v=')[1].split('&')[0];
-            } else if (currentExercise.youtube_url.includes('embed/')) {
-                videoId = currentExercise.youtube_url.split('embed/')[1].split('?')[0];
-            }
-
-            if (videoId) {
-                const iframe = document.createElement('iframe');
-                iframe.width = '100%';
-                iframe.height = '420';
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
-                iframe.frameBorder = '0';
-                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                iframe.allowFullscreen = true;
-                animationPlaceholder.appendChild(iframe);
-            } else {
-                animationPlaceholder.textContent = 'Video unavailable';
-            }
-        } else {
-            // Show exercise image if no video
-            if (currentExercise.image) {
-                const img = document.createElement('img');
-                img.src = currentExercise.image;
-                img.alt = currentExercise.name;
-                img.style.maxWidth = '100%';
-                img.style.maxHeight = '100%';
-                animationPlaceholder.appendChild(img);
-            } else {
-                animationPlaceholder.textContent = currentExercise.name;
-            }
-        }
-        
-        instructionsContainer.style.display = 'block';
-        completionMessage.style.display = 'none';
-    } else {
-        // Routine complete
-        instructionsContainer.style.display = 'none';
-        completionMessage.style.display = 'flex';
+                exerciseList.appendChild(exerciseItem);
+            });
     }
-}
-            // Format time as MM:SS
-            function formatTime(seconds) {
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+    // Update the exercise display (right panel)
+    function updateExerciseDisplay() {
+        if (currentExerciseIndex < exercises.length) {
+            const currentExercise=exercises[currentExerciseIndex];
+            exerciseTitle.textContent=currentExercise.name;
+            instructions.textContent=currentExercise.instructions;
+
+            // Clear previous content
+            animationPlaceholder.innerHTML='';
+
+            // Show YouTube video if available
+            if (currentExercise.youtube_video_id) {
+                const videoId=currentExercise.youtube_video_id;
+                const iframe=document.createElement('iframe');
+                iframe.width='100%';
+                iframe.height='420';
+                iframe.src=`https: //www.youtube.com/embed/${videoId}`;
+                iframe.frameBorder='0';
+                iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen=true;
+                animationPlaceholder.appendChild(iframe);
             }
 
-            // Update the timer display
-            function updateTimerDisplay() {
-                timerDisplay.textContent = formatTime(timeRemaining);
+            else if (currentExercise.youtube_url) {
+                let videoId='';
+
+                // Extract video ID from different YouTube URL formats
+                if (currentExercise.youtube_url.includes('youtu.be/')) {
+                    videoId=currentExercise.youtube_url.split('youtu.be/')[1].split('?')[0];
+                }
+
+                else if (currentExercise.youtube_url.includes('watch?v=')) {
+                    videoId=currentExercise.youtube_url.split('watch?v=')[1].split('&')[0];
+                }
+
+                else if (currentExercise.youtube_url.includes('embed/')) {
+                    videoId=currentExercise.youtube_url.split('embed/')[1].split('?')[0];
+                }
+
+                if (videoId) {
+                    const iframe=document.createElement('iframe');
+                    iframe.width='100%';
+                    iframe.height='420';
+                    iframe.src=`https: //www.youtube.com/embed/${videoId}`;
+                    iframe.frameBorder='0';
+                    iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                    iframe.allowFullscreen=true;
+                    animationPlaceholder.appendChild(iframe);
+                }
+
+                else {
+                    animationPlaceholder.textContent='Video unavailable';
+                }
             }
 
-            // Start the timer
-            function startTimer() {
-                if (timerInterval) clearInterval(timerInterval);
-                
-                timerInterval = setInterval(() => {
-                    timeRemaining--;
-                    updateTimerDisplay();
-                    
-                    if (timeRemaining <= 0) {
-                        clearInterval(timerInterval);
-                        nextExercise();
-                        // Stop Spotify
-                        if (spotifyIframe) {
-                            const container = document.getElementById('spotify-player-container');
-                            container.innerHTML = '';
-                            setTimeout(() => loadSpotifyPlayer(currentSpotifyTrack), 100);
-                        }
-                    }
-                }, 1000);
+            else {
+
+                // Show exercise image if no video
+                if (currentExercise.image) {
+                    const img=document.createElement('img');
+                    img.src=currentExercise.image;
+                    img.alt=currentExercise.name;
+                    img.style.maxWidth='100%';
+                    img.style.maxHeight='100%';
+                    animationPlaceholder.appendChild(img);
+                }
+
+                else {
+                    animationPlaceholder.textContent=currentExercise.name;
+                }
             }
 
-            // Pause the timer
-            function pauseTimer() {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
+            instructionsContainer.style.display='block';
+            completionMessage.style.display='none';
+        }
 
-            // Move to next exercise
-            function nextExercise() {
-                currentExerciseIndex++;
-                
-                if (currentExerciseIndex < exercises.length) {
-                    timeRemaining = exercises[currentExerciseIndex].duration;
-                    updateExerciseDisplay();
-                    updateTimerDisplay();
-                    renderExerciseList();
-                    
-                    if (isPlaying) {
-                        startTimer();
-                    }
-                } else {
-                    // Routine complete
-                    updateExerciseDisplay();
-                    playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
-                    isPlaying = false;
+        else {
+            // Routine complete
+            instructionsContainer.style.display='none';
+            completionMessage.style.display='flex';
+        }
+    }
+
+    // Format time as MM:SS
+    function formatTime(seconds) {
+        const mins=Math.floor(seconds / 60);
+        const secs=seconds % 60;
+
+        return `$ {
+            mins.toString().padStart(2, '0')
+        }
+
+        :$ {
+            secs.toString().padStart(2, '0')
+        }
+
+        `;
+    }
+
+    // Update the timer display
+    function updateTimerDisplay() {
+        timerDisplay.textContent=formatTime(timeRemaining);
+    }
+
+    // Start the timer
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval=setInterval(()=> {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <=0) {
+                    clearInterval(timerInterval);
+                    nextExercise();
+
                     // Stop Spotify
                     if (spotifyIframe) {
-                        const container = document.getElementById('spotify-player-container');
-                        container.innerHTML = '';
-                        setTimeout(() => loadSpotifyPlayer(currentSpotifyTrack), 100);
+                        const container=document.getElementById('spotify-player-container');
+                        container.innerHTML='';
+                        setTimeout(()=> loadSpotifyPlayer(currentSpotifyTrack), 100);
                     }
                 }
             }
 
-            // Initialize the app
-            init();
-        };
-    </script>
-</body>
-</html>
+            , 1000);
+    }
+
+    // Pause the timer
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        timerInterval=null;
+    }
+
+    // Move to next exercise
+    function nextExercise() {
+        currentExerciseIndex++;
+
+        if (currentExerciseIndex < exercises.length) {
+            timeRemaining=exercises[currentExerciseIndex].duration;
+            updateExerciseDisplay();
+            updateTimerDisplay();
+            renderExerciseList();
+
+            if (isPlaying) {
+                startTimer();
+            }
+        }
+
+        else {
+            // Routine complete
+            updateExerciseDisplay();
+            playPauseBtn.innerHTML='<i class="fas fa-redo"></i>';
+            isPlaying=false;
+
+            // Stop Spotify
+            if (spotifyIframe) {
+                const container=document.getElementById('spotify-player-container');
+                container.innerHTML='';
+                setTimeout(()=> loadSpotifyPlayer(currentSpotifyTrack), 100);
+            }
+        }
+    }
+
+    // Initialize the app
+    init();
+}
+
+;
+</script></body></html>
