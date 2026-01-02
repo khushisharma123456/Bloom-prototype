@@ -1521,8 +1521,11 @@ def get_exercise_videos():
 
         result = []
         for ex in exercises:
-            video_id = fetch_youtube_short(ex.get('name', ''))
-            ex['youtube_video_id'] = video_id
+            # Only fetch if not already present
+            if 'youtube_video_id' not in ex or not ex['youtube_video_id']:
+                video_id = fetch_youtube_short(ex.get('name', ''))
+                if video_id:
+                    ex['youtube_video_id'] = video_id
             result.append(ex)
 
         return jsonify({'exercises': result})
