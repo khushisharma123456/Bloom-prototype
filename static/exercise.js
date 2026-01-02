@@ -12,7 +12,10 @@ let exercises = [];
 
 // Load JSON files
 function loadJSON(url) {
-    return fetch(url).then(res => {
+    // Add cache busting
+    const separator = url.includes('?') ? '&' : '?';
+    const urlWithCacheBuster = `${url}${separator}t=${new Date().getTime()}`;
+    return fetch(urlWithCacheBuster).then(res => {
         if (!res.ok) {
             throw new Error(`Failed to fetch ${url}`);
         }
